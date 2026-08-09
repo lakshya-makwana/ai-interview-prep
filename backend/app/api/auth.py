@@ -12,8 +12,8 @@ from app.services.auth_service import get_user_by_email
 from datetime import timedelta
 
 from app.core.security import create_access_token
+from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas.token import Token
-from app.schemas.user import UserLogin
 from app.services.auth_service import authenticate_user
 
 router = APIRouter(
@@ -36,12 +36,14 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
 @router.post("/login", response_model=Token)
-def login(user: UserLogin, db: Session = Depends(get_db)):
-
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
     db_user = authenticate_user(
-        db,
-        user.email,
-        user.password,
+    db,
+    form_data.username,
+    form_data.password,
     )
 
     if not db_user:
