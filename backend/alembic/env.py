@@ -15,6 +15,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.models.resume import Resume
+from app.models.resume_analysis import ResumeAnalysis
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

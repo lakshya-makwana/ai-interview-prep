@@ -7,7 +7,6 @@ from sqlalchemy import Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-
 from app.database.base import Base
 
 
@@ -50,4 +49,11 @@ class Resume(Base):
     user = relationship(
         "User",
         back_populates="resumes",
+    )
+
+    analysis = relationship(
+        "ResumeAnalysis",
+        back_populates="resume",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
