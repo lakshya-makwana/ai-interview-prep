@@ -9,6 +9,13 @@ from app.schemas.user import UserResponse
 from app.services.auth_service import create_user
 from app.services.auth_service import get_user_by_email
 
+from datetime import timedelta
+
+from app.core.security import create_access_token
+from app.schemas.token import Token
+from app.schemas.user import UserLogin
+from app.services.auth_service import authenticate_user
+
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
@@ -27,3 +34,28 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         )
 
     return create_user(db, user)
+
+@router.post("/login", response_model=Token)
+def login(user: UserLogin, db: Session = Depends(get_db)):
+
+    db_user = authenticate_user(
+        db,
+        user.email,
+        user.password,
+    )
+
+    if not db_user:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid email or password",
+        )
+
+    access_token = create_access_token(
+        data={"sub": db_user.email},
+        expires_delta=timedelta(minutes=30),
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
