@@ -3,23 +3,85 @@ import { useNavigate } from "react-router-dom";
 
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CircularProgress,
-  Divider,
-  Stack,
+  Grid,
   Typography,
 } from "@mui/material";
 
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import PsychologyIcon from "@mui/icons-material/Psychology";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
+import MicRoundedIcon from "@mui/icons-material/MicRounded";
 
 import LoadingOverlay from "./LoadingOverlay";
 
 import { analyzeResume } from "../services/analysisService";
 import { useDashboard } from "../context/DashboardContext";
+
+function ActionTile({
+  icon,
+  title,
+  subtitle,
+  color,
+  onClick,
+  disabled = false,
+}) {
+
+  return (
+
+    <Card
+      elevation={0}
+      onClick={!disabled ? onClick : undefined}
+      sx={{
+        cursor: disabled ? "default" : "pointer",
+        borderRadius: 3,
+        bgcolor: "#1E293B",
+        border: "1px solid rgba(255,255,255,.08)",
+        transition: ".25s",
+
+        "&:hover": disabled
+          ? {}
+          : {
+              transform: "translateY(-4px)",
+              borderColor: color,
+            },
+      }}
+    >
+
+      <CardContent sx={{ p: 3 }}>
+
+        <Box
+          sx={{
+            color,
+            mb: 2,
+          }}
+        >
+          {icon}
+        </Box>
+
+        <Typography
+          fontWeight={700}
+        >
+          {title}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 1 }}
+        >
+          {subtitle}
+        </Typography>
+
+      </CardContent>
+
+    </Card>
+
+  );
+
+}
 
 export default function QuickActions() {
 
@@ -60,127 +122,110 @@ export default function QuickActions() {
   }
 
   return (
+
     <>
       <LoadingOverlay open={loading} />
 
       <Card
+        elevation={0}
         sx={{
-          height: "100%",
-          borderRadius: 5,
-          background: "#1E293B",
+          borderRadius: 3,
+          bgcolor: "#162033",
+          border: "1px solid rgba(255,255,255,.08)",
         }}
       >
 
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: 3 }}>
 
           <Typography
-            variant="h5"
+            variant="h6"
             fontWeight={700}
           >
-            ⚡ Quick Actions
+            Preparation Center
           </Typography>
 
           <Typography
             color="text.secondary"
-            sx={{ mt: 1, mb: 3 }}
-          >
-            Everything you need in one place.
-          </Typography>
-
-          <Divider sx={{ mb: 3 }} />
-
-          <Stack spacing={2}>
-
-            <Button
-              fullWidth
-              size="large"
-              startIcon={<UploadFileIcon />}
-              variant="outlined"
-              onClick={() => navigate("/resume")}
-              disabled={loading}
-              sx={{
-                justifyContent: "flex-start",
-                borderRadius: 3,
-                height: 56,
-              }}
-            >
-              Upload / Replace Resume
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              startIcon={<PsychologyIcon />}
-              variant="contained"
-              onClick={handleAnalyze}
-              disabled={loading}
-              sx={{
-                borderRadius: 3,
-                height: 56,
-              }}
-            >
-              {loading ? (
-                <>
-                  <CircularProgress
-                    size={20}
-                    color="inherit"
-                    sx={{ mr: 1 }}
-                  />
-                  AI is Working...
-                </>
-              ) : (
-                "Analyze Resume"
-              )}
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              startIcon={<VisibilityIcon />}
-              variant="outlined"
-              onClick={() => navigate("/analysis")}
-              disabled={loading}
-              sx={{
-                justifyContent: "flex-start",
-                borderRadius: 3,
-                height: 56,
-              }}
-            >
-              View Analysis Report
-            </Button>
-
-          </Stack>
-
-          <Box
             sx={{
-              mt: 4,
-              p: 2,
-              borderRadius: 3,
-              bgcolor: "rgba(59,130,246,0.10)",
+              mb: 3,
             }}
           >
+            Continue your interview preparation.
+          </Typography>
 
-            <Typography
-              variant="subtitle2"
-              fontWeight={700}
+          <Grid container spacing={2}>
+
+            <Grid xs={12} sm={6}>
+
+              <ActionTile
+                icon={<DescriptionRoundedIcon fontSize="large" />}
+                title="Resume"
+                subtitle="Upload or replace your resume"
+                color="#22C55E"
+                onClick={() => navigate("/resume")}
+              />
+
+            </Grid>
+
+            <Grid xs={12} sm={6}>
+
+              <ActionTile
+                icon={<PsychologyRoundedIcon fontSize="large" />}
+                title="AI Analysis"
+                subtitle="Analyze your resume with Gemini"
+                color="#2563EB"
+                onClick={handleAnalyze}
+              />
+
+            </Grid>
+
+            <Grid xs={12} sm={6}>
+
+              <ActionTile
+                icon={<VisibilityRoundedIcon fontSize="large" />}
+                title="Analysis Report"
+                subtitle="View your latest report"
+                color="#A855F7"
+                onClick={() => navigate("/analysis")}
+              />
+
+            </Grid>
+
+            <Grid xs={12} sm={6}>
+
+              <ActionTile
+                icon={<MicRoundedIcon fontSize="large" />}
+                title="Mock Interview"
+                subtitle="Coming in Phase 2"
+                color="#F59E0B"
+                disabled
+              />
+
+            </Grid>
+
+          </Grid>
+
+          {loading && (
+
+            <Box
+              sx={{
+                mt: 3,
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
-              💡 Pro Tip
-            </Typography>
 
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mt: 1 }}
-            >
-              Re-run the analysis whenever you update your resume to
-              track improvements in your ATS score.
-            </Typography>
+              <CircularProgress />
 
-          </Box>
+            </Box>
+
+          )}
 
         </CardContent>
 
       </Card>
+
     </>
   );
+
 }

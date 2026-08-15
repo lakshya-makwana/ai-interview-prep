@@ -1,12 +1,7 @@
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import DescriptionIcon from "@mui/icons-material/Description";
-import PsychologyIcon from "@mui/icons-material/Psychology";
-import LogoutIcon from "@mui/icons-material/Logout";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
-
 import {
   Avatar,
   Box,
+  Chip,
   Divider,
   List,
   ListItemButton,
@@ -15,7 +10,18 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useNavigate, useLocation } from "react-router-dom";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
+import MicRoundedIcon from "@mui/icons-material/MicRounded";
+import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
+import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import SmartToyRoundedIcon from "@mui/icons-material/SmartToyRounded";
+
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
 
 export default function Sidebar() {
@@ -27,34 +33,52 @@ export default function Sidebar() {
   const menu = [
     {
       title: "Dashboard",
-      icon: <DashboardIcon />,
       path: "/",
+      icon: <DashboardRoundedIcon />,
     },
     {
       title: "Resume",
-      icon: <DescriptionIcon />,
       path: "/resume",
+      icon: <DescriptionRoundedIcon />,
     },
     {
-      title: "Analysis",
-      icon: <PsychologyIcon />,
+      title: "AI Analysis",
       path: "/analysis",
+      icon: <PsychologyRoundedIcon />,
+    },
+    {
+      title: "Mock Interview",
+      icon: <MicRoundedIcon />,
+      comingSoon: true,
+    },
+    {
+      title: "Coding Practice",
+      icon: <CodeRoundedIcon />,
+      comingSoon: true,
+    },
+    {
+      title: "Progress",
+      icon: <TrendingUpRoundedIcon />,
+      comingSoon: true,
+    },
+    {
+      title: "Settings",
+      icon: <SettingsRoundedIcon />,
+      comingSoon: true,
     },
   ];
 
   return (
     <Box
       sx={{
-        width: 270,
-        minHeight: "100vh",
-        bgcolor: "#0F172A",
-        borderRight: "1px solid #1E293B",
+        width: 250,
+        bgcolor: "#111827",
+        borderRight: "1px solid rgba(255,255,255,.08)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
       }}
     >
-
       <Box>
 
         <Box
@@ -62,25 +86,24 @@ export default function Sidebar() {
             display: "flex",
             alignItems: "center",
             gap: 2,
-            p: 3,
+            px: 3,
+            py: 3,
           }}
         >
-
           <Avatar
             sx={{
               bgcolor: "#2563EB",
-              width: 52,
-              height: 52,
+              width: 50,
+              height: 50,
             }}
           >
-            <SmartToyIcon />
+            <SmartToyRoundedIcon />
           </Avatar>
 
           <Box>
-
             <Typography
-              variant="h6"
               fontWeight={700}
+              fontSize={18}
             >
               AI Interview
             </Typography>
@@ -89,11 +112,9 @@ export default function Sidebar() {
               variant="body2"
               color="text.secondary"
             >
-              Career Assistant
+              Preparation Platform
             </Typography>
-
           </Box>
-
         </Box>
 
         <Divider />
@@ -102,44 +123,50 @@ export default function Sidebar() {
 
           {menu.map((item) => {
 
-            const active =
-              location.pathname === item.path;
+            const active = location.pathname === item.path;
 
             return (
-
               <ListItemButton
                 key={item.title}
-                onClick={() => navigate(item.path)}
+                disabled={item.comingSoon}
+                onClick={() => !item.comingSoon && navigate(item.path)}
                 sx={{
                   mx: 2,
                   mb: 1,
-                  borderRadius: 3,
-                  bgcolor: active
-                    ? "#2563EB"
-                    : "transparent",
+                  borderRadius: 2,
+
+                  bgcolor: active ? "#2563EB" : "transparent",
 
                   "&:hover": {
-                    bgcolor: active
-                      ? "#2563EB"
-                      : "#1E293B",
+                    bgcolor: active ? "#2563EB" : "#1F2937",
+                  },
+
+                  "&.Mui-disabled": {
+                    opacity: 0.55,
                   },
                 }}
               >
 
                 <ListItemIcon
                   sx={{
-                    color: "white",
+                    color: active ? "white" : "#CBD5E1",
+                    minWidth: 42,
                   }}
                 >
                   {item.icon}
                 </ListItemIcon>
 
-                <ListItemText
-                  primary={item.title}
-                />
+                <ListItemText primary={item.title} />
+
+                {item.comingSoon && (
+                  <Chip
+                    label="Soon"
+                    size="small"
+                    color="warning"
+                  />
+                )}
 
               </ListItemButton>
-
             );
 
           })}
@@ -148,43 +175,33 @@ export default function Sidebar() {
 
       </Box>
 
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 2 }}>
 
-        <Divider sx={{ mb: 3 }} />
+        <Divider sx={{ mb: 2 }} />
 
         <ListItemButton
           onClick={() => {
-
             logout();
-
             navigate("/login");
-
           }}
           sx={{
-            borderRadius: 3,
+            borderRadius: 2,
           }}
         >
-
-          <ListItemIcon
-            sx={{
-              color: "#EF4444",
-            }}
-          >
-            <LogoutIcon />
+          <ListItemIcon>
+            <LogoutRoundedIcon color="error" />
           </ListItemIcon>
 
-          <ListItemText
-            primary="Logout"
-          />
-
+          <ListItemText primary="Logout" />
         </ListItemButton>
 
         <Typography
-          variant="body2"
+          variant="caption"
           color="text.secondary"
           sx={{
-            mt: 3,
+            display: "block",
             textAlign: "center",
+            mt: 2,
           }}
         >
           Version 1.0.0

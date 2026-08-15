@@ -3,14 +3,15 @@ import {
   Box,
   Card,
   CardContent,
+  Chip,
   Divider,
   Stack,
   Typography,
 } from "@mui/material";
 
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import PsychologyIcon from "@mui/icons-material/Psychology";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
+import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
 
 import { useDashboard } from "../context/DashboardContext";
 
@@ -22,97 +23,137 @@ export default function RecentActivity() {
 
   if (dashboard.resume) {
     activities.push({
-      icon: <UploadFileIcon />,
+      icon: <DescriptionRoundedIcon />,
+      color: "#22C55E",
       title: "Resume Uploaded",
       subtitle: dashboard.resume.filename,
-      color: "#2563EB",
+      status: "Completed",
     });
   }
 
   if (dashboard.analysis) {
     activities.push({
-      icon: <PsychologyIcon />,
-      title: "AI Analysis Completed",
+      icon: <PsychologyRoundedIcon />,
+      color: "#2563EB",
+      title: "AI Analysis Complete",
       subtitle: `ATS Score: ${dashboard.analysis.ats_score}%`,
-      color: "#16A34A",
+      status: "Completed",
     });
   }
 
   activities.push({
-    icon: <CheckCircleIcon />,
-    title: "Dashboard Ready",
-    subtitle: "Everything is synchronized",
+    icon: <FlagRoundedIcon />,
     color: "#F59E0B",
+    title: "Next Step",
+    subtitle: "Mock Interview (Coming Soon)",
+    status: "Upcoming",
   });
 
   return (
+
     <Card
+      elevation={0}
       sx={{
+        borderRadius: 3,
+        bgcolor: "#162033",
+        border: "1px solid rgba(255,255,255,.08)",
         height: "100%",
-        borderRadius: 5,
-        background: "#1E293B",
       }}
     >
-      <CardContent sx={{ p: 4 }}>
+
+      <CardContent sx={{ p: 3 }}>
 
         <Typography
-          variant="h5"
+          variant="h6"
           fontWeight={700}
+        >
+          Recent Activity
+        </Typography>
+
+        <Typography
+          color="text.secondary"
           sx={{ mb: 3 }}
         >
-          📅 Recent Activity
+          Your latest progress.
         </Typography>
 
         <Stack spacing={2}>
 
-          {activities.map((item, index) => (
+          {activities.map((activity, index) => (
+
             <Box key={index}>
 
               <Box
                 sx={{
                   display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  gap: 2,
                 }}
               >
 
-                <Avatar
+                <Box
                   sx={{
-                    bgcolor: item.color,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
                   }}
                 >
-                  {item.icon}
-                </Avatar>
 
-                <Box>
-
-                  <Typography
-                    fontWeight={700}
+                  <Avatar
+                    sx={{
+                      bgcolor: activity.color,
+                      width: 42,
+                      height: 42,
+                    }}
                   >
-                    {item.title}
-                  </Typography>
+                    {activity.icon}
+                  </Avatar>
 
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    {item.subtitle}
-                  </Typography>
+                  <Box>
+
+                    <Typography
+                      fontWeight={600}
+                    >
+                      {activity.title}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      {activity.subtitle}
+                    </Typography>
+
+                  </Box>
 
                 </Box>
+
+                <Chip
+                  label={activity.status}
+                  size="small"
+                  color={
+                    activity.status === "Completed"
+                      ? "success"
+                      : "warning"
+                  }
+                />
 
               </Box>
 
               {index !== activities.length - 1 && (
-                <Divider sx={{ my: 2 }} />
+                <Divider sx={{ mt: 2 }} />
               )}
 
             </Box>
+
           ))}
 
         </Stack>
 
       </CardContent>
+
     </Card>
+
   );
+
 }

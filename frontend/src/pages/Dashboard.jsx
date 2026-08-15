@@ -6,13 +6,20 @@ import RecentActivity from "../components/RecentActivity";
 
 import {
   Box,
-  Chip,
   Grid,
   Paper,
+  Step,
+  StepLabel,
+  Stepper,
   Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import TipsAndUpdatesRoundedIcon from "@mui/icons-material/TipsAndUpdatesRounded";
 
 import { useDashboard } from "../context/DashboardContext";
 
@@ -21,6 +28,7 @@ export default function Dashboard() {
   const { dashboard, loading } = useDashboard();
 
   if (loading) {
+
     return (
       <DashboardLayout>
         <Typography variant="h5">
@@ -28,139 +36,254 @@ export default function Dashboard() {
         </Typography>
       </DashboardLayout>
     );
+
   }
 
-  const ats = dashboard.analysis
-    ? `${dashboard.analysis.ats_score}%`
-    : "--";
+  const ats =
+    dashboard.analysis
+      ? `${dashboard.analysis.ats_score}%`
+      : "--";
 
-  const resume = dashboard.resume
-    ? "Uploaded"
-    : "Not Uploaded";
+  const resume =
+    dashboard.resume
+      ? "Uploaded"
+      : "Not Uploaded";
 
-  const analysis = dashboard.analysis
-    ? "Completed"
-    : "Not Available";
+  const analysis =
+    dashboard.analysis
+      ? "Completed"
+      : "Pending";
+
+  const progress =
+    dashboard.analysis
+      ? "40%"
+      : dashboard.resume
+      ? "20%"
+      : "0%";
+
+  const currentStep =
+    dashboard.analysis
+      ? 2
+      : dashboard.resume
+      ? 1
+      : 0;
+
+  const recommendations =
+    dashboard.analysis
+      ? dashboard.analysis.suggestions
+          .split("\n")
+          .filter(Boolean)
+          .slice(0, 4)
+      : [];
 
   return (
 
     <DashboardLayout>
 
-      <Paper
-        elevation={0}
-        sx={{
-          p: 5,
-          mb: 4,
-          borderRadius: 5,
-          background:
-            "linear-gradient(135deg,#2563EB,#1D4ED8)",
-        }}
-      >
+      <Box sx={{ mb: 4 }}>
 
         <Typography
-          variant="h3"
-          fontWeight={800}
+          variant="h4"
+          fontWeight={700}
         >
-          👋 Welcome Back
+          AI Interview Preparation Platform
         </Typography>
 
         <Typography
-          sx={{
-            mt: 1,
-            opacity: 0.9,
-            fontSize: 18,
-          }}
+          color="text.secondary"
+          sx={{ mt: 1 }}
         >
-          Your AI Career Assistant
+          Upload your resume, improve your ATS score and prepare for technical interviews.
         </Typography>
 
-        <Chip
-          icon={<AutoAwesomeIcon />}
-          label="Powered by Gemini AI"
-          sx={{
-            mt: 3,
-            bgcolor: "rgba(255,255,255,0.15)",
-            color: "white",
-          }}
-        />
-
-      </Paper>
+      </Box>
 
       <Grid container spacing={3}>
 
-        <Grid xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <DashboardCard
             title="ATS Score"
             value={ats}
           />
         </Grid>
 
-        <Grid xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <DashboardCard
             title="Resume"
             value={resume}
           />
         </Grid>
 
-        <Grid xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <DashboardCard
             title="Analysis"
             value={analysis}
           />
         </Grid>
 
-        <Grid xs={12} md={8}>
-          <QuickActions />
-        </Grid>
-
-        <Grid xs={12} md={4}>
-          <RecentActivity />
+        <Grid size={{ xs: 12, md: 3 }}>
+          <DashboardCard
+            title="Progress"
+            value={progress}
+          />
         </Grid>
 
       </Grid>
 
-      {dashboard.analysis && (
+      <Grid
+        container
+        spacing={3}
+        sx={{ mt: 1 }}
+      >
 
-        <Paper
-          elevation={0}
-          sx={{
-            mt: 4,
-            p: 4,
-            borderRadius: 5,
-            background: "#1E293B",
-          }}
-        >
+        <Grid size={{ xs: 12, lg: 7 }}>
 
-          <Typography
-            variant="h5"
-            fontWeight={700}
+          <Paper
+            elevation={0}
             sx={{
+              p: 3,
+              borderRadius: 3,
+              bgcolor: "#162033",
+              border: "1px solid rgba(255,255,255,.08)",
               mb: 3,
             }}
           >
 
-            🎯 Latest AI Suggestions
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              sx={{ mb: 3 }}
+            >
+              Interview Journey
+            </Typography>
 
+            <Stepper
+              activeStep={currentStep}
+              alternativeLabel
+            >
+
+              <Step>
+                <StepLabel>
+                  Upload Resume
+                </StepLabel>
+              </Step>
+
+              <Step>
+                <StepLabel>
+                  AI Analysis
+                </StepLabel>
+              </Step>
+
+              <Step>
+                <StepLabel>
+                  Mock Interview
+                </StepLabel>
+              </Step>
+
+              <Step>
+                <StepLabel>
+                  Coding Practice
+                </StepLabel>
+              </Step>
+
+              <Step>
+                <StepLabel>
+                  HR Round
+                </StepLabel>
+              </Step>
+
+            </Stepper>
+
+          </Paper>
+
+          <QuickActions />
+
+        </Grid>
+
+        <Grid size={{ xs: 12, lg: 5 }}>
+
+          <RecentActivity />
+
+        </Grid>
+
+      </Grid>
+
+      <Paper
+        elevation={0}
+        sx={{
+          mt: 3,
+          p: 3,
+          borderRadius: 3,
+          bgcolor: "#162033",
+          border: "1px solid rgba(255,255,255,.08)",
+        }}
+      >
+
+        <Typography
+          variant="h6"
+          fontWeight={700}
+          sx={{ mb: 3 }}
+        >
+          AI Recommendations
+        </Typography>
+
+        {recommendations.length === 0 ? (
+
+          <Typography color="text.secondary">
+            Upload and analyze your resume to receive AI-powered recommendations.
           </Typography>
 
-          {dashboard.analysis.suggestions
-            .split("\n")
-            .slice(0,3)
-            .map((item)=>(
-              <Typography
+        ) : (
+
+          <List>
+
+            {recommendations.map((item) => (
+
+              <ListItem
                 key={item}
-                sx={{
-                  mb:2,
-                  fontSize:16,
-                }}
+                disablePadding
+                sx={{ mb: 2 }}
               >
-                ✅ {item}
-              </Typography>
+
+                <ListItemIcon>
+
+                  <CheckCircleRoundedIcon
+                    color="success"
+                  />
+
+                </ListItemIcon>
+
+                <ListItemText
+                  primary={item}
+                />
+
+              </ListItem>
+
             ))}
 
-        </Paper>
+          </List>
 
-      )}
+        )}
+
+        <Box
+          sx={{
+            mt: 2,
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            color: "#94A3B8",
+          }}
+        >
+
+          <TipsAndUpdatesRoundedIcon />
+
+          <Typography variant="body2">
+            Complete more interview modules to unlock personalized recommendations.
+          </Typography>
+
+        </Box>
+
+      </Paper>
 
     </DashboardLayout>
 
