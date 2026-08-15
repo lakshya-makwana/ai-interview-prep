@@ -1,107 +1,143 @@
 import {
   AppBar,
-  Toolbar,
-  Typography,
   Avatar,
+  Badge,
+  Box,
   IconButton,
-  Menu,
-  MenuItem,
+  Toolbar,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 
-import { useState } from "react";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
+
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Topbar() {
+
   const navigate = useNavigate();
+
   const { logout } = useAuth();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const open = Boolean(anchorEl);
-
-  function handleMenu(e) {
-    setAnchorEl(e.currentTarget);
-  }
-
-  function handleClose() {
-    setAnchorEl(null);
-  }
-
   function handleLogout() {
+
     logout();
+
     navigate("/login");
+
   }
 
   return (
+
     <AppBar
-      position="static"
+      position="sticky"
       elevation={0}
       sx={{
         background: "#0F172A",
-        borderBottom: "1px solid #334155",
+        borderBottom: "1px solid #1E293B",
       }}
     >
-      <Toolbar>
 
-        <Typography
-          variant="h4"
+      <Toolbar
+        sx={{
+          px: 4,
+          py: 1,
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+
+        <Box>
+
+          <Typography
+            variant="h5"
+            fontWeight={700}
+          >
+
+            AI Resume Dashboard
+
+          </Typography>
+
+          <Typography
+            variant="body2"
+            color="text.secondary"
+          >
+
+            Track • Improve • Get Hired
+
+          </Typography>
+
+        </Box>
+
+        <Box
           sx={{
-            flexGrow: 1,
-            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
           }}
         >
-          Dashboard
-        </Typography>
 
-        <IconButton onClick={handleMenu}>
-          <Avatar>L</Avatar>
-        </IconButton>
+          <Tooltip title="Theme">
 
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-        >
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              navigate("/");
+            <IconButton>
+
+              <DarkModeOutlinedIcon />
+
+            </IconButton>
+
+          </Tooltip>
+
+          <Tooltip title="Notifications">
+
+            <IconButton>
+
+              <Badge
+                badgeContent={2}
+                color="primary"
+              >
+
+                <NotificationsNoneIcon />
+
+              </Badge>
+
+            </IconButton>
+
+          </Tooltip>
+
+          <Avatar
+            sx={{
+              bgcolor: "#2563EB",
+              width: 42,
+              height: 42,
+              fontWeight: 700,
             }}
           >
-            Dashboard
-          </MenuItem>
 
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              navigate("/resume");
-            }}
-          >
-            Resume
-          </MenuItem>
+            L
 
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              navigate("/analysis");
-            }}
-          >
-            Analysis
-          </MenuItem>
+          </Avatar>
 
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              handleLogout();
-            }}
-          >
-            Logout
-          </MenuItem>
+          <Tooltip title="Logout">
 
-        </Menu>
+            <IconButton
+              onClick={handleLogout}
+            >
+
+              <LogoutIcon />
+
+            </IconButton>
+
+          </Tooltip>
+
+        </Box>
 
       </Toolbar>
+
     </AppBar>
+
   );
+
 }
