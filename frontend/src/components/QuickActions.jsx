@@ -10,11 +10,16 @@ import {
   Typography,
 } from "@mui/material";
 
+import LoadingOverlay from "./LoadingOverlay";
+
 import { analyzeResume } from "../services/analysisService";
+import { useDashboard } from "../context/DashboardContext";
 
 export default function QuickActions() {
 
   const navigate = useNavigate();
+
+  const { refreshDashboard } = useDashboard();
 
   const [loading, setLoading] = useState(false);
 
@@ -25,6 +30,8 @@ export default function QuickActions() {
       setLoading(true);
 
       await analyzeResume();
+
+      await refreshDashboard();
 
       navigate("/analysis");
 
@@ -47,58 +54,71 @@ export default function QuickActions() {
   }
 
   return (
+    <>
+      <LoadingOverlay open={loading} />
 
-    <Card
-      sx={{
-        height: "100%",
-        borderRadius: 4,
-      }}
-    >
+      <Card
+        sx={{
+          height: "100%",
+          borderRadius: 4,
+        }}
+      >
 
-      <CardContent>
+        <CardContent>
 
-        <Typography
-          variant="h5"
-          sx={{ mb: 3 }}
-        >
-          Quick Actions
-        </Typography>
-
-        <Stack spacing={2}>
-
-          <Button
-            variant="contained"
-            size="large"
-            onClick={handleAnalyze}
-            disabled={loading}
+          <Typography
+            variant="h5"
+            sx={{ mb: 3 }}
           >
-            {loading
-              ? <CircularProgress size={22} color="inherit" />
-              : "Analyze Resume"}
-          </Button>
+            Quick Actions
+          </Typography>
 
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => navigate("/resume")}
-          >
-            Upload Resume
-          </Button>
+          <Stack spacing={2}>
 
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => navigate("/analysis")}
-          >
-            View Analysis
-          </Button>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={handleAnalyze}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <CircularProgress
+                    size={20}
+                    color="inherit"
+                    sx={{ mr: 1 }}
+                  />
+                  Analyzing...
+                </>
+              ) : (
+                "Analyze Resume"
+              )}
+            </Button>
 
-        </Stack>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => navigate("/resume")}
+              disabled={loading}
+            >
+              Upload Resume
+            </Button>
 
-      </CardContent>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => navigate("/analysis")}
+              disabled={loading}
+            >
+              View Analysis
+            </Button>
 
-    </Card>
+          </Stack>
 
+        </CardContent>
+
+      </Card>
+
+    </>
   );
-
 }

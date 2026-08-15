@@ -15,9 +15,12 @@ import {
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 import { uploadResume } from "../services/resumeService";
+import { useDashboard } from "../context/DashboardContext";
 
 export default function Resume() {
   const navigate = useNavigate();
+
+  const { refreshDashboard } = useDashboard();
 
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -37,14 +40,17 @@ export default function Resume() {
 
       await uploadResume(file);
 
+      await refreshDashboard();
+
       setSuccess("Resume uploaded successfully!");
 
       setTimeout(() => {
         navigate("/");
-      }, 1500);
+      }, 1000);
+
     } catch (err) {
       console.error(err);
-      setError("Upload failed. Please try again.");
+      setError("Upload failed.");
     } finally {
       setLoading(false);
     }
@@ -72,7 +78,6 @@ export default function Resume() {
               sx={{
                 fontSize: 70,
                 mb: 2,
-                color: "primary.main",
               }}
             />
 
@@ -119,30 +124,23 @@ export default function Resume() {
               onClick={handleUpload}
               disabled={loading}
             >
-              {loading ? (
-                <CircularProgress size={22} color="inherit" />
-              ) : (
-                "Upload Resume"
-              )}
+              {loading
+                ? <CircularProgress size={22} color="inherit" />
+                : "Upload Resume"}
             </Button>
 
             {success && (
-              <Alert
-                severity="success"
-                sx={{ mt: 3 }}
-              >
+              <Alert severity="success" sx={{ mt: 3 }}>
                 {success}
               </Alert>
             )}
 
             {error && (
-              <Alert
-                severity="error"
-                sx={{ mt: 3 }}
-              >
+              <Alert severity="error" sx={{ mt: 3 }}>
                 {error}
               </Alert>
             )}
+
           </CardContent>
         </Card>
       </Box>
