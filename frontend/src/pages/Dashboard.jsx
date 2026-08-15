@@ -1,102 +1,159 @@
-import { useEffect, useState } from "react";
-import { Grid, Typography } from "@mui/material";
+import { useEffect,useState } from "react";
 
-import MainLayout from "../layouts/MainLayout";
-import StatCard from "../components/StatCard";
-import { getDashboardData } from "../services/dashboardService";
+import DashboardLayout from "../layouts/DashboardLayout";
 
-export default function Dashboard() {
+import DashboardCard from "../components/DashboardCard";
 
-  const [dashboard, setDashboard] = useState(null);
+import QuickActions from "../components/QuickActions";
 
-  useEffect(() => {
+import RecentActivity from "../components/RecentActivity";
 
-    async function loadDashboard() {
+import { Grid } from "@mui/material";
 
-      const data = await getDashboardData();
+import { Typography } from "@mui/material";
 
-      setDashboard(data);
+import { getDashboard } from "../services/dashboardService";
+
+export default function Dashboard(){
+
+    const [loading,setLoading]=useState(true);
+
+    const [data,setData]=useState({});
+
+    useEffect(()=>{
+
+        async function load(){
+
+            const response=await getDashboard();
+
+            setData(response);
+
+            setLoading(false);
+
+        }
+
+        load();
+
+    },[]);
+
+    if(loading){
+
+        return(
+
+            <DashboardLayout>
+
+                <Typography>
+
+                    Loading...
+
+                </Typography>
+
+            </DashboardLayout>
+
+        );
 
     }
 
-    loadDashboard();
+    const ats=data.analysis?.ats_score
+        ?`${data.analysis.ats_score}%`
+        :"--";
 
-  }, []);
+    const resume=data.resume
+        ?"Uploaded"
+        :"Not Uploaded";
 
-  if (!dashboard) {
+    const analysis=data.analysis
+        ?"Completed"
+        :"Not Available";
 
-    return (
-      <MainLayout>
+    return(
 
-        <Typography>
+        <DashboardLayout>
 
-          Loading...
+            <Typography
+                variant="h4"
+                sx={{
+                    mb:4,
+                }}
+            >
 
-        </Typography>
+                Welcome Back 👋
 
-      </MainLayout>
+            </Typography>
+
+            <Grid
+                container
+                spacing={3}
+            >
+
+                <Grid
+                    size={{
+                        xs:12,
+                        md:4
+                    }}
+                >
+
+                    <DashboardCard
+                        title="ATS Score"
+                        value={ats}
+                    />
+
+                </Grid>
+
+                <Grid
+                    size={{
+                        xs:12,
+                        md:4
+                    }}
+                >
+
+                    <DashboardCard
+                        title="Resume"
+                        value={resume}
+                    />
+
+                </Grid>
+
+                <Grid
+                    size={{
+                        xs:12,
+                        md:4
+                    }}
+                >
+
+                    <DashboardCard
+                        title="Analysis"
+                        value={analysis}
+                    />
+
+                </Grid>
+
+                <Grid
+                    size={{
+                        xs:12,
+                        md:6
+                    }}
+                >
+
+                    <QuickActions/>
+
+                </Grid>
+
+                <Grid
+                    size={{
+                        xs:12,
+                        md:6
+                    }}
+                >
+
+                    <RecentActivity/>
+
+                </Grid>
+
+            </Grid>
+
+        </DashboardLayout>
+
     );
-
-  }
-
-  const atsScore =
-    dashboard.analysis?.ats_score != null
-      ? `${dashboard.analysis.ats_score}%`
-      : "--";
-
-  const resumeStatus =
-    dashboard.resume ? "Uploaded" : "Not Uploaded";
-
-  const analysisStatus =
-    dashboard.analysis ? "Ready" : "Not Analyzed";
-
-  return (
-
-    <MainLayout>
-
-      <Typography
-        variant="h4"
-        sx={{
-          mb: 4,
-          fontWeight: 700,
-        }}
-      >
-        Dashboard
-      </Typography>
-
-      <Grid container spacing={3}>
-
-        <Grid size={{ xs: 12, md: 4 }}>
-
-          <StatCard
-            title="ATS Score"
-            value={atsScore}
-          />
-
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4 }}>
-
-          <StatCard
-            title="Resume"
-            value={resumeStatus}
-          />
-
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4 }}>
-
-          <StatCard
-            title="Analysis"
-            value={analysisStatus}
-          />
-
-        </Grid>
-
-      </Grid>
-
-    </MainLayout>
-
-  );
 
 }

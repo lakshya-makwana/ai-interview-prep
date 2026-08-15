@@ -1,22 +1,39 @@
 import api from "../api/api";
 
-export async function getDashboardData() {
-  try {
-    const [resumeResponse, analysisResponse] = await Promise.all([
-      api.get("/resume/me"),
-      api.get("/analysis/me"),
-    ]);
+export async function getDashboard(){
 
-    return {
-      resume: resumeResponse.data,
-      analysis: analysisResponse.data,
-    };
-  } catch (error) {
-    console.error(error);
+    const result={
 
-    return {
-      resume: null,
-      analysis: null,
+        resume:null,
+
+        analysis:null,
+
     };
-  }
+
+    try{
+
+        const resume=await api.get("/resume/me");
+
+        result.resume=resume.data;
+
+    }
+
+    catch(e){
+
+    }
+
+    try{
+
+        const analysis=await api.get("/analysis/me");
+
+        result.analysis=analysis.data;
+
+    }
+
+    catch(e){
+
+    }
+
+    return result;
+
 }
