@@ -1,44 +1,60 @@
 import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function QuickActions() {
-  return (
-    <Card
-      sx={{
-        background: "#1E293B",
-        height: "100%",
-      }}
-    >
-      <CardContent>
-        <Typography
-          variant="h6"
-          sx={{ mb: 3 }}
+
+    const navigate = useNavigate();
+
+    return (
+
+        <Card
+            sx={{
+                height: "100%",
+                borderRadius: 4,
+            }}
         >
-          Quick Actions
-        </Typography>
 
-        <Stack spacing={2}>
-          <Button
-            variant="contained"
-            fullWidth
-          >
-            Analyze Resume
-          </Button>
+            <CardContent>
 
-          <Button
-            variant="outlined"
-            fullWidth
-          >
-            Upload Resume
-          </Button>
+                <Typography
+                    variant="h5"
+                    sx={{ mb: 3 }}
+                >
+                    Quick Actions
+                </Typography>
 
-          <Button
-            variant="outlined"
-            fullWidth
-          >
-            View Analysis
-          </Button>
-        </Stack>
-      </CardContent>
-    </Card>
-  );
+                <Stack spacing={2}>
+
+                    <Button
+                        variant="contained"
+                        size="large"
+                        onClick={() => navigate("/analysis")}
+                    >
+                        Analyze Resume
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        size="large"
+                        onClick={() => navigate("/resume")}
+                    >
+                        Upload Resume
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        size="large"
+                        onClick={() => navigate("/analysis")}
+                    >
+                        View Analysis
+                    </Button>
+
+                </Stack>
+
+            </CardContent>
+
+        </Card>
+
+    );
+
 }

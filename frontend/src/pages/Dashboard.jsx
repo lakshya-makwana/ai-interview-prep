@@ -14,10 +14,12 @@ import { Typography } from "@mui/material";
 
 import { getDashboard } from "../services/dashboardService";
 
+import { useNavigate } from "react-router-dom";
+
 export default function Dashboard(){
 
     const [loading,setLoading]=useState(true);
-
+    const navigate = useNavigate();
     const [data,setData]=useState({});
 
     useEffect(()=>{

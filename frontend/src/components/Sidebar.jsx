@@ -1,3 +1,5 @@
+import { useLocation, useNavigate } from "react-router-dom";
+
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DescriptionIcon from "@mui/icons-material/Description";
 import PsychologyIcon from "@mui/icons-material/Psychology";
@@ -16,25 +18,29 @@ const menu = [
   {
     title: "Dashboard",
     icon: <DashboardIcon />,
+    path: "/",
   },
-
   {
     title: "Resume",
     icon: <DescriptionIcon />,
+    path: "/resume",
   },
-
   {
     title: "Analysis",
     icon: <PsychologyIcon />,
+    path: "/analysis",
   },
-
   {
     title: "Settings",
     icon: <SettingsIcon />,
+    path: "/settings",
   },
 ];
 
 export default function Sidebar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <Box
       sx={{
@@ -58,10 +64,18 @@ export default function Sidebar() {
         {menu.map((item) => (
           <ListItemButton
             key={item.title}
+            onClick={() => navigate(item.path)}
+            selected={location.pathname === item.path}
             sx={{
               mx: 2,
               mb: 1,
               borderRadius: 2,
+              "&.Mui-selected": {
+                background: "#2563EB",
+              },
+              "&.Mui-selected:hover": {
+                background: "#2563EB",
+              },
             }}
           >
             <ListItemIcon sx={{ color: "white" }}>
