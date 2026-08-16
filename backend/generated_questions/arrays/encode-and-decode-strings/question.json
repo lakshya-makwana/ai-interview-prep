@@ -1,0 +1,34 @@
+{
+    "title": "Interstellar Signal Formatter",
+    "slug": "encode-and-decode-strings",
+    "difficulty": "medium",
+    "category": "arrays",
+    "description": "Deep space research probes transmit batches of telemetry log entries back to Earth. To comply with transmission protocols, a list of log entries must be serialized into a single continuous stream string before sending. Upon receiving the transmission, mission control must deserialize this stream string back into the exact original list of log entries.\n\nImplement two functions:\n1. `serialize(logs)`: Accepts an array of log entry strings and returns a single combined string.\n2. `deserialize(data)`: Accepts a combined string and returns the restored array of original log entry strings.\n\nYour algorithm must be lossless such that `deserialize(serialize(logs))` produces an identical array to `logs`. Individual log entries may contain any printable ASCII characters, including spaces, numbers, and special symbols.",
+    "constraints": [
+        "0 <= logs.length <= 200",
+        "0 <= logs[i].length <= 200",
+        "logs[i] consists of printable ASCII characters."
+    ],
+    "input_format": "For `serialize`: An array of strings `logs` representing individual log entries.\nFor `deserialize`: A single string `data` produced by the `serialize` function.",
+    "output_format": "For `serialize`: A single encoded string.\nFor `deserialize`: An array of strings representing the original log entries.",
+    "estimated_time": 25,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "logs = [\"TEMP:24C\", \"PRESSURE:101kPa\", \"STATUS:OK\"]",
+            "output": "[\"TEMP:24C\", \"PRESSURE:101kPa\", \"STATUS:OK\"]",
+            "explanation": "The three log entries are formatted into a single string stream for transmission and then reconstructed back into their exact initial sequence."
+        },
+        {
+            "input": "logs = [\"\", \"LOG#1: 100% #OK\", \"\"]",
+            "output": "[\"\", \"LOG#1: 100% #OK\", \"\"]",
+            "explanation": "The algorithm correctly handles empty log strings as well as strings containing delimiter-like characters (e.g., `#`), numbers, and spaces."
+        },
+        {
+            "input": "logs = []",
+            "output": "[]",
+            "explanation": "An empty list of log entries serializes and deserializes back into an empty array."
+        }
+    ]
+}

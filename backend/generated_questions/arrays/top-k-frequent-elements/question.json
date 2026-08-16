@@ -1,0 +1,34 @@
+{
+    "title": "Warehouse Conveyor High-Frequency Scanner",
+    "slug": "top-k-frequent-elements",
+    "difficulty": "medium",
+    "category": "arrays",
+    "description": "In an automated fulfillment center, a scanner continuously registers package IDs as they travel along a high-speed conveyor belt. To optimize physical placement near dispatch docks, the warehouse control system must analyze a batch scan log represented by an integer array `package_ids` and extract the top `k` package IDs that appeared most frequently.\n\nWrite an efficient algorithm to determine these `k` most frequent package IDs. You may return the result in any order. It is guaranteed that the set of top `k` frequent package IDs is unique for the given test cases.",
+    "constraints": [
+        "1 <= package_ids.length <= 10^5",
+        "-10^9 <= package_ids[i] <= 10^9",
+        "1 <= k <= number of unique package IDs in package_ids"
+    ],
+    "input_format": "The input consists of an array of integers `package_ids` representing the recorded package IDs and an integer `k`.",
+    "output_format": "Return an array of `k` integers containing the most frequently occurring package IDs.",
+    "estimated_time": 25,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "package_ids = [101, 101, 101, 202, 202, 303], k = 2",
+            "output": "[101, 202]",
+            "explanation": "Package ID 101 appears 3 times, 202 appears 2 times, and 303 appears 1 time. The 2 most frequent package IDs are 101 and 202."
+        },
+        {
+            "input": "package_ids = [55], k = 1",
+            "output": "[55]",
+            "explanation": "There is only 1 package ID present in the log, so the most frequent package ID is 55."
+        },
+        {
+            "input": "package_ids = [7, 7, 8, 8, 9, 9], k = 3",
+            "output": "[7, 8, 9]",
+            "explanation": "All three package IDs (7, 8, and 9) appear with an identical frequency of 2. Since k = 3, all unique package IDs are returned."
+        }
+    ]
+}
