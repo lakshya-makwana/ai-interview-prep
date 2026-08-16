@@ -4,7 +4,7 @@ from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import Float
-from sqlalchemy import func
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
