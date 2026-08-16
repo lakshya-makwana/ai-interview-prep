@@ -12,9 +12,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(
-        Integer,
-        primary_key=True,
-        index=True
+    Integer,
+    primary_key=True,
+    index=True,
     )
 
     name = Column(
@@ -42,4 +42,17 @@ class User(Base):
     resumes = relationship(
     "Resume",
     back_populates="user",
+    )
+
+    coding_submissions = relationship(
+    "CodingSubmission",
+    back_populates="user",
+    cascade="all, delete-orphan",
+    )
+
+    coding_progress = relationship(
+        "CodingProgress",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
