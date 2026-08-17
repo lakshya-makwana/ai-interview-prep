@@ -1,33 +1,33 @@
 {
-    "title": "Symmetric DNA Strand Checker",
+    "title": "Symmetrical Transmission",
     "slug": "valid-palindrome",
     "difficulty": "easy",
     "category": "two_pointers",
-    "description": "A genetics laboratory analyzes raw DNA sequencing data stored as strings. Due to noise during scanning, readings often contain non-essential characters such as digits, whitespace, and special punctuation.\n\nA valid nucleotide base is represented by the characters 'A', 'C', 'G', or 'T' (case-insensitive, so 'a', 'c', 'g', 't' are also valid base readings).\n\nYour task is to determine whether the sequence of valid nucleotide bases forms a symmetric pattern (reads the same from left-to-right as right-to-left), ignoring all non-base noise characters. An empty sequence of valid bases is considered symmetric.",
+    "description": "An automated satellite receives a string of characters from a deep space probe. Due to cosmic interference, symbols are scattered, but the mission control engineers suspect the core message is a symmetrical sequence when ignoring all non-alphanumeric characters and treating uppercase and lowercase letters identically. Write a function that determines if the cleaned transmission reads the same forward and backward.",
     "constraints": [
         "1 <= s.length <= 2 * 10^5",
         "s consists only of printable ASCII characters."
     ],
-    "input_format": "A single string s representing the raw sequencing data.",
-    "output_format": "Return true if the filtered nucleotide base sequence is symmetric, or false otherwise.",
-    "estimated_time": 15,
+    "input_format": "A string s representing the received satellite transmission.",
+    "output_format": "A boolean value (true or false) indicating whether the transmission is a valid palindrome.",
+    "estimated_time": 20,
     "acceptance_rate": 78.0,
     "is_premium": false,
     "examples": [
         {
-            "input": "s = \"A1-c? G!! t--g--C--a\"",
+            "input": "s = \"A man, a plan, a canal: Panama\"",
             "output": "true",
-            "explanation": "Ignoring non-base characters and normalizing case gives the nucleotide sequence \"ACGTGCA\". Reading from left-to-right or right-to-left yields \"ACGTGCA\", which is symmetric."
+            "explanation": "\"amanaplanacanalpanama\" is a palindrome."
         },
         {
-            "input": "s = \"12345!@#$ %^&*()\"",
-            "output": "true",
-            "explanation": "After ignoring all noise characters, the resulting nucleotide sequence is empty. An empty sequence is considered symmetric by definition."
-        },
-        {
-            "input": "s = \"A-T-C-G-T-A\"",
+            "input": "s = \"race a car\"",
             "output": "false",
-            "explanation": "Filtering the string gives the nucleotide sequence \"ATCGTA\". Reading backwards yields \"ATGCTA\". Since \"ATCGTA\" does not equal \"ATGCTA\", the strand is not symmetric."
+            "explanation": "\"raceacar\" is not a palindrome."
+        },
+        {
+            "input": "s = \" \"",
+            "output": "true",
+            "explanation": "An empty string or a string with only non-alphanumeric characters reads the same forward and backward."
         }
     ]
 }

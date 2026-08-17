@@ -1,0 +1,33 @@
+{
+    "title": "Broadcast Segmenting",
+    "slug": "partition-labels",
+    "difficulty": "medium",
+    "category": "greedy",
+    "description": "You are given a string of alphanumeric event codes sequence. You want to partition this sequence into as many fragments as possible so that each unique event code appears in at most one fragment. Return a list of integers representing the sizes of these fragmented parts in the order they appear within the string.",
+    "constraints": [
+        "1 <= sequence.length <= 500",
+        "sequence consists of lowercase English letters."
+    ],
+    "input_format": "A string sequence.",
+    "output_format": "An array of integers representing the size of each segment.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "sequence = \"ababcbacadefegdehijhklij\"",
+            "output": "[9, 7, 8]",
+            "explanation": "The partition is \"ababcbaca\", \"defegde\", \"hijhklij\". This splits the string into parts where each letter appears in at most one part. The lengths are 9, 7, and 8."
+        },
+        {
+            "input": "sequence = \"eccbbbbdec\"",
+            "output": "[10]",
+            "explanation": "All characters are tied together through overlapping occurrences, requiring a single segment of length 10."
+        },
+        {
+            "input": "sequence = \"abc\"",
+            "output": "[1, 1, 1]",
+            "explanation": "Each character is unique, resulting in three segments of length 1."
+        }
+    ]
+}

@@ -1,0 +1,36 @@
+{
+    "title": "Budget Calibration",
+    "slug": "two-sum-ii-input-array-is-sorted",
+    "difficulty": "medium",
+    "category": "two_pointers",
+    "description": "A financial analyst is reviewing a sorted list of stock prices throughout the day. The portfolio allows the purchase of exactly two distinct assets whose combined price hits a precise target budget. Given an array of stock prices sorted in ascending order and a target value, return the 1-based indices of the two assets you buy.",
+    "constraints": [
+        "2 <= numbers.length <= 3 * 10^4",
+        "-1000 <= numbers[i] <= 1000",
+        "numbers is sorted in non-decreasing order.",
+        "-1000 <= target <= 1000",
+        "The tests are generated such that there is exactly one solution."
+    ],
+    "input_format": "An array of integers numbers sorted in non-decreasing order and an integer target.",
+    "output_format": "An array of two integers representing the 1-based indices of the two numbers.",
+    "estimated_time": 25,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "numbers = [2, 7, 11, 15], target = 9",
+            "output": "[1, 2]",
+            "explanation": "The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2."
+        },
+        {
+            "input": "numbers = [2, 3, 4], target = 6",
+            "output": "[1, 3]",
+            "explanation": "The sum of 2 and 4 is 6. Therefore, index1 = 1, index2 = 3."
+        },
+        {
+            "input": "numbers = [-1, 0], target = -1",
+            "output": "[1, 2]",
+            "explanation": "The sum of -1 and 0 is -1. Therefore, index1 = 1, index2 = 2."
+        }
+    ]
+}

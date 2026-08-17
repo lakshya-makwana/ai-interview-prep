@@ -1,0 +1,35 @@
+{
+    "title": "Navigating a Shifted Sensor Matrix",
+    "slug": "search-in-rotated-sorted-array",
+    "difficulty": "medium",
+    "category": "binary_search",
+    "description": "A robotic sensor records telemetry data in a strictly increasing sequence, but a system reboot causes the sequence to rotate at an unknown pivot point. Given this rotated array of distinct integers and a target sensor reading, find the index of the target value. If the target is not present, return -1. Your solution must run in O(log n) time complexity.",
+    "constraints": [
+        "1 <= telemetry.length <= 5000",
+        "-10^4 <= telemetry[i], target <= 10^4",
+        "All values in telemetry are unique.",
+        "telemetry is guaranteed to be rotated at some pivot."
+    ],
+    "input_format": "An array of integers 'telemetry' and an integer 'target'.",
+    "output_format": "An integer representing the index of the target, or -1 if not found.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "telemetry = [4, 5, 6, 7, 0, 1, 2], target = 0",
+            "output": "4",
+            "explanation": "The target 0 is located at index 4."
+        },
+        {
+            "input": "telemetry = [4, 5, 6, 7, 0, 1, 2], target = 3",
+            "output": "-1",
+            "explanation": "The target 3 is not present in the array."
+        },
+        {
+            "input": "telemetry = [1], target = 0",
+            "output": "-1",
+            "explanation": "The target 0 is not present in the single-element array."
+        }
+    ]
+}

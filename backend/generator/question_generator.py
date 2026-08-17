@@ -32,6 +32,9 @@ class QuestionGenerator:
     ):
 
         prompt = build_prompt(batch)
+        
+        print(f"Using model: {self.model}")
+        print("Sending request to Gemini...")
 
         response = self.client.models.generate_content(
 
@@ -45,6 +48,8 @@ class QuestionGenerator:
 
             contents=prompt,
         )
+
+        print("Response received!")
 
         text = response.text.strip()
 

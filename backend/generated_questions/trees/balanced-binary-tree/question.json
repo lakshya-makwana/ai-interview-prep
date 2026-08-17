@@ -1,0 +1,33 @@
+{
+    "title": "Substation Load Equilibrium",
+    "slug": "balanced-binary-tree",
+    "difficulty": "easy",
+    "category": "trees",
+    "description": "A power grid is distributed in a binary tree structure of substations. To ensure safety and prevent overloads, you must check if the grid is height-balanced. A binary tree substation network is height-balanced if the left and right subtrees of every node differ in height by no more than 1.",
+    "constraints": [
+        "The number of nodes in the tree is in the range [0, 5000].",
+        "-10^4 <= node.val <= 10^4"
+    ],
+    "input_format": "The root node of a binary tree.",
+    "output_format": "A boolean value (true or false) indicating if the tree is height-balanced.",
+    "estimated_time": 25,
+    "acceptance_rate": 78.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "root = [3, 9, 20, null, null, 15, 7]",
+            "output": "true",
+            "explanation": "Every node's left and right subtree heights differ by at most 1."
+        },
+        {
+            "input": "root = [1, 2, 2, 3, 3, null, null, 4, 4]",
+            "output": "false",
+            "explanation": "The left subtree of node 1 has height 3, while the right subtree has height 1, which exceeds the allowed difference of 1."
+        },
+        {
+            "input": "root = []",
+            "output": "true",
+            "explanation": "An empty tree is considered balanced."
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "title": "Solar Farm Battery Harvest",
+    "slug": "house-robber",
+    "difficulty": "medium",
+    "category": "dynamic_programming",
+    "description": "An automated solar farm has a row of energy collection nodes. Each node i has a certain amount of energy yield 'yields[i]'. However, the energy grid's safety protocols prevent harvesting from any two adjacent nodes because of circuit overload risks. Given an integer array representing the energy yield of each node, determine the maximum total energy you can safely harvest without triggering any safety alarms.",
+    "constraints": [
+        "1 <= yields.length <= 100",
+        "0 <= yields[i] <= 400"
+    ],
+    "input_format": "An array of integers 'yields' representing energy at each node.",
+    "output_format": "An integer representing the maximum harvestable energy.",
+    "estimated_time": 25,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "yields = [1, 2, 3, 1]",
+            "output": "4",
+            "explanation": "Harvest node 1 (energy 2) and node 3 (energy 2? or node 0 and 2). Total = 1 + 3 = 4."
+        },
+        {
+            "input": "yields = [2, 7, 9, 3, 1]",
+            "output": "12",
+            "explanation": "Harvest node 0 (2), node 2 (9), and node 4 (1). Total = 2 + 9 + 1 = 12."
+        },
+        {
+            "input": "yields = [5, 5, 5, 5]",
+            "output": "10",
+            "explanation": "Harvest alternating nodes to get 5 + 5 = 10."
+        }
+    ]
+}

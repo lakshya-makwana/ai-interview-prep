@@ -1,0 +1,35 @@
+{
+    "title": "Secure Enclave Perimeter Isolation",
+    "slug": "surrounded-regions",
+    "difficulty": "medium",
+    "category": "graphs",
+    "description": "You are given an m x n matrix consisting of characters 'X' (shielded nodes) and 'O' (vulnerable nodes). Capture all regions of 'O' that are completely surrounded by 'X'. A region is captured by flipping all 'O's in that region into 'X's if they are not connected to the matrix boundary.",
+    "constraints": [
+        "m == board.length",
+        "n == board[i].length",
+        "1 <= m, n <= 200",
+        "board[i][j] is 'X' or 'O'."
+    ],
+    "input_format": "A 2D character array board.",
+    "output_format": "None, modify the board in-place.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "board = [[\"X\",\"X\",\"X\",\"X\"],[\"X\",\"O\",\"O\",\"X\"],[\"X\",\"X\",\"O\",\"X\"],[\"X\",\"O\",\"X\",\"X\"]]",
+            "output": "[[\"X\",\"X\",\"X\",\"X\"],[\"X\",\"X\",\"X\",\"X\"],[\"X\",\"X\",\"X\",\"X\"],[\"X\",\"O\",\"X\",\"X\"]]",
+            "explanation": "An 'O' region is captured if it is not connected to any of the 4 borders of the board."
+        },
+        {
+            "input": "board = [[\"X\"]]",
+            "output": "[[\"X\"]]",
+            "explanation": "Single cell remains unchanged."
+        },
+        {
+            "input": "board = [[\"O\",\"X\",\"X\"],[\"X\",\"O\",\"X\"],[\"X\",\"X\",\"O\"]]",
+            "output": "[[\"O\",\"X\",\"X\"],[\"X\",\"X\",\"X\"],[\"X\",\"X\",\"O\"]]",
+            "explanation": "Border-connected 'O's are preserved."
+        }
+    ]
+}

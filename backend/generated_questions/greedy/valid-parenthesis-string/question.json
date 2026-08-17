@@ -1,0 +1,33 @@
+{
+    "title": "Flexible Constraint Validation",
+    "slug": "valid-parenthesis-string",
+    "difficulty": "medium",
+    "category": "greedy",
+    "description": "You are given a string formula containing only three types of characters: '(', ')', and '*'. The character '*' can act as a left parenthesis '(', a right parenthesis ')', or as an empty string \"\". A string is considered valid under the following conditions: any left parenthesis must have a corresponding right parenthesis, every right parenthesis must have a corresponding left parenthesis, and '*' can be flexibly resolved to satisfy these pairing rules. Determine if the formula is valid.",
+    "constraints": [
+        "1 <= formula.length <= 100",
+        "formula[i] is '(', ')', or '*'."
+    ],
+    "input_format": "A string formula.",
+    "output_format": "A boolean value (true or false).",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "formula = \"()\"",
+            "output": "true",
+            "explanation": "The string is already balanced."
+        },
+        {
+            "input": "formula = \"(*)\"",
+            "output": "true",
+            "explanation": "The '*' can be treated as an empty string, making it \"()\" which is balanced."
+        },
+        {
+            "input": "formula = \"(*))\"",
+            "output": "true",
+            "explanation": "The '*' can be treated as '(' to balance the two trailing ')' characters, yielding \"(())\"."
+        }
+    ]
+}

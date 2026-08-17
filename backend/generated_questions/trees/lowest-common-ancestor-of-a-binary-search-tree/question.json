@@ -1,0 +1,35 @@
+{
+    "title": "Shared Ancestry in a Sorted Family Tree",
+    "slug": "lowest-common-ancestor-of-a-binary-search-tree",
+    "difficulty": "medium",
+    "category": "trees",
+    "description": "Genealogists are analyzing a family tree represented as a Binary Search Tree (BST), where each person's identifier follows standard BST ordering rules. Given the root of the BST and two specific family members (nodes p and q), find their lowest common ancestor (LCA). The LCA is defined as the lowest node in the tree that has both p and q as descendants (where a node can be a descendant of itself).",
+    "constraints": [
+        "All node values are unique.",
+        "p and q are existent in the BST.",
+        "The number of nodes in the tree is in the range [2, 10^5].",
+        "-10^9 <= Node.val <= 10^9"
+    ],
+    "input_format": "Root of a BST, and two node values p and q.",
+    "output_format": "The node representing the lowest common ancestor.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "root = [6, 2, 8, 0, 4, 7, 9, null, null, 3, 5], p = 2, q = 8",
+            "output": "6",
+            "explanation": "The lowest common ancestor of 2 and 8 is 6."
+        },
+        {
+            "input": "root = [6, 2, 8, 0, 4, 7, 9, null, null, 3, 5], p = 2, q = 4",
+            "output": "2",
+            "explanation": "A node can be a descendant of itself, so 2 is the LCA."
+        },
+        {
+            "input": "root = [2, 1], p = 2, q = 1",
+            "output": "2",
+            "explanation": "The root 2 is the ancestor for both itself and 1."
+        }
+    ]
+}

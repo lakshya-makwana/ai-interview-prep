@@ -1,0 +1,35 @@
+{
+    "title": "Prune Legacy Log Entry",
+    "slug": "remove-nth-node-from-end-of-list",
+    "difficulty": "medium",
+    "category": "linked_list",
+    "description": "In a distributed logging system, records are maintained as a singly linked list of events. You are tasked with removing the n-th log entry counting from the end of the chain, and then returning the head of the modified log list.",
+    "constraints": [
+        "The number of nodes in the list is sz.",
+        "1 <= sz <= 30",
+        "0 <= Node.val <= 100",
+        "1 <= n <= sz"
+    ],
+    "input_format": "The head of a singly linked list and an integer n.",
+    "output_format": "The head of the modified singly linked list.",
+    "estimated_time": 25,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "head = [1, 2, 3, 4, 5], n = 2",
+            "output": "[1, 2, 3, 5]",
+            "explanation": "The 2nd node from the end is 4, which is removed."
+        },
+        {
+            "input": "head = [1], n = 1",
+            "output": "[]",
+            "explanation": "Removing the only node leaves an empty list."
+        },
+        {
+            "input": "head = [1, 2], n = 1",
+            "output": "[1]",
+            "explanation": "The last node is removed."
+        }
+    ]
+}

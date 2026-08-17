@@ -1,0 +1,34 @@
+{
+    "title": "Architectural Drainage",
+    "slug": "trapping-rain-water",
+    "difficulty": "hard",
+    "category": "two_pointers",
+    "description": "A civil engineering team is analyzing an elevation profile of a mountain pass to determine how much rainwater can be pooled in structural crevices after a heavy storm. Given an array of non-negative integers representing elevation bars of width 1, compute how much water it can trap after raining.",
+    "constraints": [
+        "n == height.length",
+        "1 <= n <= 2 * 10^4",
+        "0 <= height[i] <= 10^5"
+    ],
+    "input_format": "An array of non-negative integers height representing the elevation map.",
+    "output_format": "An integer representing the total units of trapped water.",
+    "estimated_time": 45,
+    "acceptance_rate": 34.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]",
+            "output": "6",
+            "explanation": "The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water are being trapped."
+        },
+        {
+            "input": "height = [4, 2, 0, 3, 2, 5]",
+            "output": "9",
+            "explanation": "Water is trapped across the valleys between the peaks."
+        },
+        {
+            "input": "height = [3, 0, 2, 0, 4]",
+            "output": "7",
+            "explanation": "Valleys trap 3 units at index 1 and 4 units at index 3, totaling 7 units."
+        }
+    ]
+}

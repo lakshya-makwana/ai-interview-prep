@@ -1,0 +1,35 @@
+{
+    "title": "Idempotent Badge Scanner",
+    "slug": "find-the-duplicate-number",
+    "difficulty": "medium",
+    "category": "linked_list",
+    "description": "An automated badge-scanning system processes an array of employee access tokens of length n+1 where each token is an integer between 1 and n (inclusive). Assuming there is only one duplicate token in the sequence, find this duplicate token without modifying the original array and using constant extra space.",
+    "constraints": [
+        "n == nums.length - 1",
+        "1 <= n <= 10^5",
+        "nums.length <= 10^5",
+        "All the integers in nums appear only once except for precisely one integer which appears two or more times."
+    ],
+    "input_format": "An array of integers nums containing n + 1 integers.",
+    "output_format": "An integer representing the duplicate number.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "nums = [1,3,4,2,2]",
+            "output": "2",
+            "explanation": "The number 2 appears twice."
+        },
+        {
+            "input": "nums = [3,1,3,4,2]",
+            "output": "3",
+            "explanation": "The number 3 appears twice."
+        },
+        {
+            "input": "nums = [3,3,3,3,3]",
+            "output": "3",
+            "explanation": "The number 3 appears multiple times."
+        }
+    ]
+}

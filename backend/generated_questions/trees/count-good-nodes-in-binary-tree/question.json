@@ -1,0 +1,33 @@
+{
+    "title": "Corporate Hierarchy Influence",
+    "slug": "count-good-nodes-in-binary-tree",
+    "difficulty": "medium",
+    "category": "trees",
+    "description": "In a corporate structure, employees are organized in a reporting tree. An employee is considered \"influential\" if, along the reporting path from the CEO (root) down to that employee, there is no other employee with a strictly higher salary. Given the root of the corporate tree where each node contains an employee's salary, write a function to count the total number of influential employees in the company.",
+    "constraints": [
+        "The number of nodes in the tree is in the range [1, 10^5].",
+        "The salary of each employee is an integer between -10^4 and 10^4."
+    ],
+    "input_format": "The root node of the binary tree representing the corporate hierarchy.",
+    "output_format": "An integer representing the count of influential employees.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "root = [3,1,4,3,null,1,5]",
+            "output": "4",
+            "explanation": "Root node 3 is influential. Node 4 is influential because 4 >= 3. Node 3 in the left subtree is influential because 3 >= 3 and 3 >= 1. Node 5 in the right subtree is influential because 5 >= 4."
+        },
+        {
+            "input": "root = [3,3,null,4,2]",
+            "output": "3",
+            "explanation": "Root 3 is influential. Left child 3 is influential. Its left child 4 is influential. The right child 2 is not influential because 3 > 2."
+        },
+        {
+            "input": "root = [1]",
+            "output": "1",
+            "explanation": "The single root node is always influential."
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "title": "Corporate Hierarchy Archive",
+    "slug": "serialize-and-deserialize-binary-tree",
+    "difficulty": "hard",
+    "category": "trees",
+    "description": "Design an algorithm to encode a company's organizational reporting structure tree into a single string format and decode that string back into the exact same tree structure. The structure is a standard binary tree where each node represents an employee with an integer ID, and nodes can be null if no employee exists at that position.",
+    "constraints": [
+        "The number of nodes in the tree is in the range [0, 10^4].",
+        "-1000 <= Node.val <= 1000"
+    ],
+    "input_format": "The root of a binary tree.",
+    "output_format": "A serialized string representation or the root of the deserialized binary tree.",
+    "estimated_time": 45,
+    "acceptance_rate": 34.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "root = [1, 2, 3, null, null, 4, 5]",
+            "output": "[1, 2, 3, null, null, 4, 5]",
+            "explanation": "The tree structure is preserved after a serialization and subsequent deserialization cycle."
+        },
+        {
+            "input": "root = []",
+            "output": "[]",
+            "explanation": "An empty tree serializes to an empty array representation."
+        },
+        {
+            "input": "root = [1]",
+            "output": "[1]",
+            "explanation": "A single node tree remains a single node tree."
+        }
+    ]
+}

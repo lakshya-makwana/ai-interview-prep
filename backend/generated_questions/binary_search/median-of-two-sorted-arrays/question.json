@@ -1,0 +1,37 @@
+{
+    "title": "Combined Sensor Median Calibration",
+    "slug": "median-of-two-sorted-arrays",
+    "difficulty": "hard",
+    "category": "binary_search",
+    "description": "You are given two sorted arrays of integers representing calibration readings from two independent sensor units. Calculate the median of the combined sorted readings. The overall run time complexity should be O(log (m + n)).",
+    "constraints": [
+        "sensorA.length == m",
+        "sensorB.length == n",
+        "0 <= m <= 1000",
+        "0 <= n <= 1000",
+        "1 <= m + n <= 2000",
+        "-10^6 <= sensorA[i], sensorB[i] <= 10^6"
+    ],
+    "input_format": "Two sorted integer arrays 'sensorA' and 'sensorB'.",
+    "output_format": "A floating-point number representing the median of the two combined arrays.",
+    "estimated_time": 50,
+    "acceptance_rate": 34.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "sensorA = [1, 3], sensorB = [2]",
+            "output": "2.00000",
+            "explanation": "The combined sorted array is [1, 2, 3] and the median is 2."
+        },
+        {
+            "input": "sensorA = [1, 2], sensorB = [3, 4]",
+            "output": "2.50000",
+            "explanation": "The combined sorted array is [1, 2, 3, 4] and the median is (2 + 3) / 2 = 2.5."
+        },
+        {
+            "input": "sensorA = [], sensorB = [1]",
+            "output": "1.00000",
+            "explanation": "The combined array is [1] and the median is 1."
+        }
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "title": "Inventory Price Ranking",
+    "slug": "kth-smallest-element-in-a-bst",
+    "difficulty": "medium",
+    "category": "trees",
+    "description": "An e-commerce platform stores its product catalog prices in a Binary Search Tree (BST). Management wants to find the k-th lowest product price in the catalog. Given the root of the BST and an integer k, write a function to return the k-th smallest price in the catalog.",
+    "constraints": [
+        "The number of nodes in the tree is k.",
+        "1 <= k <= number of nodes <= 10^4",
+        "0 <= Node.val <= 10^4"
+    ],
+    "input_format": "The root of the BST and an integer k.",
+    "output_format": "An integer representing the k-th smallest price value.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "root = [3,1,4,null,2], k = 1",
+            "output": "1",
+            "explanation": "The sorted prices are 1, 2, 3, 4. The 1st smallest price is 1."
+        },
+        {
+            "input": "root = [5,3,6,2,4,null,null,1], k = 3",
+            "output": "3",
+            "explanation": "The sorted prices are 1, 2, 3, 4, 5, 6. The 3rd smallest price is 3."
+        },
+        {
+            "input": "root = [10,5,15], k = 2",
+            "output": "10",
+            "explanation": "The sorted prices are 5, 10, 15. The 2nd smallest price is 10."
+        }
+    ]
+}

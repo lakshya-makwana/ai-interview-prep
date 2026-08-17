@@ -1,0 +1,33 @@
+{
+    "title": "Maximum Capacity Channel",
+    "slug": "container-with-most-water",
+    "difficulty": "medium",
+    "category": "two_pointers",
+    "description": "A city planner is designing a canal system between various vertical containment walls. Each wall has a specific height, and the distance between them forms the width of a reservoir segment. Find two walls that together with the ground form a container that holds the maximum volume of water.",
+    "constraints": [
+        "2 <= height.length <= 10^5",
+        "0 <= height[i] <= 10^4"
+    ],
+    "input_format": "An array of integers height representing the heights of vertical walls.",
+    "output_format": "An integer representing the maximum water capacity.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "height = [1, 8, 6, 2, 5, 4, 8, 3, 7]",
+            "output": "49",
+            "explanation": "The vertical lines at indices 1 and 8 form a container that can hold 49 units of water (min(8, 7) * (8 - 1))."
+        },
+        {
+            "input": "height = [1, 1]",
+            "output": "1",
+            "explanation": "The container holds 1 unit of water."
+        },
+        {
+            "input": "height = [4, 3, 2, 1, 4]",
+            "output": "16",
+            "explanation": "The container between index 0 and index 4 holds min(4, 4) * 4 = 16."
+        }
+    ]
+}

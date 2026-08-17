@@ -1,0 +1,33 @@
+{
+    "title": "Peak Widget Margin",
+    "slug": "best-time-to-buy-and-sell-stock",
+    "difficulty": "easy",
+    "category": "sliding_window",
+    "description": "An automated trading bot analyzes historical daily prices of a single widget to maximize profit. Given an array of prices where prices[i] is the price of the widget on the i-th day, find the maximum profit you can achieve by choosing a single day to buy one widget and choosing a different day in the future to sell that widget. If no profit can be achieved, return 0.",
+    "constraints": [
+        "1 <= prices.length <= 10^5",
+        "0 <= prices[i] <= 10^4"
+    ],
+    "input_format": "An array of integers representing daily prices.",
+    "output_format": "An integer representing the maximum possible profit.",
+    "estimated_time": 20,
+    "acceptance_rate": 78.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "prices = [7, 1, 5, 3, 6, 4]",
+            "output": "5",
+            "explanation": "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5."
+        },
+        {
+            "input": "prices = [7, 6, 4, 3, 1]",
+            "output": "0",
+            "explanation": "In this case, no transactions are done and the max profit = 0."
+        },
+        {
+            "input": "prices = [2, 4, 1, 7]",
+            "output": "6",
+            "explanation": "Buy on day 3 (price = 1) and sell on day 4 (price = 7), profit = 7 - 1 = 6."
+        }
+    ]
+}

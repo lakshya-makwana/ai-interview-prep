@@ -1,0 +1,33 @@
+{
+    "title": "Sub-Domain URL Segmentation",
+    "slug": "palindrome-partitioning",
+    "difficulty": "medium",
+    "category": "backtracking",
+    "description": "Given a string representing a raw domain sequence, partition the string such that every substring of the partition is a symmetric palindrome. Return all possible palindrome partitioning configurations of the string.",
+    "constraints": [
+        "1 <= s.length <= 16",
+        "s contains only lowercase English letters."
+    ],
+    "input_format": "A string s.",
+    "output_format": "A list of string lists containing all valid palindrome partitions.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "s = \"aab\"",
+            "output": "[[\"a\",\"a\",\"b\"],[\"aa\",\"b\"]]",
+            "explanation": "Both [a, a, b] and [aa, b] consist entirely of palindromic substrings."
+        },
+        {
+            "input": "s = \"a\"",
+            "output": "[[\"a\"]]",
+            "explanation": "A single character string is inherently a palindrome."
+        },
+        {
+            "input": "s = \"efe\"",
+            "output": "[[\"e\",\"f\",\"e\"],[\"efe\"]]",
+            "explanation": "Valid partitions include individual characters and the full string."
+        }
+    ]
+}

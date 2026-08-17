@@ -1,0 +1,34 @@
+{
+    "title": "Cloud Server Processing Rate Optimization",
+    "slug": "koko-eating-bananas",
+    "difficulty": "medium",
+    "category": "binary_search",
+    "description": "You are managing a cloud computing platform that needs to process a sequence of incoming computational tasks. You are given an array of integers representing the CPU cycles required for each task, and an integer representing the maximum allowable hours to complete all tasks. You need to determine the minimum integer processing speed (cycles per hour) such that all tasks can be finished within the deadline. If a task requires fewer cycles than the hourly speed, it consumes the entire hour and no tasks can be combined.",
+    "constraints": [
+        "1 <= tasks.length <= 10^4",
+        "tasks[i] <= 10^9",
+        "tasks.length <= hours <= 10^9"
+    ],
+    "input_format": "An array of integers 'tasks' and an integer 'hours'.",
+    "output_format": "An integer representing the minimum processing speed.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "tasks = [3, 6, 7, 11], hours = 8",
+            "output": "4",
+            "explanation": "At a speed of 4, the tasks take 1, 2, 2, 3 hours respectively, totaling 8 hours."
+        },
+        {
+            "input": "tasks = [30, 11, 23, 4, 20], hours = 5",
+            "output": "30",
+            "explanation": "With 5 hours available for 5 tasks, the processing speed must be at least the maximum task size."
+        },
+        {
+            "input": "tasks = [30, 11, 23, 4, 20], hours = 6",
+            "output": "23",
+            "explanation": "At a speed of 23, the hours taken are 2, 1, 1, 1, 1, totaling 6 hours."
+        }
+    ]
+}

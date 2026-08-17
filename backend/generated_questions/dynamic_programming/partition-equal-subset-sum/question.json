@@ -1,0 +1,33 @@
+{
+    "title": "Cargo Weight Equilibrium",
+    "slug": "partition-equal-subset-sum",
+    "difficulty": "medium",
+    "category": "dynamic_programming",
+    "description": "An international shipping company receives a mixed batch of heavy metal containers. Before loading them onto a cargo ship, the logistics manager wants to know if the containers can be split into two separate storage bays such that the total weight in both bays is precisely identical. Given an array of container weights, determine whether it is possible to partition the array into two subsets with an equal sum.",
+    "constraints": [
+        "1 <= weights.length <= 200",
+        "1 <= weights[i] <= 100"
+    ],
+    "input_format": "An array of integers representing container weights.",
+    "output_format": "A boolean value (true or false) indicating if the weights can be partitioned equally.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "[1, 5, 11, 5]",
+            "output": "true",
+            "explanation": "The array can be partitioned as [1, 5, 5] and [11], both having a sum of 11."
+        },
+        {
+            "input": "[1, 2, 3, 5]",
+            "output": "false",
+            "explanation": "The array cannot be partitioned into equal sum subsets."
+        },
+        {
+            "input": "[2, 2, 3, 5]",
+            "output": "false",
+            "explanation": "Total sum is 12, but subsets cannot sum to 6."
+        }
+    ]
+}

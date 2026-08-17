@@ -1,0 +1,37 @@
+{
+    "title": "Redundant Network Link",
+    "slug": "redundant-connection",
+    "difficulty": "medium",
+    "category": "graphs",
+    "description": "In a communication network, a set of nodes labeled from 1 to N started as a tree of N nodes with N-1 edges. One additional edge was added to this network, creating a cycle. You are given a 2D array edges representing the network connections where edges[i] = [ui, vi] denotes an edge between nodes ui and vi. Return an edge that can be removed so that the resulting graph is a tree of N nodes. If there are multiple answers, return the answer that occurs last in the given 2D array.",
+    "constraints": [
+        "n == edges.length",
+        "3 <= n <= 1000",
+        "edges[i].length == 2",
+        "1 <= ui < vi <= n",
+        "There are no repeated edges.",
+        "The given graph is connected."
+    ],
+    "input_format": "A 2D integer array edges.",
+    "output_format": "An array of 2 integers representing the edge to remove.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "edges = [[1,2],[1,3],[2,3]]",
+            "output": "[2,3]",
+            "explanation": "The given network forms a cycle: 1-2, 2-3, 3-1. Removing [2,3] breaks the cycle."
+        },
+        {
+            "input": "edges = [[1,2],[2,3],[3,4],[1,4],[1,5]]",
+            "output": "[1,4]",
+            "explanation": "The edge [1,4] forms a cycle with 1-2, 2-3, 3-4."
+        },
+        {
+            "input": "edges = [[1,2],[2,3],[3,1]]",
+            "output": "[3,1]",
+            "explanation": "Removing [3,1] leaves a valid tree structure."
+        }
+    ]
+}

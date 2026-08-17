@@ -1,0 +1,33 @@
+{
+    "title": "Tri-Sensor Balance",
+    "slug": "3sum",
+    "difficulty": "medium",
+    "category": "two_pointers",
+    "description": "An environmental monitoring system logs temperature variations across a vast industrial grid. To identify potential hazard zones, engineers need to find all unique triplets of sensor readings that sum up to exactly zero. Ensure that the solution set does not contain duplicate triplets.",
+    "constraints": [
+        "3 <= nums.length <= 3000",
+        "-10^5 <= nums[i] <= 10^5"
+    ],
+    "input_format": "An integer array nums containing sensor readings.",
+    "output_format": "A list of all unique triplets [nums[i], nums[j], nums[k]] such that their sum is zero.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "nums = [-1, 0, 1, 2, -1, -4]",
+            "output": "[[-1, -1, 2], [-1, 0, 1]]",
+            "explanation": "Nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0. Nums[1] + nums[2] + nums[4] = 0. The distinct triplets are [-1, 0, 1] and [-1, -1, 2]."
+        },
+        {
+            "input": "nums = [0, 1, 1]",
+            "output": "[]",
+            "explanation": "The only possible triplet sums to 2, which is not zero."
+        },
+        {
+            "input": "nums = [0, 0, 0]",
+            "output": "[[0, 0, 0]]",
+            "explanation": "The only possible triplet sums to zero."
+        }
+    ]
+}

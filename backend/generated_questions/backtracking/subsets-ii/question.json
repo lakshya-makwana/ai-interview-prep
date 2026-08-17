@@ -1,0 +1,34 @@
+{
+    "title": "Library Book Bundle Collection",
+    "slug": "subsets-ii",
+    "difficulty": "medium",
+    "category": "backtracking",
+    "description": "A librarian wants to showcase book bundles for an upcoming fair. The available collection contains duplicate titles. Write a function to generate all unique subsets of book titles that can be formed from the collection.",
+    "constraints": [
+        "1 <= number of books <= 10",
+        "The input list may contain duplicate book titles.",
+        "The solution set must not contain duplicate subsets."
+    ],
+    "input_format": "A list of strings representing book titles, potentially containing duplicates.",
+    "output_format": "A list of lists containing all unique subsets of the book titles.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "[\"A\", \"A\", \"B\"]",
+            "output": "[[], [\"A\"], [\"A\", \"A\"], [\"A\", \"A\", \"B\"], [\"A\", \"B\"], [\"B\"]]",
+            "explanation": "All unique subsets derived from the collection without repeating identical bundle combinations."
+        },
+        {
+            "input": "[\"X\", \"Y\"]",
+            "output": "[[], [\"X\"], [\"X\", \"Y\"], [\"Y\"]]",
+            "explanation": "Distinct books yield standard power set combinations."
+        },
+        {
+            "input": "[\"Z\"]",
+            "output": "[[], [\"Z\"]]",
+            "explanation": "A single book yields the empty set and the single-element set."
+        }
+    ]
+}

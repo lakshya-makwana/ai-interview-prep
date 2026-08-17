@@ -1,0 +1,32 @@
+{
+    "title": "Vault Security Staircase Descent",
+    "slug": "climbing-stairs",
+    "difficulty": "easy",
+    "category": "dynamic_programming",
+    "description": "You are descending a secure vault staircase with n steps. Each time you can either descend 1 step or 2 steps. Determine how many distinct ways you can reach the bottom of the staircase.",
+    "constraints": [
+        "1 <= n <= 45"
+    ],
+    "input_format": "An integer n representing the total number of steps.",
+    "output_format": "An integer representing the number of distinct ways to descend.",
+    "estimated_time": 15,
+    "acceptance_rate": 78.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "n = 2",
+            "output": "2",
+            "explanation": "There are two ways to descend 2 steps: (1+1) or (2)."
+        },
+        {
+            "input": "n = 3",
+            "output": "3",
+            "explanation": "There are three ways to descend 3 steps: (1+1+1), (1+2), or (2+1)."
+        },
+        {
+            "input": "n = 5",
+            "output": "8",
+            "explanation": "There are 8 distinct combinations of steps to descend 5 stairs."
+        }
+    ]
+}

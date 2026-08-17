@@ -1,0 +1,35 @@
+{
+    "title": "Spreading Rumor Matrix",
+    "slug": "rotting-oranges",
+    "difficulty": "medium",
+    "category": "graphs",
+    "description": "You are given a 2D grid representing a town. Each cell in the grid can be empty (0), contain a person who is unaware of a rumor (1), or contain a person who is actively spreading the rumor (2). Every minute, any unaware person who is adjacent (up, down, left, right) to an active rumor spreader becomes an active rumor spreader themselves. Return the minimum number of minutes that must elapse until no unaware person remains. If it is impossible for the rumor to reach everyone, return -1.",
+    "constraints": [
+        "m == grid.length",
+        "n == grid[i].length",
+        "1 <= m, n <= 10",
+        "grid[i][j] is 0, 1, or 2."
+    ],
+    "input_format": "A 2D integer array grid.",
+    "output_format": "An integer representing the minimum minutes or -1.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "grid = [[2,1,1],[1,1,0],[0,1,1]]",
+            "output": "4",
+            "explanation": "Minute 0: [[2,1,1],[1,1,0],[0,1,1]]\nMinute 1: [[2,2,1],[2,1,0],[0,1,1]]\nMinute 2: [[2,2,2],[2,2,0],[0,1,1]]\nMinute 3: [[2,2,2],[2,2,0],[0,2,1]]\nMinute 4: [[2,2,2],[2,2,0],[0,2,2]]"
+        },
+        {
+            "input": "grid = [[2,1,1],[0,1,1],[1,0,1]]",
+            "output": "-1",
+            "explanation": "The person at the bottom-left corner (row 2, column 0) is isolated and will never receive the rumor."
+        },
+        {
+            "input": "grid = [[0,2]]",
+            "output": "0",
+            "explanation": "Since there are no unaware people at minute 0, the time elapsed is 0."
+        }
+    ]
+}

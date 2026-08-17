@@ -1,34 +1,35 @@
 {
-    "title": "Warehouse Conveyor High-Frequency Scanner",
+    "title": "Telemetry Log Hotspots",
     "slug": "top-k-frequent-elements",
     "difficulty": "medium",
     "category": "arrays",
-    "description": "In an automated fulfillment center, a scanner continuously registers package IDs as they travel along a high-speed conveyor belt. To optimize physical placement near dispatch docks, the warehouse control system must analyze a batch scan log represented by an integer array `package_ids` and extract the top `k` package IDs that appeared most frequently.\n\nWrite an efficient algorithm to determine these `k` most frequent package IDs. You may return the result in any order. It is guaranteed that the set of top `k` frequent package IDs is unique for the given test cases.",
+    "description": "A smart factory monitors thousands of IoT sensor logs per minute. Each log entry produces an integer sensor ID indicating an event. To optimize maintenance schedules, engineers need to identify the top k most frequently triggered sensor IDs. Given an integer array sensor_ids and an integer k, return the k most frequent sensor IDs. You may return the answer in any order. The solution must run in better than O(n log n) time complexity.",
     "constraints": [
-        "1 <= package_ids.length <= 10^5",
-        "-10^9 <= package_ids[i] <= 10^9",
-        "1 <= k <= number of unique package IDs in package_ids"
+        "1 <= sensor_ids.length <= 10^5",
+        "-10^4 <= sensor_ids[i] <= 10^4",
+        "1 <= k <= number of unique elements in sensor_ids",
+        "It is guaranteed that the answer is unique for the given input."
     ],
-    "input_format": "The input consists of an array of integers `package_ids` representing the recorded package IDs and an integer `k`.",
-    "output_format": "Return an array of `k` integers containing the most frequently occurring package IDs.",
-    "estimated_time": 25,
+    "input_format": "The first argument is an integer array sensor_ids. The second argument is an integer k.",
+    "output_format": "Return an array of k integers representing the most frequent sensor IDs.",
+    "estimated_time": 20,
     "acceptance_rate": 56.0,
     "is_premium": false,
     "examples": [
         {
-            "input": "package_ids = [101, 101, 101, 202, 202, 303], k = 2",
+            "input": "sensor_ids = [101, 101, 101, 202, 202, 303], k = 2",
             "output": "[101, 202]",
-            "explanation": "Package ID 101 appears 3 times, 202 appears 2 times, and 303 appears 1 time. The 2 most frequent package IDs are 101 and 202."
+            "explanation": "Sensor ID 101 appears 3 times, ID 202 appears 2 times, and ID 303 appears 1 time. The top 2 most frequent IDs are 101 and 202."
         },
         {
-            "input": "package_ids = [55], k = 1",
-            "output": "[55]",
-            "explanation": "There is only 1 package ID present in the log, so the most frequent package ID is 55."
+            "input": "sensor_ids = [42], k = 1",
+            "output": "[42]",
+            "explanation": "Sensor ID 42 is the only ID present and appears 1 time."
         },
         {
-            "input": "package_ids = [7, 7, 8, 8, 9, 9], k = 3",
-            "output": "[7, 8, 9]",
-            "explanation": "All three package IDs (7, 8, and 9) appear with an identical frequency of 2. Since k = 3, all unique package IDs are returned."
+            "input": "sensor_ids = [7, 7, 8, 8, 8, 8, 9, 9, 9], k = 2",
+            "output": "[8, 9]",
+            "explanation": "Sensor ID 8 appears 4 times, ID 9 appears 3 times, and ID 7 appears 2 times. The top 2 IDs are 8 and 9."
         }
     ]
 }

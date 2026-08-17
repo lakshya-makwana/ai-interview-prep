@@ -1,0 +1,36 @@
+{
+    "title": "Optimal Sensor Coverage for Event Monitoring",
+    "slug": "minimum-interval-to-include-each-query",
+    "difficulty": "hard",
+    "category": "intervals",
+    "description": "You are managing a collection of network sensors, where each sensor operates during a specific time interval defined as [start_time, end_time] and has an associated maintenance cost. You are also given a series of specific timestamp queries. For each query timestamp, you need to find the minimum cost among all active sensors that cover that timestamp. If no sensor is active at the query timestamp, return -1.",
+    "constraints": [
+        "1 <= sensors.length <= 10^5",
+        "1 <= queries.length <= 10^5",
+        "sensors[i].length == 3",
+        "start_i <= end_i",
+        "1 <= start_i, end_i, cost_i, queries[j] <= 10^7"
+    ],
+    "input_format": "A 2D integer array sensors representing each sensor's [start_time, end_time, cost], and a 1D integer array queries representing the target timestamps.",
+    "output_format": "An array of integers where the i-th element is the minimum cost for the i-th query, or -1 if none match.",
+    "estimated_time": 45,
+    "acceptance_rate": 34.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "sensors = [[1,4,2],[2,4,3],[3,7,1]], queries = [2,5,3]",
+            "output": "[2, 1, 1]",
+            "explanation": "For query 2, sensors [1,4,2] and [2,4,3] cover it, minimum cost is 2. For query 5, only [3,7,1] covers it, cost is 1. For query 3, all three cover it, minimum cost is 1."
+        },
+        {
+            "input": "sensors = [[2,3,4],[5,9,10],[1,10,5]], queries = [2,6,8]",
+            "output": "[4, 5, 5]",
+            "explanation": "For query 2, sensors [2,3,4] and [1,10,5] cover it, min cost is 4. For query 6, [5,9,10] and [1,10,5] cover it, min cost is 5. For query 8, [5,9,10] and [1,10,5] cover it, min cost is 5."
+        },
+        {
+            "input": "sensors = [[1,2,10],[3,4,20]], queries = [2,3,5]",
+            "output": "[10, 20, -1]",
+            "explanation": "Query 2 is covered by [1,2,10]. Query 3 is covered by [3,4,20]. Query 5 is not covered by any sensor, returning -1."
+        }
+    ]
+}

@@ -1,0 +1,36 @@
+{
+    "title": "Telemetry Log Parsing",
+    "slug": "word-break",
+    "difficulty": "medium",
+    "category": "dynamic_programming",
+    "description": "Given a string representing a concatenated stream of log words and a dictionary of valid words, determine if the stream can be segmented into a space-separated sequence of dictionary words. The same dictionary word may be reused multiple times in the segmentation.",
+    "constraints": [
+        "1 <= s.length <= 300",
+        "1 <= wordDict.length <= 1000",
+        "1 <= wordDict[i].length <= 20",
+        "s and wordDict[i] consist of lowercase English letters.",
+        "All the strings of wordDict are unique."
+    ],
+    "input_format": "A string s and a list of strings wordDict.",
+    "output_format": "A boolean value (true or false) indicating whether s can be segmented.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "s = \"leetcode\", wordDict = [\"leet\", \"code\"]",
+            "output": "true",
+            "explanation": "Return true because \"leetcode\" can be segmented as \"leet code\"."
+        },
+        {
+            "input": "s = \"applepenapple\", wordDict = [\"apple\", \"pen\"]",
+            "output": "true",
+            "explanation": "Return true because \"applepenapple\" can be segmented as \"apple pen apple\". Note that you are allowed to reuse a dictionary word."
+        },
+        {
+            "input": "s = \"catsandog\", wordDict = [\"cats\", \"dog\", \"sand\", \"and\", \"cat\"]",
+            "output": "false",
+            "explanation": "No valid segmentation exists."
+        }
+    ]
+}

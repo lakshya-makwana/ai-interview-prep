@@ -1,0 +1,35 @@
+{
+    "title": "Water Fountain Distance Map",
+    "slug": "walls-and-gates",
+    "difficulty": "medium",
+    "category": "graphs",
+    "description": "You are given a 2D grid initialized with three possible values: -1 representing a blocked obstacle that cannot be passed, 0 representing a water fountain, and INF (a very large integer like 2147483647) representing an open walking path. Fill each open path cell with its shortest distance to the nearest water fountain. If it is impossible to reach a water fountain from a given open path cell, the cell should remain INF.",
+    "constraints": [
+        "m == grid.length",
+        "n == grid[i].length",
+        "1 <= m, n <= 250",
+        "grid[i][j] is -1, 0, or 2147483647"
+    ],
+    "input_format": "A 2D integer array grid.",
+    "output_format": "Modifies the input grid in-place to reflect shortest distances.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "grid = [[2147483647,-1,0,2147483647],[2147483647,2147483647,2147483647,-1],[2147483647,-1,2147483647,-1],[0,-1,2147483647,2147483647]]",
+            "output": "[[3,-1,0,1],[2,2,1,-1],[1,-1,2,-1],[0,-1,3,4]]",
+            "explanation": "Every empty cell is updated with the distance to the nearest 0 while avoiding -1 walls."
+        },
+        {
+            "input": "grid = [[0,-1],[2147483647,2147483647]]",
+            "output": "[[0,-1],[1,2]]",
+            "explanation": "Cells fill outwards from the top-left fountain."
+        },
+        {
+            "input": "grid = [[2147483647]]",
+            "output": "[[2147483647]]",
+            "explanation": "No fountains or paths that can change."
+        }
+    ]
+}

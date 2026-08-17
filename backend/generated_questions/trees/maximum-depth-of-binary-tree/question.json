@@ -1,0 +1,33 @@
+{
+    "title": "Organizational Hierarchy Depth",
+    "slug": "maximum-depth-of-binary-tree",
+    "difficulty": "easy",
+    "category": "trees",
+    "description": "An enterprise corporation wants to calculate the maximum hierarchical depth of its management structure, represented as a binary tree. Given the root node of the corporate hierarchy, find the maximum number of nodes along the longest path from the root node down to the farthest leaf node.",
+    "constraints": [
+        "The number of nodes in the tree is in the range [0, 10^4].",
+        "-100 <= node.val <= 100"
+    ],
+    "input_format": "The root node of a binary tree.",
+    "output_format": "An integer representing the maximum depth.",
+    "estimated_time": 20,
+    "acceptance_rate": 78.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "root = [3, 9, 20, null, null, 15, 7]",
+            "output": "3",
+            "explanation": "The longest path goes through 3 -> 20 -> 7, giving a depth of 3."
+        },
+        {
+            "input": "root = [1, null, 2]",
+            "output": "2",
+            "explanation": "The longest path goes through 1 -> 2, giving a depth of 2."
+        },
+        {
+            "input": "root = []",
+            "output": "0",
+            "explanation": "An empty tree has a depth of 0."
+        }
+    ]
+}

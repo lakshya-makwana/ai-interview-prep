@@ -1,0 +1,35 @@
+{
+    "title": "Subterranean Mineral Deposit Extraction",
+    "slug": "max-area-of-island",
+    "difficulty": "medium",
+    "category": "graphs",
+    "description": "You are given a 2D grid matrix of integer values representing mineral density at various subterranean coordinates, where 0 represents solid rock and any positive integer represents the value of a mineral deposit. You want to find the maximum possible total value of a single contiguous mineral deposit. A deposit is formed by connecting adjacent positive values horizontally or vertically.",
+    "constraints": [
+        "m == grid.length",
+        "n == grid[i].length",
+        "1 <= m, n <= 50",
+        "0 <= grid[i][j] <= 100"
+    ],
+    "input_format": "A 2D integer array grid.",
+    "output_format": "An integer representing the maximum sum of a connected component of positive values.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "grid = [[0,0,1,0,0,0,0,1,1,1,0],[0,0,0,0,0,0,0,1,1,1,0],[0,1,1,0,1,0,0,0,0,0,0],[0,1,0,0,1,1,0,0,1,0,1],[0,1,0,0,1,1,0,0,1,1,1],[0,0,0,0,0,0,0,0,0,0,1]]",
+            "output": "9",
+            "explanation": "The largest contiguous island of 1s has an area of 9."
+        },
+        {
+            "input": "grid = [[0,0,0,0,0,0,0,0]]",
+            "output": "0",
+            "explanation": "There are no positive values, so the max area is 0."
+        },
+        {
+            "input": "grid = [[1,1],[1,1]]",
+            "output": "4",
+            "explanation": "All cells form a single square of 4 elements."
+        }
+    ]
+}

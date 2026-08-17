@@ -1,0 +1,34 @@
+{
+    "title": "Optimizing Broadcast Transmission Schedules",
+    "slug": "non-overlapping-intervals",
+    "difficulty": "medium",
+    "category": "intervals",
+    "description": "A radio station wants to broadcast various promotional segments throughout the day. Each segment has a specific start and end time. Because consecutive segments cannot interfere with one another, some segments must be cancelled. Determine the minimum number of broadcast segments to remove so that the remaining scheduled segments do not overlap at all.",
+    "constraints": [
+        "1 <= broadcasts.length <= 10^5",
+        "broadcasts[i].length == 2",
+        "-5 * 10^4 <= start_i < end_i <= 5 * 10^4"
+    ],
+    "input_format": "A 2D array of integers representing the start and end times of broadcast segments.",
+    "output_format": "An integer representing the minimum number of removals required to eliminate all overlaps.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "broadcasts = [[1, 2], [2, 3], [3, 4], [1, 3]]",
+            "output": "1",
+            "explanation": "Removing the segment [1, 3] leaves [1, 2], [2, 3], and [3, 4], which do not overlap (touching endpoints are allowed)."
+        },
+        {
+            "input": "broadcasts = [[1, 2], [1, 2], [1, 2]]",
+            "output": "2",
+            "explanation": "You need to remove two segments to leave only one non-overlapping broadcast."
+        },
+        {
+            "input": "broadcasts = [[1, 2], [3, 4]]",
+            "output": "0",
+            "explanation": "There are no overlaps, so no segments need to be removed."
+        }
+    ]
+}

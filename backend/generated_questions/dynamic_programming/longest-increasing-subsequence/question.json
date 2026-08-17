@@ -1,0 +1,33 @@
+{
+    "title": "Altitude Gain Progression",
+    "slug": "longest-increasing-subsequence",
+    "difficulty": "medium",
+    "category": "dynamic_programming",
+    "description": "A hiker records their elevation at various checkpoints along a mountain trail. Find the length of the longest strictly increasing subsequence of elevation checkpoints.",
+    "constraints": [
+        "1 <= nums.length <= 2500",
+        "-10^4 <= nums[i] <= 10^4"
+    ],
+    "input_format": "An integer array nums representing elevation checkpoints.",
+    "output_format": "An integer representing the length of the longest strictly increasing subsequence.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "nums = [10, 9, 2, 5, 3, 7, 101, 18]",
+            "output": "4",
+            "explanation": "The longest increasing subsequence is [2, 3, 7, 101], therefore the length is 4."
+        },
+        {
+            "input": "nums = [0, 1, 0, 3, 2, 3]",
+            "output": "4",
+            "explanation": "The longest increasing subsequence is [0, 1, 2, 3], therefore the length is 4."
+        },
+        {
+            "input": "nums = [7, 7, 7, 7, 7, 7, 7]",
+            "output": "1",
+            "explanation": "All elements are equal, so the longest strictly increasing subsequence has length 1."
+        }
+    ]
+}

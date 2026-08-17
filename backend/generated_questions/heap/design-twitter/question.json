@@ -1,0 +1,34 @@
+{
+    "title": "Enterprise Micro-Blog Feed Engine",
+    "slug": "design-twitter",
+    "difficulty": "medium",
+    "category": "heap",
+    "description": "Design a simplified enterprise micro-blogging platform where users can post status updates, follow other users, and view a personalized feed of the most recent 10 updates from themselves and everyone they follow. Implement the platform class with methods to post messages, retrieve news feeds, follow users, and unfollow users.",
+    "constraints": [
+        "1 <= userId, followerId, followeeId <= 500",
+        "1 <= contentId <= 10000",
+        "At most 3000 calls will be made to postMessage, getNewsFeed, follow, and unfollow."
+    ],
+    "input_format": "Method calls with corresponding arguments representing user actions.",
+    "output_format": "For getNewsFeed, return a list of up to 10 contentIds in chronological order from newest to oldest.",
+    "estimated_time": 45,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "[\"FeedEngine\", \"postMessage\", \"getNewsFeed\", \"follow\", \"postMessage\", \"getNewsFeed\", \"unfollow\", \"getNewsFeed\"]\n[[], [1, 5], [1], [1, 2], [2, 6], [1], [1, 2], [1]]",
+            "output": "[null, null, [5], null, null, [6, 5], null, [5]]",
+            "explanation": "User 1 posts message 5. Feed for user 1 returns [5]. User 1 follows user 2. User 2 posts message 6. Feed for user 1 returns [6, 5]. User 1 unfollows user 2. Feed for user 1 returns [5]."
+        },
+        {
+            "input": "[\"FeedEngine\", \"postMessage\", \"getNewsFeed\"]\n[[], [1, 10], [1]]",
+            "output": "[null, null, [10]]",
+            "explanation": "User 1 posts message 10, news feed returns [10]."
+        },
+        {
+            "input": "[\"FeedEngine\", \"follow\", \"getNewsFeed\"]\n[[], [1, 2], [1]]",
+            "output": "[null, null, []]",
+            "explanation": "User 1 follows user 2 but neither has posted messages, feed is empty."
+        }
+    ]
+}

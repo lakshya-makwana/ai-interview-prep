@@ -1,0 +1,33 @@
+{
+    "title": "Seating Arrangement Permutations",
+    "slug": "permutations",
+    "difficulty": "medium",
+    "category": "backtracking",
+    "description": "An event coordinator needs to arrange a group of distinct VIP guests in a single row of seats. Write a function to generate all possible seating permutations for the given guests.",
+    "constraints": [
+        "1 <= number of guests <= 6",
+        "All guest identifiers in the input list are unique."
+    ],
+    "input_format": "A list of integers or strings representing unique VIP guests.",
+    "output_format": "A list of lists containing all possible permutations of the guests.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "[1, 2]",
+            "output": "[[1, 2], [2, 1]]",
+            "explanation": "There are 2 factorial = 2 possible arrangements for two guests."
+        },
+        {
+            "input": "[1, 2, 3]",
+            "output": "[[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]",
+            "explanation": "There are 3 factorial = 6 possible arrangements for three guests."
+        },
+        {
+            "input": "[7]",
+            "output": "[[7]]",
+            "explanation": "A single guest has only 1 possible arrangement."
+        }
+    ]
+}

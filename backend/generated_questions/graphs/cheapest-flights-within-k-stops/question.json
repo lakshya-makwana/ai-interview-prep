@@ -1,0 +1,38 @@
+{
+    "title": "Budget Interstellar Cargo Route",
+    "slug": "cheapest-flights-within-k-stops",
+    "difficulty": "medium",
+    "category": "graphs",
+    "description": "You are a space cargo merchant operating a fleet of ships across multiple star systems. You are given a list of hyperspace routes where routes[i] = [start_system, end_system, fuel_cost]. Given your starting system, destination system, and a maximum allowed number of hyperspace stops k, find the cheapest total fuel cost to reach the destination. If there is no valid route within k stops, return -1.",
+    "constraints": [
+        "1 <= n <= 100",
+        "0 <= routes.length <= (n * (n - 1))",
+        "routes[i].length == 3",
+        "0 <= start_system, end_system < n",
+        "start_system != end_system",
+        "0 <= fuel_cost <= 10000",
+        "0 <= k < n"
+    ],
+    "input_format": "Integer n representing number of systems, a list of routes, source system, destination system, and integer k.",
+    "output_format": "An integer representing the minimum fuel cost, or -1 if no route exists within constraints.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "n = 4, routes = [[0, 1, 100], [1, 2, 100], [2, 0, 100], [1, 3, 600], [2, 3, 200]], src = 0, dst = 3, k = 1",
+            "output": "700",
+            "explanation": "The optimal route with at most 1 stop is 0 -> 1 -> 3 with a cost of 100 + 600 = 700."
+        },
+        {
+            "input": "n = 3, routes = [[0, 1, 100], [1, 2, 100], [0, 2, 500]], src = 0, dst = 2, k = 1",
+            "output": "200",
+            "explanation": "The optimal route with at most 1 stop is 0 -> 1 -> 2 with a cost of 100 + 100 = 200."
+        },
+        {
+            "input": "n = 3, routes = [[0, 1, 100], [1, 2, 100], [0, 2, 500]], src = 0, dst = 2, k = 0",
+            "output": "500",
+            "explanation": "With 0 stops allowed, the direct route 0 -> 2 must be taken with cost 500."
+        }
+    ]
+}

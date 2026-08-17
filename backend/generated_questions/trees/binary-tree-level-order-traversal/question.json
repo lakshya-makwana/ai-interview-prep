@@ -1,0 +1,33 @@
+{
+    "title": "Floor-by-Floor Inventory Audit",
+    "slug": "binary-tree-level-order-traversal",
+    "difficulty": "medium",
+    "category": "trees",
+    "description": "An automated warehouse robot scans a multi-tiered storage rack structured as a binary tree. To catalog the items correctly, you need to return the level order traversal of the inventory values. That is, report the values of the nodes floor by floor, from left to right, starting at the top ground floor.",
+    "constraints": [
+        "The number of nodes in the tree is in the range [0, 2000].",
+        "-1000 <= Node.val <= 1000"
+    ],
+    "input_format": "Root of a binary tree.",
+    "output_format": "A list of lists containing integer values grouped by tree level.",
+    "estimated_time": 25,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "root = [3, 9, 20, null, null, 15, 7]",
+            "output": "[[3], [9, 20], [15, 7]]",
+            "explanation": "Floor 0: [3], Floor 1: [9, 20], Floor 2: [15, 7]"
+        },
+        {
+            "input": "root = [1]",
+            "output": "[[1]]",
+            "explanation": "Single node tree yields a single level list."
+        },
+        {
+            "input": "root = []",
+            "output": "[]",
+            "explanation": "Empty tree returns an empty collection."
+        }
+    ]
+}

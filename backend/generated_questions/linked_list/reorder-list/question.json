@@ -1,0 +1,33 @@
+{
+    "title": "Interleave Playlist Tracks",
+    "slug": "reorder-list",
+    "difficulty": "medium",
+    "category": "linked_list",
+    "description": "An audio streaming application needs to reorganize a user's playlist. Given a singly linked list representing the tracks in the order L0 -> L1 -> ... -> Ln-1 -> Ln, reorder the playlist to follow this pattern: L0 -> Ln -> L1 -> Ln-1 -> L2 -> Ln-2 -> ... You may not modify the values in the list's nodes, only the links themselves must be altered.",
+    "constraints": [
+        "The number of nodes in the list is in the range [1, 5 * 10^4].",
+        "1 <= Node.val <= 1000"
+    ],
+    "input_format": "The head of a singly linked list representing the playlist.",
+    "output_format": "The head of the reordered singly linked list.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "head = [1, 2, 3, 4]",
+            "output": "[1, 4, 2, 3]",
+            "explanation": "Tracks are interleaved from the outer edges inward."
+        },
+        {
+            "input": "head = [1, 2, 3, 4, 5]",
+            "output": "[1, 5, 2, 4, 3]",
+            "explanation": "Middle track remains properly positioned after outer elements."
+        },
+        {
+            "input": "head = [1]",
+            "output": "[1]",
+            "explanation": "A single track playlist remains unchanged."
+        }
+    ]
+}

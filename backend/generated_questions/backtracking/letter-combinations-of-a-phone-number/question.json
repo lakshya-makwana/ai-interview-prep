@@ -1,0 +1,33 @@
+{
+    "title": "Legacy Dialpad Code Generator",
+    "slug": "letter-combinations-of-a-phone-number",
+    "difficulty": "medium",
+    "category": "backtracking",
+    "description": "On a vintage numeric keypad, each digit maps to a set of alphabetic characters (similar to standard phone keypads). Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.",
+    "constraints": [
+        "0 <= digits.length <= 4",
+        "digits[i] is a digit in the range ['2', '9']."
+    ],
+    "input_format": "A string digits.",
+    "output_format": "A list of strings representing all possible letter combinations.",
+    "estimated_time": 25,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "digits = \"23\"",
+            "output": "[\"ad\",\"ae\",\"af\",\"bd\",\"be\",\"bf\",\"cd\",\"ce\",\"cf\"]",
+            "explanation": "Digit 2 maps to [a,b,c] and digit 3 maps to [d,e,f], creating 9 combinations."
+        },
+        {
+            "input": "digits = \"\"",
+            "output": "[]",
+            "explanation": "An empty input returns an empty list."
+        },
+        {
+            "input": "digits = \"2\"",
+            "output": "[\"a\",\"b\",\"c\"]",
+            "explanation": "A single digit maps directly to its corresponding characters."
+        }
+    ]
+}

@@ -1,0 +1,37 @@
+{
+    "title": "Expedition Flight Itinerary Reconstruction",
+    "slug": "reconstruct-itinerary",
+    "difficulty": "hard",
+    "category": "graphs",
+    "description": "An adventurer kept a disorganized log of flight tickets during a global expedition. Each ticket is represented as a pair of boarding passes [from, to], detailing the departure and arrival airports. Reconstruct the complete flight itinerary in order. All of the tickets belong to a person who departs from \"JFK\" (always the starting airport). If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string.",
+    "constraints": [
+        "1 <= tickets.length <= 300",
+        "tickets[i].length == 2",
+        "from_i.length == 3",
+        "to_i.length == 3",
+        "from_i and to_i consist of uppercase English letters.",
+        "It is guaranteed that the user has at least one valid itinerary, and they must use all tickets once."
+    ],
+    "input_format": "A 2D array of strings tickets representing departure and arrival airports.",
+    "output_format": "A list of strings representing the valid itinerary airports in order.",
+    "estimated_time": 50,
+    "acceptance_rate": 34.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "tickets = [[\"MUC\", \"LHR\"], [\"JFK\", \"MUC\"], [\"SFO\", \"SJC\"], [\"LHR\", \"SFO\"]]",
+            "output": "[\"JFK\", \"MUC\", \"LHR\", \"SFO\", \"SJC\"]",
+            "explanation": "The only valid itinerary visiting all airports starting from JFK."
+        },
+        {
+            "input": "tickets = [[\"JFK\",\"SFO\"],[\"JFK\",\"ATL\"],[\"SFO\",\"ATL\"],[\"ATL\",\"JFK\"],[\"ATL\",\"SFO\"]]",
+            "output": "[\"JFK\",\"ATL\",\"JFK\",\"SFO\",\"ATL\",\"SFO\"]",
+            "explanation": "Another valid itinerary exists, but this one is lexicographically smaller."
+        },
+        {
+            "input": "tickets = [[\"JFK\",\"KUL\"],[\"JFK\",\"NRT\"],[\"Nrt\",\"JFK\"]]",
+            "output": "[\"JFK\",\"NRT\",\"JFK\",\"KUL\"]",
+            "explanation": "Follows the valid Eulerian path using all provided tickets."
+        }
+    ]
+}

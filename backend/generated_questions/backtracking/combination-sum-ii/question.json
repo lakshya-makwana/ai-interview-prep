@@ -1,0 +1,34 @@
+{
+    "title": "Project Budget Allocation",
+    "slug": "combination-sum-ii",
+    "difficulty": "medium",
+    "category": "backtracking",
+    "description": "An enterprise development team has a list of feature point costs and a target budget limit. Each feature cost can only be utilized once in a single project configuration, and the available feature costs may contain duplicate values. Find all unique combinations of feature costs that sum up to the exact target budget.",
+    "constraints": [
+        "1 <= costs.length <= 100",
+        "1 <= costs[i] <= 50",
+        "1 <= target <= 30"
+    ],
+    "input_format": "An array of integers costs and an integer target.",
+    "output_format": "A list of lists containing all unique combinations that sum to target.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "costs = [10, 1, 2, 7, 6, 1, 5], target = 8",
+            "output": "[[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]]",
+            "explanation": "The combinations that sum up to 8 are found without reusing the exact same element index twice and without duplicate combinations."
+        },
+        {
+            "input": "costs = [2, 5, 2, 1, 2], target = 5",
+            "output": "[[1, 2, 2], [5]]",
+            "explanation": "The available numbers allow combinations that equal the target 5."
+        },
+        {
+            "input": "costs = [3, 3, 3, 3], target = 6",
+            "output": "[[3, 3]]",
+            "explanation": "Choosing unique elements by index ensures only distinct lists are generated."
+        }
+    ]
+}

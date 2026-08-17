@@ -1,0 +1,33 @@
+{
+    "title": "Meteorite Collision Reduction",
+    "slug": "last-stone-weight",
+    "difficulty": "easy",
+    "category": "heap",
+    "description": "An astronomical observatory is tracking a debris field of meteorites approaching Earth. Each meteorite has a specific mass value represented in an array. The automated defense system launches a specialized interceptor that repeatedly selects the two largest meteorites and causes them to collide. If both meteorites have equal mass, both are completely vaporized. If they have different masses, the smaller one is vaporized completely, and the larger one's mass is reduced by the mass of the smaller one. Find the mass of the final remaining meteorite. If no meteorites are left, return 0.",
+    "constraints": [
+        "1 <= meteorites.length <= 30",
+        "1 <= meteorites[i] <= 1000"
+    ],
+    "input_format": "An array of integers representing the masses of the meteorites.",
+    "output_format": "An integer representing the final mass, or 0 if none remain.",
+    "estimated_time": 25,
+    "acceptance_rate": 78.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "[2, 7, 4, 1, 8, 1]",
+            "output": "1",
+            "explanation": "Combine 7 and 8 to get 1; array becomes [2, 4, 1, 1, 1]. Combine 4 and 2 to get 2; array becomes [2, 1, 1, 1]. Combine 2 and 1 to get 1; array becomes [1, 1, 1]. Combine 1 and 1 to get 0; array becomes [1]. Final mass is 1."
+        },
+        {
+            "input": "[1]",
+            "output": "1",
+            "explanation": "Only one meteorite exists, so its mass remains 1."
+        },
+        {
+            "input": "[5, 5]",
+            "output": "0",
+            "explanation": "Two equal meteorites collide and both are destroyed completely."
+        }
+    ]
+}

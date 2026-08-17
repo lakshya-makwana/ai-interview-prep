@@ -1,0 +1,33 @@
+{
+    "title": "Task Budget Tracker",
+    "slug": "min-stack",
+    "difficulty": "medium",
+    "category": "stack",
+    "description": "Design a specialized stack data structure that supports standard push, pop, and top operations, along with an efficient method to retrieve the minimum element currently stored in the stack in O(1) time complexity.",
+    "constraints": [
+        "Methods push, pop, top, and getMin will be called on non-empty stacks.",
+        "At most 3 * 10^4 calls will be made to push, pop, top, and getMin."
+    ],
+    "input_format": "A sequence of method calls representing stack operations.",
+    "output_format": "The resulting values or state after executing operations, specifically returning the minimum on getMin calls.",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "Operations: [\"MinStack\", \"push\", \"push\", \"push\", \"getMin\", \"pop\", \"top\", \"getMin\"], Arguments: [[], [-2], [0], [-3], [], [], [], []]",
+            "output": "[null, null, null, null, -3, null, 0, -2]",
+            "explanation": "MinStack minStack = new MinStack(); minStack.push(-2); minStack.push(0); minStack.push(-3); minStack.getMin(); --> returns -3. minStack.pop(); minStack.top(); --> returns 0. minStack.getMin(); --> returns -2."
+        },
+        {
+            "input": "Operations: [\"MinStack\", \"push\", \"push\", \"getMin\"], Arguments: [[], [1], [2], []]",
+            "output": "[null, null, null, 1]",
+            "explanation": "Pushing 1 and 2, minimum element is 1."
+        },
+        {
+            "input": "Operations: [\"MinStack\", \"push\", \"getMin\"], Arguments: [[], [5], []]",
+            "output": "[null, null, 5]",
+            "explanation": "Pushing a single element 5 makes it the minimum."
+        }
+    ]
+}

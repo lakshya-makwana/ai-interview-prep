@@ -1,0 +1,36 @@
+{
+    "title": "Secret Agent Cryptogram Grid",
+    "slug": "word-search",
+    "difficulty": "medium",
+    "category": "backtracking",
+    "description": "You are given a 2D matrix of characters representing a security grid and a target codeword. Determine if the codeword can be constructed by sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.",
+    "constraints": [
+        "m == grid.length",
+        "n = grid[i].length",
+        "1 <= m, n <= 6",
+        "1 <= word.length <= 15",
+        "grid and word consist of lowercase and uppercase English letters."
+    ],
+    "input_format": "A 2D character array grid and a string word.",
+    "output_format": "A boolean value (true or false).",
+    "estimated_time": 30,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "grid = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"",
+            "output": "true",
+            "explanation": "The word can be traced sequentially through adjacent grid cells."
+        },
+        {
+            "input": "grid = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"SEE\"",
+            "output": "true",
+            "explanation": "The path traverses directly from S to E and E."
+        },
+        {
+            "input": "grid = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCB\"",
+            "output": "false",
+            "explanation": "The letter B cannot be revisited in the same path."
+        }
+    ]
+}

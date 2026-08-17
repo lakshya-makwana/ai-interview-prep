@@ -1,0 +1,33 @@
+{
+    "title": "Warehouse Robot Navigation",
+    "slug": "unique-paths",
+    "difficulty": "medium",
+    "category": "dynamic_programming",
+    "description": "An automated warehouse robot is placed at the top-left corner of a grid floor represented by dimensions m x n. The robot must navigate to the bottom-right corner to retrieve a parcel. The robot can only move either down or right at any point in time. Determine the total number of unique paths the robot can take to reach the destination.",
+    "constraints": [
+        "1 <= m, n <= 100",
+        "The answer is guaranteed to be less than or equal to 2 * 10^9"
+    ],
+    "input_format": "Two integers m and n representing the number of rows and columns.",
+    "output_format": "An integer representing the total unique paths.",
+    "estimated_time": 25,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "3, 7",
+            "output": "28",
+            "explanation": "For a 3x7 grid, there are 28 unique paths from top-left to bottom-right."
+        },
+        {
+            "input": "3, 2",
+            "output": "3",
+            "explanation": "From the top-left (0,0), there are 3 ways to reach (2,1): Right->Down->Down, Down->Right->Down, Down->Down->Right."
+        },
+        {
+            "input": "1, 1",
+            "output": "1",
+            "explanation": "Already at the destination, 1 path."
+        }
+    ]
+}

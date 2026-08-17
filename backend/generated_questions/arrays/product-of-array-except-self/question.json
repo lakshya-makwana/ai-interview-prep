@@ -1,34 +1,34 @@
 {
-    "title": "Audio Amplifier Bypass Multipliers",
+    "title": "Portfolio Risk Multipliers",
     "slug": "product-of-array-except-self",
     "difficulty": "medium",
     "category": "arrays",
-    "description": "An audio engineering team is testing a series of $N$ cascaded amplifier stages. Each stage $i$ modifies the signal magnitude by an integer gain factor specified in an array `gains`. The overall gain of the system is the product of all individual stage gain factors.\n\nTo evaluate system resilience, the engineers need to compute the effective net gain of the system if any single stage $i$ is completely bypassed (i.e., its gain factor is excluded from the chain product).\n\nReturn an array `effective_gains` of length $N$, where `effective_gains[i]` is the total product of the gain factors of all stages except stage $i$.\n\nYou must design an algorithm that runs in $O(N)$ time complexity and does NOT use the division operation.",
+    "description": "An automated trading system processes an array of asset volatility indices named factors. For risk assessment, the system needs to compute a new array scores of the same length, where scores[i] is the product of all volatility indices in factors except for the asset at index i. The calculation must be performed in O(n) time complexity and without using the division operation.",
     "constraints": [
-        "2 <= gains.length <= 10^5",
-        "-20 <= gains[i] <= 20",
-        "The product of any prefix or suffix of gains is guaranteed to fit in a 32-bit signed integer."
+        "2 <= factors.length <= 10^5",
+        "-30 <= factors[i] <= 30",
+        "The product of any prefix or suffix of factors fits in a 32-bit integer."
     ],
-    "input_format": "An integer array `gains` representing the individual stage gain factors.",
-    "output_format": "An integer array `effective_gains` where the i-th element is the combined gain product of all stages except the i-th stage.",
-    "estimated_time": 25,
+    "input_format": "An integer array factors.",
+    "output_format": "Return an integer array scores where scores[i] is the product of all elements except factors[i].",
+    "estimated_time": 20,
     "acceptance_rate": 56.0,
     "is_premium": false,
     "examples": [
         {
-            "input": "gains = [2, 3, 4, 5]",
-            "output": "[60, 40, 30, 24]",
-            "explanation": "Bypassing index 0 gives 3 * 4 * 5 = 60. Bypassing index 1 gives 2 * 4 * 5 = 40. Bypassing index 2 gives 2 * 3 * 5 = 30. Bypassing index 3 gives 2 * 3 * 4 = 24."
+            "input": "factors = [1, 2, 3, 4]",
+            "output": "[24, 12, 8, 6]",
+            "explanation": "For index 0: 2*3*4 = 24. For index 1: 1*3*4 = 12. For index 2: 1*2*4 = 8. For index 3: 1*2*3 = 6."
         },
         {
-            "input": "gains = [-1, 2, 0, 4]",
-            "output": "[0, 0, -8, 0]",
-            "explanation": "Bypassing index 0 gives 2 * 0 * 4 = 0. Bypassing index 1 gives (-1) * 0 * 4 = 0. Bypassing index 2 (the zero stage) gives (-1) * 2 * 4 = -8. Bypassing index 3 gives (-1) * 2 * 0 = 0."
+            "input": "factors = [-1, 1, 0, -3, 3]",
+            "output": "[0, 0, 9, 0, 0]",
+            "explanation": "For index 2: (-1)*1*(-3)*3 = 9. All other positions include 0 in their product."
         },
         {
-            "input": "gains = [7, -3]",
-            "output": "[-3, 7]",
-            "explanation": "With only two stages, bypassing index 0 leaves stage 1's gain (-3), and bypassing index 1 leaves stage 0's gain (7)."
+            "input": "factors = [5, 2]",
+            "output": "[2, 5]",
+            "explanation": "For index 0, the remaining element product is 2. For index 1, the remaining element product is 5."
         }
     ]
 }

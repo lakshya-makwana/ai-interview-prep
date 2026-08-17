@@ -1,0 +1,33 @@
+{
+    "title": "Cryptocurrency Trading Rest Period",
+    "slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+    "difficulty": "medium",
+    "category": "dynamic_programming",
+    "description": "An investor tracks the daily price of a cryptocurrency. They want to maximize their profit through multiple buy and sell transactions with the constraint that after you sell your stock, you cannot buy stock on the next day (i.e., cool down 1 day). Each day, you may either buy, sell, or rest.",
+    "constraints": [
+        "1 <= prices.length <= 5000",
+        "0 <= prices[i] <= 1000"
+    ],
+    "input_format": "An array of integers representing daily prices.",
+    "output_format": "An integer representing the maximum profit.",
+    "estimated_time": 40,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "[1, 2, 3, 0, 2]",
+            "output": "3",
+            "explanation": "Transactions: buy = 1, sell = 3, cooldown = 0, buy = 2, sell = 2. Total profit = (3-1) + (2-0) = 3."
+        },
+        {
+            "input": "[1]",
+            "output": "0",
+            "explanation": "Only one day of trading yields no profit."
+        },
+        {
+            "input": "[1, 2, 4]",
+            "output": "3",
+            "explanation": "Buy at 1, sell at 4 for a profit of 3."
+        }
+    ]
+}

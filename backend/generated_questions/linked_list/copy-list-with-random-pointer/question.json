@@ -1,0 +1,34 @@
+{
+    "title": "Duplicate Network Topology",
+    "slug": "copy-list-with-random-pointer",
+    "difficulty": "medium",
+    "category": "linked_list",
+    "description": "You are given a directed communication network represented as a linked list where each node contains an identifier value, a pointer to the next sequential node, and an arbitrary pointer that can reference any node in the network or null. Construct a deep copy of this topology. The deep copy should consist of exact replicas of the original nodes, where each new node has its value set and pointers properly routed to replicate the structure without sharing any references with the original graph.",
+    "constraints": [
+        "The number of nodes in the list is in the range [0, 1000].",
+        "-10^4 <= Node.val <= 10^4",
+        "Node.random is null or is pointing to some node in the linked list."
+    ],
+    "input_format": "The head of a linked list with next and random pointers.",
+    "output_format": "The head of the deep-copied linked list.",
+    "estimated_time": 35,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "head = [[7,null],[13,0],[11,4],[10,2],[1,0]]",
+            "output": "[[7,null],[13,0],[11,4],[10,2],[1,0]]",
+            "explanation": "A deep copy of the graph with structural and random connections replicated."
+        },
+        {
+            "input": "head = [[1,1],[2,1]]",
+            "output": "[[1,1],[2,1]]",
+            "explanation": "Nodes point to each other via random references correctly."
+        },
+        {
+            "input": "head = []",
+            "output": "[]",
+            "explanation": "An empty graph returns an empty graph."
+        }
+    ]
+}

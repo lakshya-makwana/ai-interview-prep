@@ -1,0 +1,35 @@
+{
+    "title": "Wildcard Cipher Dictionary",
+    "slug": "design-add-and-search-words-data-structure",
+    "difficulty": "medium",
+    "category": "tries",
+    "description": "Design a data structure that supports adding new words and searching for a string that may contain regular expression-like dots ('.') where a dot can match any single letter. Implement the WordDictionary class with addWord and search methods.",
+    "constraints": [
+        "1 <= word.length <= 500",
+        "word in addWord consists of lowercase English letters.",
+        "word in search consist of '.' or lowercase English letters.",
+        "At most 10^4 calls will be made to addWord and search."
+    ],
+    "input_format": "A sequence of method calls with string parameters for adding and searching words.",
+    "output_format": "Boolean values indicating whether any matching word exists in the data structure.",
+    "estimated_time": 40,
+    "acceptance_rate": 56.0,
+    "is_premium": false,
+    "examples": [
+        {
+            "input": "Operations: [\"WordDictionary\", \"addWord\", \"addWord\", \"addWord\", \"search\", \"search\", \"search\", \"search\"], Arguments: [[], [\"bad\"], [\"dad\"], [\"mad\"], [\"pad\"], [\"bad\"], [\".ad\"], [\"b..\"]]",
+            "output": "[null, null, null, null, false, true, true, true]",
+            "explanation": "Searching for 'pad' fails, 'bad' succeeds, '.ad' matches 'bad', 'dad', and 'mad', and 'b..' matches 'bad'."
+        },
+        {
+            "input": "Operations: [\"WordDictionary\", \"addWord\", \"search\"], Arguments: [[], [\"a\"], [\".\"]]",
+            "output": "[null, null, true]",
+            "explanation": "A single dot matches a single character word."
+        },
+        {
+            "input": "Operations: [\"WordDictionary\", \"search\"], Arguments: [[], [\"test\"]]",
+            "output": "[null, false]",
+            "explanation": "Searching an empty dictionary always returns false."
+        }
+    ]
+}
