@@ -1,12 +1,10 @@
-from sqlalchemy import Column
-from sqlalchemy import Enum
+from sqlalchemy import Column, String
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import Text
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
-from app.models.enums import ProgrammingLanguage
 
 
 class CodingStarterCode(Base):
@@ -30,7 +28,7 @@ class CodingStarterCode(Base):
     )
 
     language = Column(
-        Enum(ProgrammingLanguage),
+        String(20),
         nullable=False,
         index=True,
     )

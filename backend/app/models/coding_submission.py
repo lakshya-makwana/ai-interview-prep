@@ -1,7 +1,6 @@
-from sqlalchemy import Boolean
+from sqlalchemy import Boolean, String
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import Enum
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import Text
@@ -9,9 +8,6 @@ from sqlalchemy import func
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
-from app.models.enums import ProgrammingLanguage
-from app.models.enums import SubmissionStatus
-
 
 class CodingSubmission(Base):
 
@@ -44,7 +40,13 @@ class CodingSubmission(Base):
     )
 
     language = Column(
-        Enum(ProgrammingLanguage),
+        String(20),
+        nullable=False,
+        index=True,
+    )
+
+    status = Column(
+        String(30),
         nullable=False,
         index=True,
     )
@@ -54,11 +56,6 @@ class CodingSubmission(Base):
         nullable=False,
     )
 
-    status = Column(
-        Enum(SubmissionStatus),
-        nullable=False,
-        index=True,
-    )
 
     runtime_ms = Column(
         Integer,

@@ -7,6 +7,14 @@ from app.database.database import engine
 import app.models.user
 import app.models.resume
 import app.models.resume_analysis
+import app.models.coding_question
+import app.models.coding_example
+import app.models.coding_progress
+import app.models.coding_submission
+import app.models.coding_starter_code
+import app.models.coding_test_case
+import app.models.coding_tag
+import app.models.coding_question_tag
 
 from app.api.auth import router as auth_router
 from app.api.users import router as users_router

@@ -1,6 +1,6 @@
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import Enum
+from sqlalchemy import String
 from sqlalchemy import Integer
 from sqlalchemy import Text
 from sqlalchemy import String
@@ -10,9 +10,6 @@ from sqlalchemy import Boolean
 from sqlalchemy import Float
 
 from app.database.base import Base
-from app.models.enums import DifficultyLevel
-from app.models.enums import QuestionCategory
-
 
 class CodingQuestion(Base):
 
@@ -62,14 +59,16 @@ class CodingQuestion(Base):
         nullable=True,
     )
 
+    from sqlalchemy import Enum as SQLEnum
+
     difficulty = Column(
-        Enum(DifficultyLevel),
-        nullable=False,
-        index=True,
+    String(20),
+    nullable=False,
+    index=True,
     )
 
     category = Column(
-        Enum(QuestionCategory),
+        String(50),
         nullable=False,
         index=True,
     )
