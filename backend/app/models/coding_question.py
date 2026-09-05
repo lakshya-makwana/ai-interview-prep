@@ -59,8 +59,6 @@ class CodingQuestion(Base):
         nullable=True,
     )
 
-    from sqlalchemy import Enum as SQLEnum
-
     difficulty = Column(
     String(20),
     nullable=False,

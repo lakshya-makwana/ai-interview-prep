@@ -48,52 +48,6 @@ class CodingQuestionBase(BaseModel):
     is_premium: bool = False
 
 
-class CodingQuestionCreate(CodingQuestionBase):
-    pass
-
-
-class CodingQuestionUpdate(BaseModel):
-
-    title: str | None = Field(
-        default=None,
-        min_length=1,
-        max_length=200,
-    )
-
-    slug: str | None = Field(
-        default=None,
-        min_length=1,
-        max_length=200,
-    )
-
-    description: str | None = None
-
-    difficulty: DifficultyLevel | None = None
-
-    category: QuestionCategory | None = None
-
-    constraints: str | None = None
-
-    input_format: str | None = None
-
-    output_format: str | None = None
-
-    explanation: str | None = None
-
-    estimated_time: int | None = Field(
-        default=None,
-        ge=1,
-    )
-
-    acceptance_rate: float | None = Field(
-        default=None,
-        ge=0,
-        le=100,
-    )
-
-    is_premium: bool | None = None
-
-
 class CodingTagResponse(BaseModel):
 
     id: int

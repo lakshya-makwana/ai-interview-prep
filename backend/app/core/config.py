@@ -1,4 +1,3 @@
-from typing import Optional
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -15,11 +14,6 @@ class Settings(BaseSettings):
     GEMINI_MODEL: str = "gemini-2.5-flash"
 
     UPLOAD_DIR: str = "uploads/resumes"
-
-    # Judge0
-    JUDGE0_API_URL: Optional[str] = None
-    JUDGE0_API_KEY: Optional[str] = None
-    JUDGE0_API_HOST: Optional[str] = None
 
     # Code execution Docker sandbox
     CODE_EXECUTION_TIMEOUT_SECONDS: int = 5

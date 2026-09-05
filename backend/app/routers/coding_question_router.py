@@ -18,7 +18,6 @@ from app.schemas.coding_test_case import (
 )
 
 from app.schemas.enums import (
-    DifficultyLevel,
     QuestionCategory,
 )
 

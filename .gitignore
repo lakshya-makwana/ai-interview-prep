@@ -1,6 +1,9 @@
 # macOS
 .DS_Store
 
+# Dependencies
+node_modules/
+
 # Frontend
 frontend/node_modules/
 frontend/dist/

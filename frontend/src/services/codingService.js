@@ -71,16 +71,6 @@ export const getSampleTestCases = async (questionId) => {
   return response.data;
 };
 
-export const getCategories = async () => {
-  const response = await api.get("/coding/categories");
-  return response.data;
-};
-
-export const getStatistics = async () => {
-  const response = await api.get("/coding/statistics");
-  return response.data;
-};
-
 export const getCodingProgress = async () => {
   const response = await api.get("/coding/progress/me");
   return response.data;
