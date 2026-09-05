@@ -10,6 +10,7 @@ from app.models.user import User
 from app.schemas.coding_question import (
     CodingQuestionListResponse,
     CodingQuestionResponse,
+    CodingTagResponse,
 )
 
 from app.schemas.coding_test_case import (
@@ -34,6 +35,16 @@ router = APIRouter(
     tags=["Coding Questions"],
 )
 
+
+@router.get(
+    "/tags",
+    response_model=list[CodingTagResponse],
+)
+def get_all_tags(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return coding_question_service.get_all_tags(db)
 
 
 @router.get(
@@ -60,20 +71,33 @@ def search_questions(
 def get_questions(
     page: int = 1,
     limit: int = 20,
+    page_size: int | None = None,
     search: str | None = None,
-    difficulty: DifficultyLevel | None = None,
-    category: QuestionCategory | None = None,
+    difficulty: str | None = None,
+    category: str | None = None,
+    tag: str | None = None,
+    solved: bool | None = None,
+    favorite: bool | None = None,
+    sort_by: str | None = None,
+    sort_order: str | None = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
 
+    effective_limit = page_size if page_size is not None else limit
+
     return coding_question_service.get_questions(
         db=db,
         page=page,
-        limit=limit,
+        limit=effective_limit,
         search=search,
         difficulty=difficulty,
         category=category,
+        tag=tag,
+        solved=solved,
+        favorite=favorite,
+        sort_by=sort_by,
+        sort_order=sort_order,
         user_id=current_user.id,
     )
 

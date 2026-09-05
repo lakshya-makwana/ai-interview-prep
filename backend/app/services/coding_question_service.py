@@ -7,6 +7,7 @@ from app.repositories.coding_question_repository import (
 from app.schemas.coding_question import (
     CodingQuestionResponse,
     CodingQuestionListResponse,
+    CodingTagResponse,
     RelatedCodingQuestionResponse,
 )
 from app.schemas.enums import DifficultyLevel
@@ -96,6 +97,17 @@ class CodingQuestionService:
                 user_id,
             ),
         )
+
+    def get_all_tags(
+        self,
+        db: Session,
+    ) -> list[CodingTagResponse]:
+
+        tags = coding_question_repository.get_all_tags(db)
+        return [
+            CodingTagResponse.model_validate(tag)
+            for tag in tags
+        ]
 
     def get_all_questions(
         self,
@@ -268,8 +280,13 @@ class CodingQuestionService:
         page: int = 1,
         limit: int = 20,
         search: str | None = None,
-        difficulty: DifficultyLevel | None = None,
-        category: QuestionCategory | None = None,
+        difficulty: str | DifficultyLevel | None = None,
+        category: str | QuestionCategory | None = None,
+        tag: str | None = None,
+        solved: bool | None = None,
+        favorite: bool | None = None,
+        sort_by: str | None = None,
+        sort_order: str | None = None,
         user_id: int | None = None,
     ) -> CodingQuestionListResponse:
 
@@ -281,6 +298,12 @@ class CodingQuestionService:
                 search=search,
                 difficulty=difficulty,
                 category=category,
+                tag=tag,
+                solved=solved,
+                favorite=favorite,
+                user_id=user_id,
+                sort_by=sort_by,
+                sort_order=sort_order,
             )
         )
 
@@ -294,5 +317,6 @@ class CodingQuestionService:
             ],
             total=total,
         )
-    
+
+
 coding_question_service = CodingQuestionService()
