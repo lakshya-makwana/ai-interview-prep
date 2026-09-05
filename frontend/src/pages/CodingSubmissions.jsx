@@ -3,18 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 import {
   Box,
-  CircularProgress,
   MenuItem,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
+import SearchOffRoundedIcon from "@mui/icons-material/SearchOffRounded";
 
 import AppCard from "../components/AppCard";
+import EmptyState from "../components/EmptyState";
 import DashboardLayout from "../layouts/DashboardLayout";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
+import SubmissionsSkeleton from "../components/skeletons/SubmissionsSkeleton";
 import { getMySubmissions } from "../services/codingSubmissionService";
 
 function formatStatus(status) {
@@ -152,19 +154,21 @@ export default function CodingSubmissions() {
   if (loading) {
     return (
       <DashboardLayout>
-        <Stack
-          alignItems="center"
-          justifyContent="center"
-          sx={{ minHeight: 360 }}
-        >
-          <CircularProgress />
-          <Typography
-            color="text.secondary"
-            sx={{ mt: 2 }}
-          >
-            Loading submissions...
-          </Typography>
-        </Stack>
+        <SubmissionsSkeleton />
+      </DashboardLayout>
+    );
+  }
+
+  if (submissions.length === 0) {
+    return (
+      <DashboardLayout>
+        <EmptyState
+          icon={HistoryRoundedIcon}
+          title="No Submissions Yet"
+          description="You haven't submitted any code solutions yet. Choose a problem from the practice library, test your code, and submit to see your execution statistics."
+          actionLabel="Practice Coding"
+          onAction={() => navigate("/coding")}
+        />
       </DashboardLayout>
     );
   }
@@ -186,7 +190,7 @@ export default function CodingSubmissions() {
             <TextField
               select
               size="small"
-              label="Problem"
+              label="Filter by Problem"
               value={problemFilter}
               onChange={(e) =>
                 setProblemFilter(e.target.value)
@@ -211,32 +215,42 @@ export default function CodingSubmissions() {
           </Stack>
         </AppCard>
 
-        <AppCard>
-          <Box sx={{ height: 560, width: "100%" }}>
-            <DataGrid
-              rows={filteredSubmissions}
-              columns={columns}
-              pageSizeOptions={[10, 25, 50]}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 10,
+        {filteredSubmissions.length === 0 ? (
+          <EmptyState
+            icon={SearchOffRoundedIcon}
+            title="No Submissions Match Filter"
+            description="No submissions found for the selected problem."
+            actionLabel="Show All Submissions"
+            onAction={() => setProblemFilter("")}
+          />
+        ) : (
+          <AppCard>
+            <Box sx={{ height: 560, width: "100%" }}>
+              <DataGrid
+                rows={filteredSubmissions}
+                columns={columns}
+                pageSizeOptions={[10, 25, 50]}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 10,
+                    },
                   },
-                },
-              }}
-              disableRowSelectionOnClick
-              onRowClick={(params) =>
-                navigate(`/coding/submissions/${params.id}`)
-              }
-              sx={{
-                border: 0,
-                "& .MuiDataGrid-row": {
-                  cursor: "pointer",
-                },
-              }}
-            />
-          </Box>
-        </AppCard>
+                }}
+                disableRowSelectionOnClick
+                onRowClick={(params) =>
+                  navigate(`/coding/submissions/${params.id}`)
+                }
+                sx={{
+                  border: 0,
+                  "& .MuiDataGrid-row": {
+                    cursor: "pointer",
+                  },
+                }}
+              />
+            </Box>
+          </AppCard>
+        )}
       </Stack>
     </DashboardLayout>
   );

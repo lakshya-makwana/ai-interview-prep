@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   Box,
-  CircularProgress,
   Divider,
   Stack,
   Typography,
 } from "@mui/material";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 
 import AppCard from "../components/AppCard";
+import EmptyState from "../components/EmptyState";
 import CodeEditor from "../components/coding/CodeEditor";
 import DashboardLayout from "../layouts/DashboardLayout";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
+import SubmissionDetailSkeleton from "../components/skeletons/SubmissionDetailSkeleton";
 import { getSubmission } from "../services/codingSubmissionService";
 
 function formatStatus(status) {
@@ -74,6 +76,7 @@ function DetailItem({ label, value }) {
 
 export default function CodingSubmissionDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [submission, setSubmission] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -95,19 +98,7 @@ export default function CodingSubmissionDetail() {
   if (loading) {
     return (
       <DashboardLayout>
-        <Stack
-          alignItems="center"
-          justifyContent="center"
-          sx={{ minHeight: 360 }}
-        >
-          <CircularProgress />
-          <Typography
-            color="text.secondary"
-            sx={{ mt: 2 }}
-          >
-            Loading submission...
-          </Typography>
-        </Stack>
+        <SubmissionDetailSkeleton />
       </DashboardLayout>
     );
   }
@@ -115,9 +106,13 @@ export default function CodingSubmissionDetail() {
   if (!submission) {
     return (
       <DashboardLayout>
-        <Typography variant="h5">
-          Submission not found.
-        </Typography>
+        <EmptyState
+          icon={HistoryRoundedIcon}
+          title="Submission Not Found"
+          description="The requested coding submission could not be found or you do not have permission to view it."
+          actionLabel="Back to Submissions"
+          onAction={() => navigate("/coding/submissions")}
+        />
       </DashboardLayout>
     );
   }

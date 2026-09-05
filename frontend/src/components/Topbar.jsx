@@ -20,11 +20,39 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useDashboard } from "../context/DashboardContext";
 
-const pageTitles = {
-  "/": "Dashboard",
-  "/profile": "User Profile",
-  "/resume": "Resume",
-  "/analysis": "AI Analysis",
+const pageMetadata = {
+  "/": {
+    title: "Dashboard",
+    subtitle: "AI resume analysis and interview preparation workspace.",
+  },
+  "/profile": {
+    title: "User Profile",
+    subtitle: "Manage your account, resume status, and practice history.",
+  },
+  "/resume": {
+    title: "Resume",
+    subtitle: "Upload and manage your resume for AI ATS optimization.",
+  },
+  "/analysis": {
+    title: "AI Analysis",
+    subtitle: "In-depth resume evaluation and tailored preparation feedback.",
+  },
+  "/coding": {
+    title: "Coding Practice",
+    subtitle: "Master data structures and algorithms with interactive problems.",
+  },
+  "/coding/progress": {
+    title: "Coding Progress",
+    subtitle: "Track solved problems, acceptance rates, and submission streaks.",
+  },
+  "/coding/favorites": {
+    title: "Favorite Problems",
+    subtitle: "Quickly access your bookmarked coding challenges.",
+  },
+  "/coding/submissions": {
+    title: "My Submissions",
+    subtitle: "Review your code submission history and execution results.",
+  },
 };
 
 export default function Topbar({ onMenuClick }) {
@@ -39,7 +67,26 @@ export default function Topbar({ onMenuClick }) {
   };
 
   const atsScore = dashboard.analysis ? `${dashboard.analysis.ats_score}%` : "Not analyzed";
-  const title = pageTitles[location.pathname] || "AI Interview";
+
+  let meta = pageMetadata[location.pathname];
+  if (!meta) {
+    if (location.pathname.startsWith("/coding/submissions/")) {
+      meta = {
+        title: "Submission Details",
+        subtitle: "Inspect evaluation metrics and source code.",
+      };
+    } else if (location.pathname.startsWith("/coding/")) {
+      meta = {
+        title: "Coding Problem",
+        subtitle: "Solve algorithmic challenges with multi-language execution.",
+      };
+    } else {
+      meta = {
+        title: "AI Interview",
+        subtitle: "Preparation workspace and coding practice.",
+      };
+    }
+  }
 
   function handleLogout() {
     logout();
@@ -70,6 +117,7 @@ export default function Topbar({ onMenuClick }) {
         <Stack direction="row" alignItems="center" spacing={1.5} sx={{ minWidth: 0 }}>
           <IconButton
             onClick={onMenuClick}
+            aria-label="Open navigation menu"
             sx={{ display: { xs: "inline-flex", lg: "none" } }}
           >
             <MenuRoundedIcon />
@@ -77,10 +125,10 @@ export default function Topbar({ onMenuClick }) {
 
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="h5" noWrap>
-              {title}
+              {meta.title}
             </Typography>
             <Typography variant="body2" color="text.secondary" noWrap>
-              AI resume analysis and interview preparation workspace.
+              {meta.subtitle}
             </Typography>
           </Box>
         </Stack>
@@ -97,6 +145,7 @@ export default function Topbar({ onMenuClick }) {
           <Tooltip title="User Profile">
             <IconButton
               onClick={() => navigate("/profile")}
+              aria-label="User Profile"
               sx={{ p: 0 }}
             >
               <Avatar sx={{ width: 40, height: 40, bgcolor: "primary.main" }}>
@@ -106,7 +155,7 @@ export default function Topbar({ onMenuClick }) {
           </Tooltip>
 
           <Tooltip title="Logout">
-            <IconButton onClick={handleLogout}>
+            <IconButton onClick={handleLogout} aria-label="Logout">
               <LogoutRoundedIcon />
             </IconButton>
           </Tooltip>

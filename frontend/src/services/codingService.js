@@ -12,7 +12,7 @@ export const getQuestions = async (
   sortBy = null,
   sortOrder = null
 ) => {
-  let params = {};
+  let params;
 
   if (typeof pageOrOptions === "object" && pageOrOptions !== null) {
     const opts = pageOrOptions;

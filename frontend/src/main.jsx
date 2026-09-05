@@ -9,6 +9,7 @@ import theme from "./theme/theme";
 
 import { AuthProvider } from "./context/AuthContext";
 import { DashboardProvider } from "./context/DashboardContext";
+import { SnackbarProvider } from "./context/SnackbarContext";
 
 import "./index.css";
 
@@ -17,11 +18,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <AuthProvider>
-        <DashboardProvider>
-          <App />
-        </DashboardProvider>
-      </AuthProvider>
+      <SnackbarProvider>
+        <AuthProvider>
+          <DashboardProvider>
+            <App />
+          </DashboardProvider>
+        </AuthProvider>
+      </SnackbarProvider>
 
     </ThemeProvider>
   </React.StrictMode>

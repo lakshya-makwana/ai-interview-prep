@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Box,
@@ -7,14 +8,16 @@ import {
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProblemsTable from "../components/coding/ProblemsTable";
+import { useSnackbar } from "../context/SnackbarContext";
 import {
   addFavorite,
   getFavorites,
   removeFavorite,
 } from "../services/codingService";
 
-
 function CodingFavorites() {
+  const navigate = useNavigate();
+  const { showSuccess, showError } = useSnackbar();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -43,6 +46,7 @@ function CodingFavorites() {
     try {
       if (question.is_favorited) {
         await removeFavorite(question.id);
+        showSuccess(`"${question.title}" removed from favorites.`);
         setQuestions((currentQuestions) =>
           currentQuestions.filter(
             (currentQuestion) =>
@@ -51,6 +55,7 @@ function CodingFavorites() {
         );
       } else {
         await addFavorite(question.id);
+        showSuccess(`"${question.title}" added to favorites.`);
         setQuestions((currentQuestions) =>
           currentQuestions.map((currentQuestion) =>
             currentQuestion.id === question.id
@@ -64,6 +69,7 @@ function CodingFavorites() {
       }
     } catch (err) {
       console.error(err);
+      showError("Failed to update favorite status. Please try again.");
     }
   }
 
@@ -78,7 +84,7 @@ function CodingFavorites() {
         </Typography>
 
         <Typography color="text.secondary">
-          {questions.length} Problems
+          {questions.length} Problem{questions.length === 1 ? "" : "s"}
         </Typography>
       </Box>
 
@@ -86,6 +92,10 @@ function CodingFavorites() {
         questions={questions}
         loading={loading}
         onToggleFavorite={handleToggleFavorite}
+        emptyTitle="No Favorite Problems Yet"
+        emptyDescription="You haven't bookmarked any coding problems yet. Click the bookmark icon on any problem to save it here for fast access."
+        emptyActionLabel="Explore Problems"
+        onEmptyAction={() => navigate("/coding")}
       />
     </DashboardLayout>
   );

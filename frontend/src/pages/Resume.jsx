@@ -19,17 +19,29 @@ import AppCard from "../components/AppCard";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
+import ResumeSkeleton from "../components/skeletons/ResumeSkeleton";
 import { useDashboard } from "../context/DashboardContext";
+import { useSnackbar } from "../context/SnackbarContext";
 import { uploadResume } from "../services/resumeService";
+import { analyzeResume } from "../services/analysisService";
 
 export default function Resume() {
   const navigate = useNavigate();
-  const { dashboard, refreshDashboard } = useDashboard();
+  const { dashboard, loading: dashboardLoading, refreshDashboard } = useDashboard();
+  const { showSuccess, showError } = useSnackbar();
 
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+
+  if (dashboardLoading) {
+    return (
+      <DashboardLayout>
+        <ResumeSkeleton />
+      </DashboardLayout>
+    );
+  }
 
   async function handleUpload() {
     if (!file) {
@@ -43,19 +55,20 @@ export default function Resume() {
       setError("");
 
       await uploadResume(file);
-
       await analyzeResume();
-
       await refreshDashboard();
 
       setFile(null);
-      setSuccess("Resume uploaded and analyzed successfully.");
+      const successMsg = "Resume uploaded and analyzed successfully.";
+      setSuccess(successMsg);
+      showSuccess(successMsg);
 
       navigate("/analysis");
-
     } catch (err) {
       console.error(err);
-      setError("Upload or analysis failed. Please try again.");
+      const errorMsg = "Upload or analysis failed. Please ensure the file is a valid PDF and try again.";
+      setError(errorMsg);
+      showError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -208,9 +221,42 @@ export default function Resume() {
                 </Stack>
               </Stack>
             ) : (
-              <Typography color="text.secondary">
-                No resume has been uploaded yet. Upload a PDF to start the preparation workflow.
-              </Typography>
+              <Stack
+                spacing={2}
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                  py: 4,
+                  px: 2,
+                  textAlign: "center",
+                  borderRadius: 2,
+                  bgcolor: "rgba(255, 255, 255, 0.02)",
+                  border: "1px dashed",
+                  borderColor: "divider",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: "50%",
+                    bgcolor: "rgba(79, 140, 255, 0.1)",
+                    color: "primary.main",
+                    display: "grid",
+                    placeItems: "center",
+                  }}
+                >
+                  <DescriptionRoundedIcon sx={{ fontSize: 28 }} />
+                </Box>
+                <Box>
+                  <Typography fontWeight={700} gutterBottom>
+                    No Resume Uploaded
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Select a PDF file on the left to upload your resume and run automated AI analysis.
+                  </Typography>
+                </Box>
+              </Stack>
             )}
           </AppCard>
         </Box>

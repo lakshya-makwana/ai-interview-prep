@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  CircularProgress,
   Divider,
   LinearProgress,
   Stack,
@@ -21,6 +20,7 @@ import AppCard from "../components/AppCard";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
 import { useDashboard } from "../context/DashboardContext";
 
 function splitSuggestions(value) {
@@ -91,12 +91,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <DashboardLayout>
-        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: 360 }}>
-          <CircularProgress />
-          <Typography color="text.secondary" sx={{ mt: 2 }}>
-            Loading dashboard...
-          </Typography>
-        </Stack>
+        <DashboardSkeleton />
       </DashboardLayout>
     );
   }
@@ -215,9 +210,13 @@ export default function Dashboard() {
                 title="Resume Analyzed"
                 subtitle={hasAnalysis ? "Your latest AI report is available." : "Run Gemini analysis after uploading a resume."}
               />
-              <JourneyItem done={false} title="Mock Interview" subtitle="Coming in the next phase." />
-              <JourneyItem done={false} title="Coding Practice" subtitle="Coming in the next phase." />
-              <JourneyItem done={false} title="HR Interview" subtitle="Coming in the next phase." />
+              <JourneyItem
+                done={Boolean(solvedProblems > 0)}
+                title="Coding Practice"
+                subtitle={solvedProblems > 0 ? `${solvedProblems} problem${solvedProblems === 1 ? "" : "s"} solved.` : "Solve problems to build interview readiness."}
+              />
+              <JourneyItem done={false} title="Mock Interview" subtitle="Simulate live technical interview rounds." />
+              <JourneyItem done={false} title="HR Interview" subtitle="Practice behavioral and culture-fit scenarios." />
             </Stack>
           </AppCard>
 

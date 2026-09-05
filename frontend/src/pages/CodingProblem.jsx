@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Link as RouterLink,
+  useNavigate,
   useParams,
 } from "react-router-dom";
 
@@ -8,7 +9,6 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Divider,
   IconButton,
   Link,
@@ -21,8 +21,12 @@ import {
 } from "@mui/material";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
+import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
 
 import DashboardLayout from "../layouts/DashboardLayout";
+import EmptyState from "../components/EmptyState";
+import ProblemDetailSkeleton from "../components/skeletons/ProblemDetailSkeleton";
+import { useSnackbar } from "../context/SnackbarContext";
 import {
   addFavorite,
   getQuestion,
@@ -40,12 +44,14 @@ import {
 
 export default function CodingProblem() {
   const { slug } = useParams();
+  const navigate = useNavigate();
+  const { showSuccess, showError, showWarning } = useSnackbar();
 
   const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [language, setLanguage] = useState("python");
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(() => starterCode["python"] || "");
   const [stdin, setStdin] = useState("");
   const [sampleTestCases, setSampleTestCases] = useState([]);
   const [consoleOutput, setConsoleOutput] = useState("");
@@ -53,6 +59,11 @@ export default function CodingProblem() {
   const [submitting, setSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
   const [visibleHints, setVisibleHints] = useState(0);
+
+  function handleLanguageChange(newLang) {
+    setLanguage(newLang);
+    setCode(starterCode[newLang] || "");
+  }
 
   async function handleRun() {
     try {
@@ -67,13 +78,16 @@ export default function CodingProblem() {
 
       if (result.stderr) {
         setConsoleOutput(result.stderr);
+        showWarning("Code execution finished with errors.");
       } else {
-        setConsoleOutput(result.stdout);
+        setConsoleOutput(result.stdout || "Execution completed with no output.");
+        showSuccess("Code ran successfully!");
       }
 
     } catch (err) {
       console.error(err);
       setConsoleOutput("Failed to execute code.");
+      showError("Execution failed. Please check your syntax or input.");
     } finally {
       setRunning(false);
     }
@@ -91,6 +105,11 @@ export default function CodingProblem() {
       );
 
       setSubmitResult(result);
+      if (result.status === "Accepted" || result.status === "accepted") {
+        showSuccess("🎉 Solution accepted! All test cases passed.");
+      } else {
+        showWarning(`Submission evaluated: ${result.status.replaceAll("_", " ")}`);
+      }
     } catch (err) {
       console.error(err);
       const detail = err.response?.data?.detail;
@@ -107,6 +126,7 @@ export default function CodingProblem() {
         runtime_ms: 0,
         stderr: errorMessage,
       });
+      showError("Submission failed. Review the output below.");
     } finally {
       setSubmitting(false);
     }
@@ -118,6 +138,7 @@ export default function CodingProblem() {
         const data = await getQuestion(slug);
         setQuestion(data);
         setVisibleHints(0);
+        setCode(starterCode["python"] || "");
 
         const testCaseData = await getSampleTestCases(
           data.id
@@ -136,10 +157,6 @@ export default function CodingProblem() {
     loadQuestion();
   }, [slug]);
 
-  useEffect(() => {
-    setCode(starterCode[language] || "");
-  }, [language]);
-
   function handleSampleClick(testCase) {
     setStdin(testCase.input);
   }
@@ -148,8 +165,10 @@ export default function CodingProblem() {
     try {
       if (question.is_favorited) {
         await removeFavorite(question.id);
+        showSuccess(`"${question.title}" removed from favorites.`);
       } else {
         await addFavorite(question.id);
+        showSuccess(`"${question.title}" added to favorites.`);
       }
 
       setQuestion((currentQuestion) => ({
@@ -158,6 +177,7 @@ export default function CodingProblem() {
       }));
     } catch (err) {
       console.error(err);
+      showError("Failed to update favorite status.");
     }
   }
 
@@ -173,15 +193,7 @@ export default function CodingProblem() {
   if (loading) {
     return (
       <DashboardLayout>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 8,
-          }}
-        >
-          <CircularProgress />
-        </Box>
+        <ProblemDetailSkeleton />
       </DashboardLayout>
     );
   }
@@ -189,9 +201,13 @@ export default function CodingProblem() {
   if (!question) {
     return (
       <DashboardLayout>
-        <Typography variant="h5">
-          Problem not found.
-        </Typography>
+        <EmptyState
+          icon={CodeRoundedIcon}
+          title="Problem Not Found"
+          description="The requested coding problem could not be found or may have been updated."
+          actionLabel="Browse Problems"
+          onAction={() => navigate("/coding")}
+        />
       </DashboardLayout>
     );
   }
@@ -248,7 +264,10 @@ export default function CodingProblem() {
                   : "Add to favorites"
               }
             >
-              <IconButton onClick={handleToggleFavorite}>
+              <IconButton
+                aria-label={question.is_favorited ? "Remove from favorites" : "Add to favorites"}
+                onClick={handleToggleFavorite}
+              >
                 {question.is_favorited ? (
                   <BookmarkRoundedIcon color="primary" />
                 ) : (
@@ -578,7 +597,7 @@ export default function CodingProblem() {
               size="small"
               value={language}
               onChange={(e) =>
-                setLanguage(e.target.value)
+                handleLanguageChange(e.target.value)
               }
               sx={{
                 width: 170,

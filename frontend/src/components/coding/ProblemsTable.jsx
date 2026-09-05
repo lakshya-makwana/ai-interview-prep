@@ -11,11 +11,19 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
+import SearchOffRoundedIcon from "@mui/icons-material/SearchOffRounded";
+
+import EmptyState from "../EmptyState";
+import ProblemsSkeleton from "../skeletons/ProblemsSkeleton";
 
 export default function ProblemsTable({
   questions,
   loading,
   onToggleFavorite,
+  emptyTitle,
+  emptyDescription,
+  emptyActionLabel,
+  onEmptyAction,
 }) {
   const navigate = useNavigate();
 
@@ -36,6 +44,7 @@ export default function ProblemsTable({
         >
           <IconButton
             size="small"
+            aria-label={params.value ? "Remove from favorites" : "Add to favorites"}
             onClick={(event) => {
               event.stopPropagation();
               onToggleFavorite?.(params.row);
@@ -151,6 +160,23 @@ export default function ProblemsTable({
         `${params.value}%`,
     },
   ];
+
+  if (loading) {
+    return <ProblemsSkeleton rows={8} />;
+  }
+
+  if (!questions || questions.length === 0) {
+    return (
+      <EmptyState
+        icon={SearchOffRoundedIcon}
+        title={emptyTitle || "No Problems Found"}
+        description={emptyDescription || "No coding practice problems matched your selected search query and filter criteria."}
+        actionLabel={emptyActionLabel || (onEmptyAction ? "Reset Filters" : undefined)}
+        onAction={onEmptyAction}
+        sx={{ mt: 3 }}
+      />
+    );
+  }
 
   return (
     <Paper

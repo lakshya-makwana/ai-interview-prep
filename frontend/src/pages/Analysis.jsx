@@ -1,8 +1,6 @@
 import {
-  Alert,
   Box,
   Button,
-  CircularProgress,
   Divider,
   LinearProgress,
   Stack,
@@ -16,9 +14,11 @@ import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
 import { useNavigate } from "react-router-dom";
 
 import AppCard from "../components/AppCard";
+import EmptyState from "../components/EmptyState";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
+import AnalysisSkeleton from "../components/skeletons/AnalysisSkeleton";
 import { useDashboard } from "../context/DashboardContext";
 
 function splitLines(value) {
@@ -43,12 +43,7 @@ export default function Analysis() {
   if (loading) {
     return (
       <DashboardLayout>
-        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: 360 }}>
-          <CircularProgress />
-          <Typography color="text.secondary" sx={{ mt: 2 }}>
-            Loading analysis...
-          </Typography>
-        </Stack>
+        <AnalysisSkeleton />
       </DashboardLayout>
     );
   }
@@ -69,24 +64,15 @@ export default function Analysis() {
         </Box>
 
         {!analysis ? (
-          <AppCard>
-            <Stack spacing={2} alignItems="flex-start">
-              <Alert severity="info" sx={{ width: "100%" }}>
-                No analysis report is available yet.
-              </Alert>
-              <Typography color="text.secondary">
-                Upload a resume and run AI analysis to generate your report.
-              </Typography>
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                <Button variant="contained" onClick={() => navigate("/resume")}>
-                  Upload Resume
-                </Button>
-                <Button variant="outlined" onClick={() => navigate("/")}>
-                  Back to Dashboard
-                </Button>
-              </Stack>
-            </Stack>
-          </AppCard>
+          <EmptyState
+            icon={PsychologyRoundedIcon}
+            title="No Analysis Report Available"
+            description="Upload your PDF resume to generate an instant ATS compatibility score, identify missing skills, and unlock prioritized recommendations."
+            actionLabel="Upload Resume"
+            onAction={() => navigate("/resume")}
+            secondaryActionLabel="Back to Dashboard"
+            onSecondaryAction={() => navigate("/")}
+          />
         ) : (
           <>
             <Box

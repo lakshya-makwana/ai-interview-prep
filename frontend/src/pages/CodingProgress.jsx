@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Box,
-  CircularProgress,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
+import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 
 import DashboardLayout from "../layouts/DashboardLayout";
+import EmptyState from "../components/EmptyState";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import AppCard from "../components/AppCard";
@@ -53,6 +56,7 @@ function ProgressStatCard({ title, value }) {
 }
 
 export default function CodingProgress() {
+  const navigate = useNavigate();
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -74,18 +78,34 @@ export default function CodingProgress() {
   if (loading) {
     return (
       <DashboardLayout>
-        <Stack
-          alignItems="center"
-          justifyContent="center"
-          sx={{ minHeight: 360 }}
-        >
-          <CircularProgress />
-          <Typography
-            color="text.secondary"
-            sx={{ mt: 2 }}
+        <Stack spacing={3}>
+          <AppCard>
+            <Skeleton variant="text" width={200} height={32} />
+            <Skeleton variant="text" width={300} height={20} sx={{ mb: 2 }} />
+            <Stack direction="row" spacing={1}>
+              <Skeleton variant="rounded" width={110} height={28} sx={{ borderRadius: 1 }} />
+              <Skeleton variant="rounded" width={150} height={28} sx={{ borderRadius: 1 }} />
+            </Stack>
+          </AppCard>
+
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr",
+                lg: "repeat(3, 1fr)",
+              },
+              gap: 3,
+            }}
           >
-            Loading coding progress...
-          </Typography>
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <AppCard key={i} contentSx={{ minHeight: 130 }}>
+                <Skeleton variant="text" width="60%" height={20} />
+                <Skeleton variant="text" width="40%" height={44} sx={{ my: 1 }} />
+              </AppCard>
+            ))}
+          </Box>
         </Stack>
       </DashboardLayout>
     );
@@ -169,6 +189,16 @@ export default function CodingProgress() {
             value={stats.total_submissions}
           />
         </Box>
+
+        {stats.total_submissions === 0 && (
+          <EmptyState
+            icon={TrendingUpRoundedIcon}
+            title="Start Solving Problems"
+            description="You have not submitted any solutions yet. Practice algorithmic problems across easy, medium, and hard tiers to see detailed metrics, acceptance rates, and streaks here."
+            actionLabel="Explore Coding Problems"
+            onAction={() => navigate("/coding")}
+          />
+        )}
       </Stack>
     </DashboardLayout>
   );

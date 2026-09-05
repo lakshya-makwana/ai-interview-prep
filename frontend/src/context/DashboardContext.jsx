@@ -9,7 +9,7 @@ export function DashboardProvider({ children }) {
     analysis: null,
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => Boolean(localStorage.getItem("token")));
 
   async function refreshDashboard() {
     try {
@@ -27,13 +27,23 @@ export function DashboardProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) return undefined;
 
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+    let isMounted = true;
+    getDashboard()
+      .then((data) => {
+        if (isMounted) setDashboard(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
 
-    refreshDashboard();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -49,6 +59,7 @@ export function DashboardProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useDashboard() {
   return useContext(DashboardContext);
 }

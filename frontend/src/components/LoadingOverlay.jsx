@@ -22,7 +22,6 @@ export default function LoadingOverlay({ open }) {
 
   useEffect(() => {
     if (!open) {
-      setIndex(0);
       return undefined;
     }
 
@@ -30,7 +29,10 @@ export default function LoadingOverlay({ open }) {
       setIndex((current) => Math.min(current + 1, messages.length - 1));
     }, 2000);
 
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearInterval(timer);
+      setIndex(0);
+    };
   }, [open]);
 
   return (

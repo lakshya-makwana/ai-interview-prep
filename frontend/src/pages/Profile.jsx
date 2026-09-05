@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Paper,
   Stack,
   Table,
@@ -23,6 +22,7 @@ import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import ProfileSkeleton from "../components/skeletons/ProfileSkeleton";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
@@ -158,19 +158,7 @@ export default function Profile() {
   if (loading) {
     return (
       <DashboardLayout>
-        <Stack
-          alignItems="center"
-          justifyContent="center"
-          sx={{ minHeight: 360 }}
-        >
-          <CircularProgress />
-          <Typography
-            color="text.secondary"
-            sx={{ mt: 2 }}
-          >
-            Loading user profile...
-          </Typography>
-        </Stack>
+        <ProfileSkeleton />
       </DashboardLayout>
     );
   }

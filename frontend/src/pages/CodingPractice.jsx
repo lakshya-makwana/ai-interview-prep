@@ -3,6 +3,7 @@ import { Pagination, Stack } from "@mui/material";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProblemsTable from "../components/coding/ProblemsTable";
+import { useSnackbar } from "../context/SnackbarContext";
 import {
   addFavorite,
   getQuestions,
@@ -12,6 +13,7 @@ import {
 import CodingToolbar from "../components/coding/CodingToolbar";
 
 function CodingPractice() {
+  const { showSuccess, showError } = useSnackbar();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -125,8 +127,10 @@ function CodingPractice() {
     try {
       if (question.is_favorited) {
         await removeFavorite(question.id);
+        showSuccess(`"${question.title}" removed from favorites.`);
       } else {
         await addFavorite(question.id);
+        showSuccess(`"${question.title}" added to favorites.`);
       }
 
       setQuestions((currentQuestions) =>
@@ -141,6 +145,7 @@ function CodingPractice() {
       );
     } catch (err) {
       console.error(err);
+      showError("Failed to update favorite status. Please try again.");
     }
   }
 
@@ -174,6 +179,7 @@ function CodingPractice() {
         questions={questions}
         loading={loading}
         onToggleFavorite={handleToggleFavorite}
+        onEmptyAction={handleResetFilters}
       />
 
       {pageCount > 1 && (
