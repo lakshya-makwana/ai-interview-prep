@@ -7,6 +7,12 @@ import Resume from "./pages/Resume";
 import Analysis from "./pages/Analysis";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import CodingPractice from "./pages/CodingPractice";
+import CodingProblem from "./pages/CodingProblem";
+import CodingProgress from "./pages/CodingProgress";
+import CodingSubmissions from "./pages/CodingSubmissions";
+import CodingSubmissionDetail from "./pages/CodingSubmissionDetail";
+import { DashboardProvider } from "./context/DashboardContext";
 
 function App() {
   return (
@@ -40,6 +46,51 @@ function App() {
           element={
             <ProtectedRoute>
               <Analysis />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coding"
+          element={
+            <ProtectedRoute>
+              <CodingPractice />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coding/progress"
+          element={
+            <ProtectedRoute>
+              <CodingProgress />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coding/submissions"
+          element={
+            <ProtectedRoute>
+              <CodingSubmissions />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coding/submissions/:id"
+          element={
+            <ProtectedRoute>
+              <CodingSubmissionDetail />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coding/:slug"
+          element={
+            <ProtectedRoute>
+              <CodingProblem />
             </ProtectedRoute>
           }
         />
