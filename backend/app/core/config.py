@@ -21,6 +21,14 @@ class Settings(BaseSettings):
     JUDGE0_API_KEY: Optional[str] = None
     JUDGE0_API_HOST: Optional[str] = None
 
+    # Code execution Docker sandbox
+    CODE_EXECUTION_TIMEOUT_SECONDS: int = 5
+    CODE_EXECUTION_MEMORY_LIMIT: str = "256m"
+    CODE_EXECUTION_CPU_LIMIT: str = "1"
+    CODE_EXECUTION_PYTHON_IMAGE: str = "python:3.12-slim"
+    CODE_EXECUTION_JAVA_IMAGE: str = "openjdk:21"
+    CODE_EXECUTION_GCC_IMAGE: str = "gcc:latest"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore",
