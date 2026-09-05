@@ -57,6 +57,7 @@ class CodingSubmissionRepository(
         db: Session,
         user_id: int,
         question_id: int | None = None,
+        limit: int | None = None,
     ):
 
         query = (
@@ -78,12 +79,14 @@ class CodingSubmissionRepository(
                 CodingSubmission.question_id == question_id,
             )
 
-        return (
-            query.order_by(
-                CodingSubmission.submitted_at.desc(),
-            )
-            .all()
+        query = query.order_by(
+            CodingSubmission.submitted_at.desc(),
         )
+
+        if limit is not None:
+            query = query.limit(limit)
+
+        return query.all()
 
     def get_user_submission_detail(
         self,
@@ -309,6 +312,31 @@ class CodingSubmissionRepository(
             .scalar()
             or 0
         )
+
+    def get_favorite_language(
+        self,
+        db: Session,
+        user_id: int,
+    ) -> str | None:
+
+        result = (
+            db.query(
+                CodingSubmission.language,
+                func.count(CodingSubmission.id).label("count"),
+            )
+            .filter(
+                CodingSubmission.user_id == user_id,
+            )
+            .group_by(
+                CodingSubmission.language,
+            )
+            .order_by(
+                func.count(CodingSubmission.id).desc(),
+            )
+            .first()
+        )
+
+        return result[0] if result else None
 
 
 coding_submission_repository = CodingSubmissionRepository()

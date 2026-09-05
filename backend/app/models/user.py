@@ -40,8 +40,9 @@ class User(Base):
     )
 
     resumes = relationship(
-    "Resume",
-    back_populates="user",
+        "Resume",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
 
     coding_submissions = relationship(

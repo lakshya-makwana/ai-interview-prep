@@ -22,6 +22,7 @@ import { useDashboard } from "../context/DashboardContext";
 
 const pageTitles = {
   "/": "Dashboard",
+  "/profile": "User Profile",
   "/resume": "Resume",
   "/analysis": "AI Analysis",
 };
@@ -93,9 +94,16 @@ export default function Topbar({ onMenuClick }) {
             sx={{ display: { xs: "none", sm: "inline-flex" } }}
           />
 
-          <Avatar sx={{ width: 40, height: 40, bgcolor: "primary.main" }}>
-            <PersonRoundedIcon />
-          </Avatar>
+          <Tooltip title="User Profile">
+            <IconButton
+              onClick={() => navigate("/profile")}
+              sx={{ p: 0 }}
+            >
+              <Avatar sx={{ width: 40, height: 40, bgcolor: "primary.main" }}>
+                <PersonRoundedIcon />
+              </Avatar>
+            </IconButton>
+          </Tooltip>
 
           <Tooltip title="Logout">
             <IconButton onClick={handleLogout}>
