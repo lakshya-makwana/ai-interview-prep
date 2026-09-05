@@ -4,7 +4,6 @@ import { getDashboard } from "../services/dashboardService";
 const DashboardContext = createContext();
 
 export function DashboardProvider({ children }) {
-
   const [dashboard, setDashboard] = useState({
     resume: null,
     analysis: null,
@@ -19,13 +18,21 @@ export function DashboardProvider({ children }) {
       const data = await getDashboard();
 
       setDashboard(data);
-
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     refreshDashboard();
   }, []);
 

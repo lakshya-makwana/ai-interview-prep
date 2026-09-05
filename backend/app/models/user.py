@@ -56,3 +56,9 @@ class User(Base):
         uselist=False,
         cascade="all, delete-orphan",
     )
+
+    coding_favorites = relationship(
+        "CodingFavorite",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )

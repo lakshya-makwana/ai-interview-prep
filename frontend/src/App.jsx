@@ -10,9 +10,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CodingPractice from "./pages/CodingPractice";
 import CodingProblem from "./pages/CodingProblem";
 import CodingProgress from "./pages/CodingProgress";
+import CodingFavorites from "./pages/CodingFavorites";
 import CodingSubmissions from "./pages/CodingSubmissions";
 import CodingSubmissionDetail from "./pages/CodingSubmissionDetail";
-import { DashboardProvider } from "./context/DashboardContext";
 
 function App() {
   return (
@@ -64,6 +64,15 @@ function App() {
           element={
             <ProtectedRoute>
               <CodingProgress />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coding/favorites"
+          element={
+            <ProtectedRoute>
+              <CodingFavorites />
             </ProtectedRoute>
           }
         />

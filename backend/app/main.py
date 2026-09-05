@@ -16,6 +16,10 @@ import app.models.coding_starter_code
 import app.models.coding_test_case
 import app.models.coding_tag
 import app.models.coding_question_tag
+import app.models.coding_company
+import app.models.coding_question_company
+import app.models.coding_hint
+import app.models.coding_favorite
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -37,6 +41,9 @@ from app.routers.coding_statistics_router import (
 )
 from app.routers.coding_submission_router import (
     router as coding_submission_router,
+)
+from app.routers.coding_favorite_router import (
+    router as coding_favorite_router,
 )
 from app.routers.code_execution_router import (
     router as code_execution_router,
@@ -68,6 +75,7 @@ app.include_router(coding_question_router)
 app.include_router(coding_progress_router)
 app.include_router(coding_statistics_router)
 app.include_router(coding_submission_router)
+app.include_router(coding_favorite_router)
 
 app.include_router(code_execution_router)
 

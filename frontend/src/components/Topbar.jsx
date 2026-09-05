@@ -4,122 +4,106 @@ import {
   Box,
   Chip,
   IconButton,
+  Stack,
   Toolbar,
   Tooltip,
   Typography,
 } from "@mui/material";
 
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 import { useDashboard } from "../context/DashboardContext";
 
-export default function Topbar() {
+const pageTitles = {
+  "/": "Dashboard",
+  "/resume": "Resume",
+  "/analysis": "AI Analysis",
+};
 
+export default function Topbar({ onMenuClick }) {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const { logout } = useAuth();
+  const dashboardContext = useDashboard();
+  
+  const dashboard = dashboardContext?.dashboard ?? {
+    resume: null,
+    analysis: null,
+  };
 
-  const { dashboard } = useDashboard();
-
-  const atsScore = dashboard.analysis
-    ? `${dashboard.analysis.ats_score}%`
-    : "--";
+  const atsScore = dashboard.analysis ? `${dashboard.analysis.ats_score}%` : "Not analyzed";
+  const title = pageTitles[location.pathname] || "AI Interview";
 
   function handleLogout() {
-
     logout();
-
     navigate("/login");
-
   }
 
   return (
-
     <AppBar
       position="sticky"
       elevation={0}
+      color="transparent"
       sx={{
-        bgcolor: "#0B1120",
-        borderBottom: "1px solid rgba(255,255,255,.08)",
+        bgcolor: "background.default",
+        borderBottom: 1,
+        borderColor: "divider",
+        backdropFilter: "blur(12px)",
       }}
     >
-
       <Toolbar
         sx={{
-          height: 72,
+          minHeight: 72,
+          px: { xs: 2, sm: 3, md: 4 },
           display: "flex",
           justifyContent: "space-between",
-          px: 4,
+          gap: 2,
         }}
       >
-
-        <Box>
-
-          <Typography
-            variant="h5"
-            fontWeight={700}
+        <Stack direction="row" alignItems="center" spacing={1.5} sx={{ minWidth: 0 }}>
+          <IconButton
+            onClick={onMenuClick}
+            sx={{ display: { xs: "inline-flex", lg: "none" } }}
           >
-            Dashboard
-          </Typography>
+            <MenuRoundedIcon />
+          </IconButton>
 
-          <Typography
-            variant="body2"
-            color="text.secondary"
-          >
-            AI Interview Preparation Platform
-          </Typography>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="h5" noWrap>
+              {title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" noWrap>
+              AI resume analysis and interview preparation workspace.
+            </Typography>
+          </Box>
+        </Stack>
 
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-
+        <Stack direction="row" alignItems="center" spacing={{ xs: 1, sm: 2 }}>
           <Chip
             icon={<PsychologyRoundedIcon />}
-            label={`ATS Score • ${atsScore}`}
-            color="primary"
-            variant="outlined"
-            sx={{
-              fontWeight: 600,
-            }}
+            label={`ATS: ${atsScore}`}
+            color={dashboard.analysis ? "primary" : "default"}
+            variant={dashboard.analysis ? "filled" : "outlined"}
+            sx={{ display: { xs: "none", sm: "inline-flex" } }}
           />
 
-          <Avatar
-            sx={{
-              bgcolor: "#2563EB",
-              width: 42,
-              height: 42,
-            }}
-          >
+          <Avatar sx={{ width: 40, height: 40, bgcolor: "primary.main" }}>
             <PersonRoundedIcon />
           </Avatar>
 
           <Tooltip title="Logout">
-
-            <IconButton
-              onClick={handleLogout}
-            >
+            <IconButton onClick={handleLogout}>
               <LogoutRoundedIcon />
             </IconButton>
-
           </Tooltip>
-
-        </Box>
-
+        </Stack>
       </Toolbar>
-
     </AppBar>
-
   );
-
 }

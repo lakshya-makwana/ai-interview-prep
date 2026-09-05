@@ -3,11 +3,17 @@ from fastapi import Depends
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+from app.core.dependencies import get_current_user
 from app.database.database import get_db
+from app.models.user import User
 
 from app.schemas.coding_question import (
     CodingQuestionListResponse,
     CodingQuestionResponse,
+)
+
+from app.schemas.coding_test_case import (
+    CodingSampleTestCaseListResponse,
 )
 
 from app.schemas.enums import (
@@ -19,21 +25,15 @@ from app.services.coding_question_service import (
     coding_question_service,
 )
 
+from app.services.coding_test_case_service import (
+    coding_test_case_service,
+)
+
 router = APIRouter(
     prefix="/coding/questions",
     tags=["Coding Questions"],
 )
 
-
-@router.get(
-    "/",
-    response_model=CodingQuestionListResponse,
-)
-def get_questions(
-    db: Session = Depends(get_db),
-):
-
-    return coding_question_service.get_all_questions(db)
 
 
 @router.get(
@@ -43,26 +43,38 @@ def get_questions(
 def search_questions(
     keyword: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
 
     return coding_question_service.search_questions(
         db,
         keyword,
+        current_user.id,
     )
 
 
 @router.get(
-    "/difficulty/{difficulty}",
+    "/",
     response_model=CodingQuestionListResponse,
 )
-def get_by_difficulty(
-    difficulty: DifficultyLevel,
+def get_questions(
+    page: int = 1,
+    limit: int = 20,
+    search: str | None = None,
+    difficulty: DifficultyLevel | None = None,
+    category: QuestionCategory | None = None,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
 
-    return coding_question_service.get_by_difficulty(
-        db,
-        difficulty,
+    return coding_question_service.get_questions(
+        db=db,
+        page=page,
+        limit=limit,
+        search=search,
+        difficulty=difficulty,
+        category=category,
+        user_id=current_user.id,
     )
 
 
@@ -73,11 +85,13 @@ def get_by_difficulty(
 def get_by_category(
     category: QuestionCategory,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
 
     return coding_question_service.get_by_category(
         db,
         category,
+        current_user.id,
     )
 
 
@@ -88,11 +102,13 @@ def get_by_category(
 def get_question_by_slug(
     slug: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
 
     question = coding_question_service.get_question_by_slug(
         db,
         slug,
+        current_user.id,
     )
 
     if question is None:
@@ -105,17 +121,47 @@ def get_question_by_slug(
 
 
 @router.get(
+    "/{question_id}/test-cases",
+    response_model=CodingSampleTestCaseListResponse,
+)
+def get_sample_test_cases(
+    question_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+
+    question = coding_question_service.get_question_by_id(
+        db,
+        question_id,
+        current_user.id,
+    )
+
+    if question is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Question not found",
+        )
+
+    return coding_test_case_service.get_sample_test_cases(
+        db,
+        question_id,
+    )
+
+
+@router.get(
     "/{question_id}",
     response_model=CodingQuestionResponse,
 )
 def get_question(
     question_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
 
     question = coding_question_service.get_question_by_id(
         db,
         question_id,
+        current_user.id,
     )
 
     if question is None:

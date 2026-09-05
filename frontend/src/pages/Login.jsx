@@ -1,135 +1,140 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+
 import {
+  Alert,
   Box,
   Button,
-  Card,
-  CardContent,
+  CircularProgress,
   Container,
+  Link,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
 
+import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
+
 import api from "../api/api";
+import AppCard from "../components/AppCard";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  async function handleLogin(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
 
     try {
-      const formData = new URLSearchParams();
+      setLoading(true);
+      setError("");
 
-      formData.append("username", email);
-      formData.append("password", password);
+      const credentials = new URLSearchParams();
+      credentials.append("username", form.email);
+      credentials.append("password", form.password);
 
-      const response = await api.post(
-        "/auth/login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
+      const response = await api.post("/auth/login", credentials, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
 
-      console.log("========== LOGIN RESPONSE ==========");
-      console.log(response.data);
-      console.log("===================================");
-
-      const token =
-        response.data.access_token ||
-        response.data.token ||
-        response.data.jwt;
-
-      console.log("TOKEN:", token);
-
-      if (!token) {
-        alert("No token returned from backend.");
-        return;
-      }
-
-      login(token);
-
-      console.log(
-        "Saved Token:",
-        localStorage.getItem("token")
-      );
-
+      login(response.data.access_token);
       navigate("/");
     } catch (err) {
-      console.error("LOGIN ERROR:", err);
-
-      if (err.response) {
-        console.log("Status:", err.response.status);
-        console.log("Response:", err.response.data);
-      }
-
-      alert("Login failed. Check browser console.");
+      console.error(err);
+      setError("Login failed. Check your email and password.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Card sx={{ width: "100%", maxWidth: 500 }}>
-          <CardContent sx={{ p: 4 }}>
-            <Typography
-              variant="h4"
-              sx={{
-                mb: 4,
-                textAlign: "center",
-              }}
-            >
-              Login
+    <Box
+      sx={{
+        minHeight: "100vh",
+        bgcolor: "background.default",
+        display: "grid",
+        placeItems: "center",
+        px: 2,
+        py: 4,
+      }}
+    >
+      <Container maxWidth="sm">
+        <Stack spacing={3} alignItems="center" sx={{ mb: 3 }}>
+          <Box
+            sx={{
+              width: 56,
+              height: 56,
+              borderRadius: 3,
+              display: "grid",
+              placeItems: "center",
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+            }}
+          >
+            <PsychologyRoundedIcon />
+          </Box>
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="h4">Welcome back</Typography>
+            <Typography color="text.secondary" sx={{ mt: 1 }}>
+              Sign in to continue your interview preparation.
             </Typography>
+          </Box>
+        </Stack>
 
-            <form onSubmit={handleLogin}>
+        <AppCard>
+          <Box component="form" onSubmit={handleSubmit}>
+            <Stack spacing={2.5}>
               <TextField
-                fullWidth
                 label="Email"
-                margin="normal"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                value={form.email}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, email: event.target.value }))
+                }
+                required
+                fullWidth
               />
 
               <TextField
-                fullWidth
                 label="Password"
                 type="password"
-                margin="normal"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, password: event.target.value }))
+                }
+                required
+                fullWidth
               />
 
+              {error && <Alert severity="error">{error}</Alert>}
+
               <Button
-                fullWidth
                 type="submit"
                 variant="contained"
-                sx={{
-                  mt: 3,
-                  py: 1.5,
-                }}
+                size="large"
+                disabled={loading}
+                startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
               >
-                Login
+                {loading ? "Signing in..." : "Login"}
               </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </Box>
-    </Container>
+
+              <Typography align="center" color="text.secondary">
+                New here?{" "}
+                <Link component={RouterLink} to="/register" underline="hover">
+                  Create an account
+                </Link>
+              </Typography>
+            </Stack>
+          </Box>
+        </AppCard>
+      </Container>
+    </Box>
   );
 }

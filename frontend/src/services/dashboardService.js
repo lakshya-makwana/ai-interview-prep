@@ -8,6 +8,8 @@ export async function getDashboard(){
 
         analysis:null,
 
+        coding_progress:null,
+
     };
 
     try{
@@ -27,6 +29,18 @@ export async function getDashboard(){
         const analysis=await api.get("/analysis/me");
 
         result.analysis=analysis.data;
+
+    }
+
+    catch(e){
+
+    }
+
+    try{
+
+        const codingProgress=await api.get("/coding/progress/me");
+
+        result.coding_progress=codingProgress.data;
 
     }
 

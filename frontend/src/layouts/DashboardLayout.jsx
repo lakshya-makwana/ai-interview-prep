@@ -1,18 +1,16 @@
+import { useState } from "react";
+
 import { Box } from "@mui/material";
 
-import Sidebar from "../components/Sidebar";
+import Sidebar, { drawerWidth } from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
 export default function DashboardLayout({ children }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        minHeight: "100vh",
-        bgcolor: "#0B1120",
-      }}
-    >
-      <Sidebar />
+    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
+      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
 
       <Box
         sx={{
@@ -20,22 +18,21 @@ export default function DashboardLayout({ children }) {
           display: "flex",
           flexDirection: "column",
           minWidth: 0,
+          width: { lg: `calc(100% - ${drawerWidth}px)` },
         }}
       >
-        <Topbar />
+        <Topbar onMenuClick={() => setMobileOpen(true)} />
 
         <Box
           component="main"
           sx={{
             flex: 1,
-            width: "100%",
-            maxWidth: 1600,
-            mx: "auto",
-            px: 4,
-            py: 4,
+            p: { xs: 2, sm: 3, md: 4 },
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          {children}
+          <Box sx={{ width: "100%", maxWidth: 1480 }}>{children}</Box>
         </Box>
       </Box>
     </Box>

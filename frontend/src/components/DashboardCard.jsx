@@ -1,161 +1,122 @@
 import {
   Box,
-  Card,
-  CardContent,
-  Chip,
+  LinearProgress,
+  Stack,
   Typography,
+  alpha,
+  useTheme,
 } from "@mui/material";
 
-import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
+import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 
-const config = {
+import AppCard from "./AppCard";
+import StatusChip from "./StatusChip";
+
+const cardConfig = {
   "ATS Score": {
     icon: <TrendingUpRoundedIcon />,
-    color: "#2563EB",
+    color: "primary",
   },
   Resume: {
     icon: <DescriptionRoundedIcon />,
-    color: "#22C55E",
+    color: "success",
   },
   Analysis: {
     icon: <PsychologyRoundedIcon />,
-    color: "#A855F7",
+    color: "secondary",
   },
   Progress: {
     icon: <TaskAltRoundedIcon />,
-    color: "#F59E0B",
+    color: "warning",
   },
 };
 
-export default function DashboardCard({ title, value }) {
-
-  const item = config[title];
-
-  function getStatus() {
-
-    switch (title) {
-
-      case "ATS Score":
-
-        if (value === "--") return "Not Analyzed";
-
-        if (parseInt(value) >= 80) return "Excellent";
-
-        if (parseInt(value) >= 70) return "Good";
-
-        return "Needs Improvement";
-
-      case "Resume":
-
-        return value === "Uploaded"
-          ? "Ready"
-          : "Upload Required";
-
-      case "Analysis":
-
-        return value === "Completed"
-          ? "Latest Available"
-          : "Pending";
-
-      case "Progress":
-
-        return "Interview Journey";
-
-      default:
-
-        return "";
-
-    }
-
+function getStatus(title, value) {
+  if (title === "ATS Score") {
+    if (value === "--") return { label: "Not analyzed", color: "default" };
+    const score = Number.parseInt(value, 10);
+    if (score >= 85) return { label: "Excellent", color: "success" };
+    if (score >= 70) return { label: "Good", color: "primary" };
+    return { label: "Needs work", color: "warning" };
   }
 
+  if (title === "Resume") {
+    return value === "Uploaded"
+      ? { label: "Ready", color: "success" }
+      : { label: "Upload needed", color: "warning" };
+  }
+
+  if (title === "Analysis") {
+    return value === "Completed"
+      ? { label: "Report ready", color: "success" }
+      : { label: "Pending", color: "warning" };
+  }
+
+  return { label: "Interview journey", color: "primary" };
+}
+
+export default function DashboardCard({ title, value, progress }) {
+  const theme = useTheme();
+  const config = cardConfig[title] || cardConfig.Progress;
+  const palette = theme.palette[config.color] || theme.palette.primary;
+  const status = getStatus(title, value);
+
   return (
-
-    <Card
-      elevation={0}
+    <AppCard
       sx={{
-        height: 170,
-        borderRadius: 3,
-        bgcolor: "#162033",
-        border: "1px solid rgba(255,255,255,.08)",
-        transition: "all .25s ease",
-
+        transition: theme.transitions.create(["transform", "border-color", "box-shadow"]),
         "&:hover": {
-
-          transform: "translateY(-5px)",
-
-          borderColor: item.color,
-
-          boxShadow: `0 10px 30px ${item.color}33`,
-
+          transform: "translateY(-3px)",
+          borderColor: palette.main,
+          boxShadow: `0 16px 40px ${alpha(palette.main, 0.14)}`,
         },
       }}
+      contentSx={{
+        height: "100%",
+        minHeight: 150,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
     >
-
-      <CardContent
-        sx={{
-          p: 3,
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
+      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+        <Typography variant="body2" color="text.secondary" fontWeight={700}>
+          {title}
+        </Typography>
 
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            width: 40,
+            height: 40,
+            borderRadius: 2,
+            display: "grid",
+            placeItems: "center",
+            color: palette.main,
+            bgcolor: alpha(palette.main, 0.12),
           }}
         >
-
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            fontWeight={600}
-          >
-            {title}
-          </Typography>
-
-          <Box
-            sx={{
-              color: item.color,
-            }}
-          >
-            {item.icon}
-          </Box>
-
+          {config.icon}
         </Box>
+      </Stack>
 
-        <Typography
-          sx={{
-            fontSize: 34,
-            fontWeight: 800,
-            lineHeight: 1,
-          }}
-        >
+      <Box>
+        <Typography variant="h4" sx={{ lineHeight: 1 }}>
           {value}
         </Typography>
 
-        <Chip
-          label={getStatus()}
-          size="small"
-          sx={{
-            width: "fit-content",
-            bgcolor: `${item.color}20`,
-            color: item.color,
-            fontWeight: 700,
-          }}
-        />
+        {typeof progress === "number" && (
+          <LinearProgress
+            variant="determinate"
+            value={progress}
+            sx={{ mt: 2, height: 7, borderRadius: 999 }}
+          />
+        )}
+      </Box>
 
-      </CardContent>
-
-    </Card>
-
+      <StatusChip label={status.label} color={status.color} sx={{ width: "fit-content" }} />
+    </AppCard>
   );
-
 }

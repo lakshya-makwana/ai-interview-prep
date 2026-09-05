@@ -3,229 +3,162 @@ import { useNavigate } from "react-router-dom";
 
 import {
   Box,
-  Card,
-  CardContent,
+  ButtonBase,
   CircularProgress,
-  Grid,
+  Stack,
   Typography,
+  alpha,
+  useTheme,
 } from "@mui/material";
 
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import MicRoundedIcon from "@mui/icons-material/MicRounded";
 import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
-import MicRoundedIcon from "@mui/icons-material/MicRounded";
-
-import LoadingOverlay from "./LoadingOverlay";
 
 import { analyzeResume } from "../services/analysisService";
 import { useDashboard } from "../context/DashboardContext";
 
-function ActionTile({
-  icon,
-  title,
-  subtitle,
-  color,
-  onClick,
-  disabled = false,
-}) {
+import AppCard from "./AppCard";
+import LoadingOverlay from "./LoadingOverlay";
+import SectionHeader from "./SectionHeader";
+import StatusChip from "./StatusChip";
+
+function ActionTile({ icon, title, subtitle, color = "primary", status, onClick, disabled }) {
+  const theme = useTheme();
+  const palette = theme.palette[color] || theme.palette.primary;
 
   return (
-
-    <Card
-      elevation={0}
-      onClick={!disabled ? onClick : undefined}
+    <ButtonBase
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
       sx={{
-        cursor: disabled ? "default" : "pointer",
-        borderRadius: 3,
-        bgcolor: "#1E293B",
-        border: "1px solid rgba(255,255,255,.08)",
-        transition: ".25s",
-
+        width: "100%",
+        minHeight: 118,
+        p: 2,
+        borderRadius: 2,
+        border: 1,
+        borderColor: "divider",
+        bgcolor: disabled ? "action.disabledBackground" : "background.default",
+        textAlign: "left",
+        alignItems: "stretch",
+        justifyContent: "flex-start",
+        transition: theme.transitions.create(["transform", "border-color", "background-color"]),
         "&:hover": disabled
           ? {}
           : {
-              transform: "translateY(-4px)",
-              borderColor: color,
+              transform: "translateY(-2px)",
+              borderColor: palette.main,
+              bgcolor: alpha(palette.main, 0.08),
             },
       }}
     >
+      <Stack sx={{ width: "100%" }} spacing={1.5}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+          <Box
+            sx={{
+              width: 38,
+              height: 38,
+              borderRadius: 2,
+              display: "grid",
+              placeItems: "center",
+              color: palette.main,
+              bgcolor: alpha(palette.main, 0.12),
+            }}
+          >
+            {icon}
+          </Box>
+          {status && <StatusChip label={status} color={disabled ? "default" : color} />}
+        </Stack>
 
-      <CardContent sx={{ p: 3 }}>
-
-        <Box
-          sx={{
-            color,
-            mb: 2,
-          }}
-        >
-          {icon}
+        <Box>
+          <Typography fontWeight={800}>{title}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            {subtitle}
+          </Typography>
         </Box>
-
-        <Typography
-          fontWeight={700}
-        >
-          {title}
-        </Typography>
-
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: 1 }}
-        >
-          {subtitle}
-        </Typography>
-
-      </CardContent>
-
-    </Card>
-
+      </Stack>
+    </ButtonBase>
   );
-
 }
 
 export default function QuickActions() {
-
   const navigate = useNavigate();
-
   const { refreshDashboard } = useDashboard();
-
   const [loading, setLoading] = useState(false);
 
   async function handleAnalyze() {
-
     try {
-
       setLoading(true);
-
       await analyzeResume();
-
       await refreshDashboard();
-
       navigate("/analysis");
-
-    }
-
-    catch (err) {
-
+    } catch (err) {
       console.error(err);
-
       alert("Analysis failed.");
-
-    }
-
-    finally {
-
+    } finally {
       setLoading(false);
-
     }
-
   }
 
   return (
-
     <>
       <LoadingOverlay open={loading} />
 
-      <Card
-        elevation={0}
-        sx={{
-          borderRadius: 3,
-          bgcolor: "#162033",
-          border: "1px solid rgba(255,255,255,.08)",
-        }}
-      >
+      <AppCard>
+        <SectionHeader
+          title="Preparation Center"
+          subtitle="Continue the core interview preparation workflow."
+          action={loading ? <CircularProgress size={22} /> : null}
+        />
 
-        <CardContent sx={{ p: 3 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+            gap: 2,
+          }}
+        >
+          <ActionTile
+            icon={<DescriptionRoundedIcon />}
+            title="Resume"
+            subtitle="Upload or replace your resume."
+            status="Ready"
+            color="success"
+            onClick={() => navigate("/resume")}
+            disabled={loading}
+          />
 
-          <Typography
-            variant="h6"
-            fontWeight={700}
-          >
-            Preparation Center
-          </Typography>
+          <ActionTile
+            icon={<PsychologyRoundedIcon />}
+            title="AI Analysis"
+            subtitle="Run Gemini resume analysis."
+            status="Run"
+            color="primary"
+            onClick={handleAnalyze}
+            disabled={loading}
+          />
 
-          <Typography
-            color="text.secondary"
-            sx={{
-              mb: 3,
-            }}
-          >
-            Continue your interview preparation.
-          </Typography>
+          <ActionTile
+            icon={<VisibilityRoundedIcon />}
+            title="Analysis Report"
+            subtitle="Open your latest AI report."
+            status="View"
+            color="secondary"
+            onClick={() => navigate("/analysis")}
+            disabled={loading}
+          />
 
-          <Grid container spacing={2}>
-
-            <Grid xs={12} sm={6}>
-
-              <ActionTile
-                icon={<DescriptionRoundedIcon fontSize="large" />}
-                title="Resume"
-                subtitle="Upload or replace your resume"
-                color="#22C55E"
-                onClick={() => navigate("/resume")}
-              />
-
-            </Grid>
-
-            <Grid xs={12} sm={6}>
-
-              <ActionTile
-                icon={<PsychologyRoundedIcon fontSize="large" />}
-                title="AI Analysis"
-                subtitle="Analyze your resume with Gemini"
-                color="#2563EB"
-                onClick={handleAnalyze}
-              />
-
-            </Grid>
-
-            <Grid xs={12} sm={6}>
-
-              <ActionTile
-                icon={<VisibilityRoundedIcon fontSize="large" />}
-                title="Analysis Report"
-                subtitle="View your latest report"
-                color="#A855F7"
-                onClick={() => navigate("/analysis")}
-              />
-
-            </Grid>
-
-            <Grid xs={12} sm={6}>
-
-              <ActionTile
-                icon={<MicRoundedIcon fontSize="large" />}
-                title="Mock Interview"
-                subtitle="Coming in Phase 2"
-                color="#F59E0B"
-                disabled
-              />
-
-            </Grid>
-
-          </Grid>
-
-          {loading && (
-
-            <Box
-              sx={{
-                mt: 3,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-
-              <CircularProgress />
-
-            </Box>
-
-          )}
-
-        </CardContent>
-
-      </Card>
-
+          <ActionTile
+            icon={<MicRoundedIcon />}
+            title="Mock Interview"
+            subtitle="Interview practice module."
+            status="Soon"
+            color="warning"
+            disabled
+          />
+        </Box>
+      </AppCard>
     </>
   );
-
 }

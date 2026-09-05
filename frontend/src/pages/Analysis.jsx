@@ -1,281 +1,192 @@
-import { useEffect, useState } from "react";
-
 import {
+  Alert,
   Box,
   Button,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
+  CircularProgress,
+  Divider,
+  LinearProgress,
+  Stack,
   Typography,
 } from "@mui/material";
 
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
+
+import { useNavigate } from "react-router-dom";
+
+import AppCard from "../components/AppCard";
+import SectionHeader from "../components/SectionHeader";
+import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
-import api from "../api/api";
-import ScoreGauge from "../components/ScoreGauge";
-import AnalysisList from "../components/AnalysisList";
-import SuggestionCard from "../components/SuggestionCard";
+import { useDashboard } from "../context/DashboardContext";
+
+function splitLines(value) {
+  if (!value) return [];
+  return value
+    .split("\n")
+    .map((item) => item.replace(/^[-*•\d.]+\s*/, "").trim())
+    .filter(Boolean);
+}
+
+function scoreColor(score) {
+  if (score >= 85) return "success";
+  if (score >= 70) return "primary";
+  if (score >= 50) return "warning";
+  return "error";
+}
 
 export default function Analysis() {
-
-  const [analysis, setAnalysis] = useState(null);
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-
-    async function load() {
-
-      try {
-
-        const res = await api.get("/analysis/me");
-
-        setAnalysis(res.data);
-
-      }
-
-      catch (err) {
-
-        console.log(err);
-
-      }
-
-      setLoading(false);
-
-    }
-
-    load();
-
-  }, []);
+  const navigate = useNavigate();
+  const { dashboard, loading } = useDashboard();
 
   if (loading) {
-
     return (
-
       <DashboardLayout>
-
-        <Typography>Loading...</Typography>
-
+        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: 360 }}>
+          <CircularProgress />
+          <Typography color="text.secondary" sx={{ mt: 2 }}>
+            Loading analysis...
+          </Typography>
+        </Stack>
       </DashboardLayout>
-
     );
-
   }
 
-  if (!analysis) {
-
-    return (
-
-      <DashboardLayout>
-
-        <Typography>No analysis found.</Typography>
-
-      </DashboardLayout>
-
-    );
-
-  }
-
-  const strengths = analysis.strengths.split("\n");
-
-  const weaknesses = analysis.weaknesses.split("\n");
-
-  const keywords = analysis.missing_keywords.split("\n");
-
-  const suggestions = analysis.suggestions.split("\n");
+  const analysis = dashboard.analysis;
+  const score = analysis?.ats_score ?? 0;
+  const suggestions = splitLines(analysis?.suggestions);
+  const color = scoreColor(score);
 
   return (
-
     <DashboardLayout>
+      <Stack spacing={3}>
+        <Box>
+          <Typography variant="h4">AI Analysis</Typography>
+          <Typography color="text.secondary" sx={{ mt: 1 }}>
+            Review your ATS score and prioritized improvements from the latest Gemini analysis.
+          </Typography>
+        </Box>
 
-      <Typography
-        variant="h4"
-        sx={{ mb: 4 }}
-      >
-
-        Resume Analysis
-
-      </Typography>
-
-      <Grid container spacing={3}>
-
-        <Grid size={{ xs: 12 }}>
-
-          <Card
-            sx={{
-              background: "#1E293B",
-            }}
-          >
-
-            <CardContent
+        {!analysis ? (
+          <AppCard>
+            <Stack spacing={2} alignItems="flex-start">
+              <Alert severity="info" sx={{ width: "100%" }}>
+                No analysis report is available yet.
+              </Alert>
+              <Typography color="text.secondary">
+                Upload a resume and run AI analysis to generate your report.
+              </Typography>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                <Button variant="contained" onClick={() => navigate("/resume")}>
+                  Upload Resume
+                </Button>
+                <Button variant="outlined" onClick={() => navigate("/")}>
+                  Back to Dashboard
+                </Button>
+              </Stack>
+            </Stack>
+          </AppCard>
+        ) : (
+          <>
+            <Box
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                p: 5,
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", lg: "360px minmax(0, 1fr)" },
+                gap: 3,
               }}
             >
+              <AppCard>
+                <SectionHeader title="ATS Score" subtitle="Current resume compatibility." />
 
-              <ScoreGauge score={analysis.ats_score} />
+                <Stack spacing={2.5}>
+                  <Typography variant="h2" color={`${color}.main`} sx={{ lineHeight: 1 }}>
+                    {score}%
+                  </Typography>
+                  <LinearProgress
+                    variant="determinate"
+                    value={score}
+                    color={color}
+                    sx={{ height: 10, borderRadius: 999 }}
+                  />
+                  <StatusChip
+                    label={score >= 85 ? "Excellent" : score >= 70 ? "Good" : score >= 50 ? "Needs improvement" : "High priority"}
+                    color={color}
+                    sx={{ width: "fit-content" }}
+                  />
+                </Stack>
+              </AppCard>
 
-              <Box>
+              <AppCard>
+                <SectionHeader title="Report Summary" subtitle="What the system analyzed." />
 
                 <Box
                   sx={{
-                    mb: 5,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    display: "grid",
+                    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                    gap: 2,
                   }}
                 >
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <DescriptionRoundedIcon color="success" />
+                    <Box>
+                      <Typography fontWeight={800}>Resume</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {dashboard.resume?.filename || "Uploaded file"}
+                      </Typography>
+                    </Box>
+                  </Stack>
 
-                  <Typography
-                    variant="h3"
-                    fontWeight={700}
-                  >
-
-                    🤖 AI Resume Analysis
-
-                  </Typography>
-
-                  <Typography
-                    color="text.secondary"
-                  >
-                    <Button
-                      variant="contained"
-                      size="large"
-                    >
-                      Re-analyze Resume
-                    </Button>
-                    Powered by Google Gemini
-
-                  </Typography>
-
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <PsychologyRoundedIcon color="primary" />
+                    <Box>
+                      <Typography fontWeight={800}>AI Analysis</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Gemini resume review completed
+                      </Typography>
+                    </Box>
+                  </Stack>
                 </Box>
 
+                {analysis.summary && (
+                  <>
+                    <Divider sx={{ my: 2.5 }} />
+                    <Typography color="text.secondary">{analysis.summary}</Typography>
+                  </>
+                )}
+              </AppCard>
+            </Box>
+
+            <AppCard>
+              <SectionHeader
+                title="Recommended Improvements"
+                subtitle="Apply these changes before rerunning analysis."
+                action={<Button variant="outlined" onClick={() => navigate("/resume")}>Replace resume</Button>}
+              />
+
+              {suggestions.length === 0 ? (
                 <Typography color="text.secondary">
-                  Your resume has been analyzed by Gemini AI.
+                  No written suggestions were returned with this report.
                 </Typography>
-
-                <Typography color="text.secondary">
-                  Improve the highlighted weaknesses to
-                  increase your ATS score.
-                </Typography>
-
-              </Box>
-
-            </CardContent>
-
-          </Card>
-
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-
-          <AnalysisList
-            title="Strengths"
-            icon="✅"
-            items={strengths}
-          />
-
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-
-          <AnalysisList
-            title="Weaknesses"
-            icon="❌"
-            items={weaknesses}
-          />
-
-        </Grid>
-
-        <Grid size={{ xs: 12 }}>
-
-          <Card>
-
-            <CardContent>
-
-              <Typography
-                variant="h5"
-                fontWeight={700}
-                sx={{ mb: 3 }}
-              >
-
-                Missing ATS Keywords
-
-              </Typography>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  flexWrap: "wrap",
-                }}
-              >
-
-                {keywords.map((k) => (
-
-                  <Chip
-                    key={k}
-                    label={k}
-                    color="primary"
-                    variant="filled"
-                    sx={{
-                      fontWeight: 600,
-                      borderRadius: 5,
-                    }}
-                  />
-
-                ))}
-
-              </Box>
-
-            </CardContent>
-
-          </Card>
-
-        </Grid>
-
-        <Grid size={{ xs: 12 }}>
-
-          <Card>
-
-            <CardContent>
-
-              <Typography
-                variant="h5"
-                fontWeight={700}
-                sx={{ mb: 3 }}
-              >
-
-                AI Recommendations
-
-              </Typography>
-
-              <>
-
-                {suggestions.map((s) => (
-
-                  <SuggestionCard
-                    key={s}
-                    suggestion={s}
-                  />
-
-                ))}
-
-              </>
-
-            </CardContent>
-
-          </Card>
-
-        </Grid>
-
-      </Grid>
-
+              ) : (
+                <Stack divider={<Divider flexItem />} spacing={1.5}>
+                  {suggestions.map((item, index) => (
+                    <Stack key={`${item}-${index}`} direction="row" spacing={1.5} alignItems="flex-start">
+                      <CheckCircleRoundedIcon color={index < 2 ? "warning" : "primary"} />
+                      <Box>
+                        <Typography fontWeight={800}>
+                          {index === 0 ? "High priority" : index === 1 ? "Medium priority" : "Improvement"}
+                        </Typography>
+                        <Typography color="text.secondary">{item}</Typography>
+                      </Box>
+                    </Stack>
+                  ))}
+                </Stack>
+              )}
+            </AppCard>
+          </>
+        )}
+      </Stack>
     </DashboardLayout>
-
   );
-
 }

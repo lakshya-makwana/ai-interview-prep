@@ -8,90 +8,54 @@ import {
   Typography,
 } from "@mui/material";
 
+const messages = [
+  "Reading your resume...",
+  "Extracting skills and experience...",
+  "Checking ATS compatibility...",
+  "Finding missing keywords...",
+  "Generating AI recommendations...",
+  "Finalizing your report...",
+];
+
 export default function LoadingOverlay({ open }) {
-
-  const messages = [
-    "Reading your resume...",
-    "Extracting skills...",
-    "Analyzing ATS compatibility...",
-    "Finding missing keywords...",
-    "Generating AI recommendations...",
-    "Finalizing analysis...",
-  ];
-
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-
     if (!open) {
       setIndex(0);
-      return;
+      return undefined;
     }
 
-    const timer = setInterval(() => {
-      setIndex((prev) =>
-        prev < messages.length - 1 ? prev + 1 : prev
-      );
+    const timer = window.setInterval(() => {
+      setIndex((current) => Math.min(current + 1, messages.length - 1));
     }, 2000);
 
-    return () => clearInterval(timer);
-
+    return () => window.clearInterval(timer);
   }, [open]);
 
   return (
     <Backdrop
       open={open}
       sx={{
-        zIndex: 9999,
-        background: "rgba(15,23,42,0.95)",
-        color: "white",
+        zIndex: (theme) => theme.zIndex.modal + 1,
+        bgcolor: (theme) => theme.palette.background.default,
       }}
     >
-      <Box
-        sx={{
-          width: 450,
-          textAlign: "center",
-        }}
-      >
-        <CircularProgress
-          size={70}
-          color="inherit"
-        />
+      <Box sx={{ width: "min(440px, calc(100vw - 48px))", textAlign: "center" }}>
+        <CircularProgress size={64} />
 
-        <Typography
-          variant="h4"
-          sx={{
-            mt: 4,
-            fontWeight: 700,
-          }}
-        >
-          🤖 AI Resume Analysis
+        <Typography variant="h5" sx={{ mt: 3 }}>
+          AI Resume Analysis
         </Typography>
 
-        <Typography
-          sx={{
-            mt: 2,
-            minHeight: 30,
-          }}
-        >
+        <Typography color="text.secondary" sx={{ mt: 1, minHeight: 24 }}>
           {messages[index]}
         </Typography>
 
-        <LinearProgress
-          sx={{
-            mt: 4,
-            height: 8,
-            borderRadius: 4,
-          }}
-        />
+        <LinearProgress sx={{ mt: 3, height: 8, borderRadius: 999 }} />
 
-        <Typography
-          sx={{
-            mt: 2,
-            opacity: 0.8,
-          }}
-        >
-          Please don't close this window.
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+          Please keep this window open while the report is generated.
         </Typography>
       </Box>
     </Backdrop>

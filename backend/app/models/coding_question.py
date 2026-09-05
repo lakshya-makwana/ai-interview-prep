@@ -102,6 +102,25 @@ class CodingQuestion(Base):
     cascade="all, delete-orphan",
     )
 
+    companies = relationship(
+    "CodingQuestionCompany",
+    back_populates="question",
+    cascade="all, delete-orphan",
+    )
+
+    hints = relationship(
+    "CodingHint",
+    back_populates="question",
+    cascade="all, delete-orphan",
+    order_by="CodingHint.display_order",
+    )
+
+    favorites = relationship(
+    "CodingFavorite",
+    back_populates="question",
+    cascade="all, delete-orphan",
+    )
+
     submissions = relationship(
         "CodingSubmission",
         back_populates="question",

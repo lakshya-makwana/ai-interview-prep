@@ -74,3 +74,37 @@ class CodingDashboardResponse(BaseModel):
         ge=0,
         le=100,
     )
+
+
+class CodingProgressSummaryResponse(BaseModel):
+
+    total_solved: int = Field(
+        ge=0,
+    )
+
+    easy_solved: int = Field(
+        ge=0,
+    )
+
+    medium_solved: int = Field(
+        ge=0,
+    )
+
+    hard_solved: int = Field(
+        ge=0,
+    )
+
+    total_submissions: int = Field(
+        ge=0,
+    )
+
+    accepted_submissions: int = Field(
+        ge=0,
+    )
+
+    acceptance_rate: float = Field(
+        ge=0,
+        le=100,
+    )
+
+    recent_submission_status: str | None = None

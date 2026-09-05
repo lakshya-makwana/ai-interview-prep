@@ -22,6 +22,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import SmartToyRoundedIcon from "@mui/icons-material/SmartToyRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
+import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -34,7 +35,8 @@ const menuItems = [
   { title: "Resume", path: "/resume", icon: <DescriptionRoundedIcon /> },
   { title: "AI Analysis", path: "/analysis", icon: <PsychologyRoundedIcon /> },
   { title: "Mock Interview", icon: <MicRoundedIcon />, comingSoon: true },
-  {title: "Coding Practice", path: "/coding", icon: <CodeRoundedIcon />,},
+  {title: "Coding Practice", path: "/coding", icon: <CodeRoundedIcon />, exact: true,},
+  { title: "Favorites", path: "/coding/favorites", icon: <BookmarkRoundedIcon /> },
   { title: "Progress", path: "/coding/progress", icon: <TrendingUpRoundedIcon /> },
   { title: "My Submissions", path: "/coding/submissions", icon: <HistoryRoundedIcon /> },
   { title: "Settings", icon: <SettingsRoundedIcon />, comingSoon: true },
@@ -86,7 +88,7 @@ function SidebarContent({ onNavigate }) {
         {menuItems.map((item) => {
           const active =
             location.pathname === item.path ||
-            (
+            (!item.exact &&
               item.path !== "/" &&
               location.pathname.startsWith(`${item.path}/`)
             );
