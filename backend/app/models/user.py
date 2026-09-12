@@ -58,3 +58,10 @@ class User(Base):
         passive_deletes=True,
     )
 
+    dataset_records = relationship(
+        "InterviewDataset",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+

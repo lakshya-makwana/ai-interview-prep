@@ -23,6 +23,7 @@ from app.models.job_requirement import JobRequirement
 from app.models.candidate_profile import CandidateProfile
 from app.models.interview import Interview, InterviewQuestion
 from app.models.interview_evaluation import InterviewEvaluation
+from app.models.interview_dataset import InterviewDataset
 
 
 

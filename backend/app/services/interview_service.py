@@ -179,6 +179,16 @@ def submit_answer(
         interview.completed_at = func.now()
         is_completed = True
         next_question_response = None
+
+        # Finalize answer evaluations and export to dataset exactly once
+        from app.services.interview_evaluation_service import evaluate_and_persist_answer
+        from app.services.dataset_service import save_interview_dataset
+
+        for q in sorted(interview.questions, key=lambda x: x.display_order):
+            if not q.evaluation and q.candidate_answer and q.candidate_answer.strip():
+                evaluate_and_persist_answer(db, q)
+
+        save_interview_dataset(db, interview)
     else:
         interview.current_question = next_order
         is_completed = False

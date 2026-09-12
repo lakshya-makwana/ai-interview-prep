@@ -10,6 +10,7 @@ import JobDescription from "./pages/JobDescription";
 import JobMatch from "./pages/JobMatch";
 import Interview from "./pages/Interview";
 import CareerReadiness from "./pages/CareerReadiness";
+import InterviewHistory from "./pages/InterviewHistory";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -99,6 +100,15 @@ function App() {
           element={
             <ProtectedRoute>
               <CareerReadiness />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/interview-history"
+          element={
+            <ProtectedRoute>
+              <InterviewHistory />
             </ProtectedRoute>
           }
         />
