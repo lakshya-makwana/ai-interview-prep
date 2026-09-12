@@ -11,7 +11,6 @@ import JobMatch from "./pages/JobMatch";
 import Interview from "./pages/Interview";
 import CareerReadiness from "./pages/CareerReadiness";
 import InterviewHistory from "./pages/InterviewHistory";
-import MLReadiness from "./pages/MLReadiness";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -110,15 +109,6 @@ function App() {
           element={
             <ProtectedRoute>
               <InterviewHistory />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/ml-readiness"
-          element={
-            <ProtectedRoute>
-              <MLReadiness />
             </ProtectedRoute>
           }
         />

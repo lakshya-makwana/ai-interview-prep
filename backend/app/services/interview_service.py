@@ -4,7 +4,6 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 
-from app.data.question_bank import QUESTION_BANK
 from app.models.interview import Interview, InterviewQuestion
 from app.models.user import User
 from app.repositories.job_repository import job_repository
@@ -15,10 +14,27 @@ from app.schemas.interview import (
     InterviewQuestionResponse,
     StartInterviewResponse,
 )
+from app.services.adaptive_interview_service import adapt_next_question, select_questions
+
+
+def _extract_interview_context(interview: Interview) -> tuple[Optional[str], list[str]]:
+    focus = (
+        interview.job.title
+        if interview.job and interview.job.title
+        else "Technical Interview"
+    )
+    topics = list(
+        dict.fromkeys(
+            q.topic
+            for q in sorted(interview.questions, key=lambda x: x.display_order)
+            if q.topic
+        )
+    )
+    return focus, topics
 
 
 def start_interview(db: Session, current_user: User) -> StartInterviewResponse:
-    # 1. Refinement: Check if an interview is already "In Progress" for this user
+    # 1. Check if an interview is already "In Progress" for this user
     existing_interview = (
         db.query(Interview)
         .filter(
@@ -41,20 +57,26 @@ def start_interview(db: Session, current_user: User) -> StartInterviewResponse:
         if current_q is None and existing_interview.questions:
             current_q = existing_interview.questions[0]
 
+        focus, topics = _extract_interview_context(existing_interview)
+
         return StartInterviewResponse(
             interview_id=existing_interview.id,
             status=existing_interview.status,
             total_questions=existing_interview.total_questions,
             current_question_number=existing_interview.current_question,
             current_question=InterviewQuestionResponse.model_validate(current_q),
+            interview_focus=focus,
+            topics=topics,
         )
 
     # 2. Check if the user has an active analyzed job
     active_job = job_repository.get_by_user_id(db, current_user.id)
     job_id = active_job.id if active_job else None
 
-    # 3. Randomly select 5 unique questions from the modular question bank
-    sampled_questions = random.sample(QUESTION_BANK, 5)
+    # 3. Deterministically select 5 questions via Adaptive Interview Service
+    sampled_questions, interview_focus, session_topics = select_questions(
+        db, current_user
+    )
 
     # 4. Create new Interview
     interview = Interview(
@@ -62,7 +84,7 @@ def start_interview(db: Session, current_user: User) -> StartInterviewResponse:
         job_id=job_id,
         interview_type="Technical",
         status="In Progress",
-        total_questions=5,
+        total_questions=len(sampled_questions),
         current_question=1,
     )
     db.add(interview)
@@ -94,6 +116,8 @@ def start_interview(db: Session, current_user: User) -> StartInterviewResponse:
         total_questions=interview.total_questions,
         current_question_number=1,
         current_question=InterviewQuestionResponse.model_validate(first_question),
+        interview_focus=interview_focus,
+        topics=session_topics,
     )
 
 
@@ -126,6 +150,7 @@ def get_current_interview(db: Session, current_user: User) -> InterviewCurrentRe
     current_question_response = (
         InterviewQuestionResponse.model_validate(current_q) if current_q else None
     )
+    focus, topics = _extract_interview_context(interview)
 
     return InterviewCurrentResponse(
         interview_id=interview.id,
@@ -133,6 +158,8 @@ def get_current_interview(db: Session, current_user: User) -> InterviewCurrentRe
         total_questions=interview.total_questions,
         current_question_number=interview.current_question,
         current_question=current_question_response,
+        interview_focus=focus,
+        topics=topics,
     )
 
 
@@ -167,9 +194,24 @@ def submit_answer(
             detail="This interview has already been completed.",
         )
 
-    # Save candidate answer
+    # 1. Save candidate answer
     question.candidate_answer = answer.strip()
     question.answered_at = func.now()
+    db.flush()
+
+    # 2. In-session evaluation
+    from app.services.interview_evaluation_service import evaluate_and_persist_answer
+    evaluation = None
+    try:
+        evaluation = evaluate_and_persist_answer(db, question)
+    except Exception:
+        pass
+
+    score = (
+        evaluation.overall_score
+        if evaluation and evaluation.overall_score is not None
+        else 7.0
+    )
 
     next_order = question.display_order + 1
     if next_order > interview.total_questions:
@@ -181,15 +223,26 @@ def submit_answer(
         next_question_response = None
 
         # Finalize answer evaluations and export to dataset exactly once
-        from app.services.interview_evaluation_service import evaluate_and_persist_answer
         from app.services.dataset_service import save_interview_dataset
 
         for q in sorted(interview.questions, key=lambda x: x.display_order):
             if not q.evaluation and q.candidate_answer and q.candidate_answer.strip():
-                evaluate_and_persist_answer(db, q)
+                try:
+                    evaluate_and_persist_answer(db, q)
+                except Exception:
+                    pass
 
-        save_interview_dataset(db, interview)
+        try:
+            save_interview_dataset(db, interview)
+        except Exception:
+            pass
     else:
+        # 3. Dynamic in-session adaptation for next question
+        try:
+            adapt_next_question(db, interview, question, score)
+        except Exception:
+            pass
+
         interview.current_question = next_order
         is_completed = False
 
@@ -238,4 +291,9 @@ def get_interview_by_id(
             detail="Interview not found.",
         )
 
-    return InterviewDetailResponse.model_validate(interview)
+    focus, topics = _extract_interview_context(interview)
+
+    response = InterviewDetailResponse.model_validate(interview)
+    response.interview_focus = focus
+    response.topics = topics
+    return response

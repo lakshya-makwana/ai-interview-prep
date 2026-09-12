@@ -24,6 +24,8 @@ class StartInterviewResponse(BaseModel):
     total_questions: int
     current_question_number: int
     current_question: InterviewQuestionResponse
+    interview_focus: Optional[str] = None
+    topics: Optional[List[str]] = None
 
 
 class InterviewCurrentResponse(BaseModel):
@@ -34,6 +36,8 @@ class InterviewCurrentResponse(BaseModel):
     total_questions: int
     current_question_number: int
     current_question: Optional[InterviewQuestionResponse] = None
+    interview_focus: Optional[str] = None
+    topics: Optional[List[str]] = None
 
 
 class AnswerQuestionRequest(BaseModel):
@@ -65,3 +69,5 @@ class InterviewDetailResponse(BaseModel):
     started_at: datetime
     completed_at: Optional[datetime] = None
     questions: List[InterviewQuestionResponse]
+    interview_focus: Optional[str] = None
+    topics: Optional[List[str]] = None

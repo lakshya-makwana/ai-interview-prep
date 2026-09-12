@@ -85,6 +85,10 @@ export default function Interview() {
   // Review state
   const [completedInterview, setCompletedInterview] = useState(null);
 
+  // Adaptive Interview Context
+  const [interviewFocus, setInterviewFocus] = useState(null);
+  const [interviewTopics, setInterviewTopics] = useState([]);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -98,6 +102,8 @@ export default function Interview() {
           if (isMounted) {
             setInterviewId(report.interview_id);
             setCompletedInterview(report);
+            if (report.interview_focus) setInterviewFocus(report.interview_focus);
+            if (report.topics) setInterviewTopics(report.topics);
             setView("review");
           }
         } catch (err) {
@@ -120,6 +126,8 @@ export default function Interview() {
           setTotalQuestions(data.total_questions);
           setCurrentQuestionNumber(data.current_question_number);
           setCurrentQuestion(data.current_question);
+          if (data.interview_focus) setInterviewFocus(data.interview_focus);
+          if (data.topics) setInterviewTopics(data.topics);
 
           if (data.current_question) {
             setChatHistory([
@@ -158,6 +166,8 @@ export default function Interview() {
       setTotalQuestions(data.total_questions);
       setCurrentQuestionNumber(data.current_question_number);
       setCurrentQuestion(data.current_question);
+      if (data.interview_focus) setInterviewFocus(data.interview_focus);
+      if (data.topics) setInterviewTopics(data.topics);
       setAnswerText("");
 
       if (data.current_question) {
@@ -402,6 +412,83 @@ export default function Interview() {
         {/* 3. Active Conversational Chat Screen */}
         {view === "active" && currentQuestion && (
           <AppCard>
+            {/* Interview Focus & Priority Topics Header */}
+            {(interviewFocus || (interviewTopics && interviewTopics.length > 0)) && (
+              <Box
+                sx={{
+                  p: 2,
+                  mb: 2.5,
+                  borderRadius: 2,
+                  bgcolor: (t) =>
+                    t.palette.mode === "dark"
+                      ? "rgba(255, 255, 255, 0.03)"
+                      : "rgba(0, 0, 0, 0.02)",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: "space-between",
+                  alignItems: { xs: "flex-start", sm: "center" },
+                  gap: 2,
+                }}
+              >
+                {interviewFocus && (
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                        display: "block",
+                      }}
+                    >
+                      Interview Focus
+                    </Typography>
+                    <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                      {interviewFocus}
+                    </Typography>
+                  </Box>
+                )}
+
+                {interviewTopics && interviewTopics.length > 0 && (
+                  <Box sx={{ display: "flex", flexDirection: "column", alignItems: { xs: "flex-start", sm: "flex-end" }, gap: 0.5 }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Topics
+                    </Typography>
+                    <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
+                      {interviewTopics.map((topic, idx) => {
+                        const isCurrent = currentQuestion?.topic === topic;
+                        return (
+                          <Chip
+                            key={idx}
+                            label={topic}
+                            size="small"
+                            variant={isCurrent ? "filled" : "outlined"}
+                            color={isCurrent ? "primary" : "default"}
+                            sx={{
+                              height: 22,
+                              fontSize: "0.72rem",
+                              fontWeight: isCurrent ? 700 : 500,
+                            }}
+                          />
+                        );
+                      })}
+                    </Stack>
+                  </Box>
+                )}
+              </Box>
+            )}
+
             {/* Progress Indicator */}
             <Box sx={{ mb: 2.5 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>

@@ -24,7 +24,6 @@ import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
-import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -42,7 +41,6 @@ const menuItems = [
   { title: "Interview", path: "/interview", icon: <MicRoundedIcon sx={{ fontSize: 18 }} /> },
   { title: "Career Readiness", path: "/career-readiness", icon: <AssessmentRoundedIcon sx={{ fontSize: 18 }} /> },
   { title: "Interview History", path: "/interview-history", icon: <HistoryRoundedIcon sx={{ fontSize: 18 }} /> },
-  { title: "ML Readiness", path: "/ml-readiness", icon: <RuleRoundedIcon sx={{ fontSize: 18 }} /> },
   { title: "Settings", icon: <SettingsRoundedIcon sx={{ fontSize: 18 }} />, comingSoon: true },
 ];
 

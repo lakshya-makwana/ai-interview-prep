@@ -28,7 +28,6 @@ from app.api.matching import router as matching_router
 from app.api.interview import router as interview_router
 from app.api.career_readiness import router as career_readiness_router
 from app.api.dataset import router as dataset_router
-from app.api.ml_readiness import router as ml_readiness_router
 
 app = FastAPI(
     title="AI Interview Preparation API",
@@ -59,7 +58,6 @@ app.include_router(matching_router)
 app.include_router(interview_router)
 app.include_router(career_readiness_router)
 app.include_router(dataset_router)
-app.include_router(ml_readiness_router)
 
 
 @app.get("/")
