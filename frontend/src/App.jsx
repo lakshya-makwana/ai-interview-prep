@@ -8,6 +8,7 @@ import Analysis from "./pages/Analysis";
 import Profile from "./pages/Profile";
 import JobDescription from "./pages/JobDescription";
 import JobMatch from "./pages/JobMatch";
+import Interview from "./pages/Interview";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -70,6 +71,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Analysis />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/interview"
+          element={
+            <ProtectedRoute>
+              <Interview />
             </ProtectedRoute>
           }
         />

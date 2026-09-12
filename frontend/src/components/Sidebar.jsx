@@ -36,7 +36,7 @@ const menuItems = [
   { title: "Job Description", path: "/job-description", icon: <WorkOutlineRoundedIcon /> },
   { title: "Job Match", path: "/job-match", icon: <CompareArrowsRoundedIcon /> },
   { title: "AI Analysis", path: "/analysis", icon: <PsychologyRoundedIcon /> },
-  { title: "Mock Interview", icon: <MicRoundedIcon />, comingSoon: true },
+  { title: "Interview", path: "/interview", icon: <MicRoundedIcon /> },
   { title: "Settings", icon: <SettingsRoundedIcon />, comingSoon: true },
 ];
 
