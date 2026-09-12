@@ -57,3 +57,10 @@ class Resume(Base):
         uselist=False,
         cascade="all, delete-orphan",
     )
+
+    candidate_profile = relationship(
+        "CandidateProfile",
+        back_populates="resume",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )

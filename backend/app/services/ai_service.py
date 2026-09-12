@@ -57,7 +57,8 @@ def analyze_resume(resume_text: str):
         "strengths": [],
         "weaknesses": [],
         "missing_keywords": [],
-        "suggestions": []
+        "suggestions": [],
+        "skills": []
     }}
 
     Rules for the response:
@@ -66,6 +67,7 @@ def analyze_resume(resume_text: str):
     - Give 5-8 weaknesses.
     - Suggest keywords that are genuinely relevant to the candidate's profile.
     - Suggestions should be specific and actionable.
+    - Extract all technical skills, programming languages, frameworks, libraries, databases, and developer tools found in the resume into "skills".
     - Do not invent work experience that is not present.
     - Penalize missing metrics (accuracy, users, dataset size, latency improvements, etc.).
     - Reward strong technical projects.

@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.models.resume import Resume
 from app.models.resume_analysis import ResumeAnalysis
+from app.models.candidate_profile import CandidateProfile
 from app.services.ai_service import analyze_resume
 
 
@@ -28,6 +29,27 @@ def analyze_user_resume(
     analysis.weaknesses = "\n".join(result["weaknesses"])
     analysis.missing_keywords = "\n".join(result["missing_keywords"])
     analysis.suggestions = "\n".join(result["suggestions"])
+
+    # Extract skills for CandidateProfile
+    skills_list = result.get("skills") or result.get("strengths") or []
+    extracted_skills = "\n".join(skills_list)
+
+    profile = (
+        db.query(CandidateProfile)
+        .filter(CandidateProfile.resume_id == resume.id)
+        .first()
+    )
+
+    if profile is None:
+        profile = CandidateProfile(
+            resume_id=resume.id,
+            skills=extracted_skills,
+            verified_skills=None,
+            skills_verified=False,
+        )
+        db.add(profile)
+    else:
+        profile.skills = extracted_skills
 
     db.commit()
     db.refresh(analysis)

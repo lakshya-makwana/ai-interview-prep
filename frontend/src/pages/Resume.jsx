@@ -1,19 +1,26 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Divider,
+  IconButton,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
+import VerifiedUserRoundedIcon from "@mui/icons-material/VerifiedUserRounded";
 
 import AppCard from "../components/AppCard";
 import SectionHeader from "../components/SectionHeader";
@@ -24,6 +31,11 @@ import { useDashboard } from "../context/DashboardContext";
 import { useSnackbar } from "../context/SnackbarContext";
 import { uploadResume } from "../services/resumeService";
 import { analyzeResume } from "../services/analysisService";
+import {
+  confirmSkills,
+  getCandidateProfile,
+  updateVerifiedSkills,
+} from "../services/candidateProfileService";
 
 export default function Resume() {
   const navigate = useNavigate();
@@ -34,6 +46,62 @@ export default function Resume() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+
+  // Candidate Profile (Phase 1.5)
+  const [profile, setProfile] = useState(null);
+  const [skillsList, setSkillsList] = useState([]);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [savingSkills, setSavingSkills] = useState(false);
+  const [confirmingSkills, setConfirmingSkills] = useState(false);
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      setProfileLoading(true);
+      const data = await getCandidateProfile();
+      setProfile(data);
+
+      if (data.skills_verified || (data.verified_skills && data.verified_skills.length > 0)) {
+        setSkillsList(data.verified_skills || []);
+      } else {
+        setSkillsList(data.extracted_skills || []);
+      }
+    } catch (err) {
+      if (err?.response?.status !== 404) {
+        console.error("Failed to load candidate profile:", err);
+      }
+      setProfile(null);
+      setSkillsList([]);
+    } finally {
+      setProfileLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (dashboard.resume) {
+      getCandidateProfile()
+        .then((data) => {
+          if (!isMounted) return;
+          setProfile(data);
+          if (data.skills_verified || (data.verified_skills && data.verified_skills.length > 0)) {
+            setSkillsList(data.verified_skills || []);
+          } else {
+            setSkillsList(data.extracted_skills || []);
+          }
+        })
+        .catch((err) => {
+          if (!isMounted) return;
+          if (err?.response?.status !== 404) {
+            console.error("Failed to load candidate profile:", err);
+          }
+          setProfile(null);
+          setSkillsList([]);
+        });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [dashboard.resume]);
 
   if (dashboardLoading) {
     return (
@@ -57,13 +125,12 @@ export default function Resume() {
       await uploadResume(file);
       await analyzeResume();
       await refreshDashboard();
+      await fetchProfile();
 
       setFile(null);
       const successMsg = "Resume uploaded and analyzed successfully.";
       setSuccess(successMsg);
       showSuccess(successMsg);
-
-      navigate("/analysis");
     } catch (err) {
       console.error(err);
       const errorMsg = "Upload or analysis failed. Please ensure the file is a valid PDF and try again.";
@@ -74,13 +141,62 @@ export default function Resume() {
     }
   }
 
+  function handleSkillChange(index, value) {
+    const updated = [...skillsList];
+    updated[index] = value;
+    setSkillsList(updated);
+  }
+
+  function handleRemoveSkill(index) {
+    setSkillsList(skillsList.filter((_, i) => i !== index));
+  }
+
+  function handleAddSkill() {
+    setSkillsList([...skillsList, ""]);
+  }
+
+  async function handleSaveSkills() {
+    try {
+      setSavingSkills(true);
+      const cleaned = skillsList.map((s) => s.trim()).filter(Boolean);
+      const updated = await updateVerifiedSkills(cleaned);
+      setProfile(updated);
+      setSkillsList(updated.verified_skills || []);
+      showSuccess("Skills updated successfully.");
+    } catch (err) {
+      console.error(err);
+      showError(err?.response?.data?.detail || "Failed to update skills.");
+    } finally {
+      setSavingSkills(false);
+    }
+  }
+
+  async function handleConfirmSkills() {
+    try {
+      setConfirmingSkills(true);
+      const cleaned = skillsList.map((s) => s.trim()).filter(Boolean);
+      if (cleaned.length > 0) {
+        await updateVerifiedSkills(cleaned);
+      }
+      const updated = await confirmSkills();
+      setProfile(updated);
+      setSkillsList(updated.verified_skills || []);
+      showSuccess("Skills verified successfully.");
+    } catch (err) {
+      console.error(err);
+      showError(err?.response?.data?.detail || "Failed to confirm skills.");
+    } finally {
+      setConfirmingSkills(false);
+    }
+  }
+
   return (
     <DashboardLayout>
       <Stack spacing={3}>
         <Box>
           <Typography variant="h4">Resume</Typography>
           <Typography color="text.secondary" sx={{ mt: 1 }}>
-            Upload the resume you want Gemini to analyze for ATS compatibility and interview preparation.
+            Upload your resume, review ATS analysis, and verify candidate skills for job matching.
           </Typography>
         </Box>
 
@@ -91,11 +207,17 @@ export default function Resume() {
             gap: 3,
           }}
         >
+          {/* Upload Card */}
           <AppCard>
             <SectionHeader
               title="Upload Resume"
               subtitle="PDF files work best for consistent text extraction."
-              action={<StatusChip label={dashboard.resume ? "Resume saved" : "No resume"} color={dashboard.resume ? "success" : "warning"} />}
+              action={
+                <StatusChip
+                  label={dashboard.resume ? "Resume saved" : "No resume"}
+                  color={dashboard.resume ? "success" : "warning"}
+                />
+              }
             />
 
             <Box
@@ -176,6 +298,7 @@ export default function Resume() {
             )}
           </AppCard>
 
+          {/* Current Resume Card */}
           <AppCard>
             <SectionHeader title="Current Resume" subtitle="The file used for your latest analysis." />
 
@@ -217,6 +340,13 @@ export default function Resume() {
 
                   {dashboard.analysis && (
                     <StatusChip label={`ATS Score ${dashboard.analysis.ats_score}%`} color="primary" />
+                  )}
+
+                  {profile && (
+                    <StatusChip
+                      label={profile.skills_verified ? "Skills Verified" : "Verification Pending"}
+                      color={profile.skills_verified ? "success" : "warning"}
+                    />
                   )}
                 </Stack>
               </Stack>
@@ -260,6 +390,136 @@ export default function Resume() {
             )}
           </AppCard>
         </Box>
+
+        {/* Phase 1.5: Candidate Skill Verification Section */}
+        {dashboard.resume && (
+          <AppCard>
+            <SectionHeader
+              title="Candidate Skill Verification"
+              subtitle="Review, edit, and confirm AI-extracted skills before matching."
+              action={
+                profile?.skills_verified ? (
+                  <Chip
+                    icon={<CheckCircleRoundedIcon />}
+                    label="Skills Verified"
+                    color="success"
+                    size="small"
+                  />
+                ) : (
+                  <Chip
+                    label="Unverified"
+                    color="warning"
+                    size="small"
+                  />
+                )
+              }
+            />
+
+            {profileLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                <CircularProgress size={32} />
+              </Box>
+            ) : (
+              <Stack spacing={2.5}>
+                {profile?.skills_verified && (
+                  <Alert severity="success" icon={<VerifiedUserRoundedIcon />}>
+                    Skills Verified. These skills are confirmed as your trusted profile for job matching.
+                  </Alert>
+                )}
+
+                <Typography variant="body2" color="text.secondary">
+                  {profile?.skills_verified
+                    ? "Your skills have been confirmed. You can still modify and re-save if needed."
+                    : "The skills below were extracted by Gemini AI from your resume. Edit, remove, or add skills, then confirm."}
+                </Typography>
+
+                {/* Editable Skills List */}
+                <Stack spacing={1.5}>
+                  {skillsList.map((skill, index) => (
+                    <Stack
+                      key={index}
+                      direction="row"
+                      spacing={1.5}
+                      alignItems="center"
+                    >
+                      <TextField
+                        size="small"
+                        fullWidth
+                        placeholder="e.g. Python, Docker, PostgreSQL..."
+                        value={skill}
+                        onChange={(e) => handleSkillChange(index, e.target.value)}
+                        disabled={savingSkills || confirmingSkills}
+                        sx={{ bgcolor: "background.default", borderRadius: 1.5 }}
+                      />
+                      <IconButton
+                        color="error"
+                        onClick={() => handleRemoveSkill(index)}
+                        disabled={savingSkills || confirmingSkills}
+                        size="small"
+                        aria-label="Remove skill"
+                      >
+                        <DeleteOutlineRoundedIcon />
+                      </IconButton>
+                    </Stack>
+                  ))}
+
+                  {skillsList.length === 0 && (
+                    <Typography variant="body2" color="text.secondary" sx={{ py: 1 }}>
+                      No skills listed. Click &quot;Add Skill&quot; below to add skills manually.
+                    </Typography>
+                  )}
+                </Stack>
+
+                {/* Add Skill Button */}
+                <Box>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<AddRoundedIcon />}
+                    onClick={handleAddSkill}
+                    disabled={savingSkills || confirmingSkills}
+                  >
+                    Add Skill
+                  </Button>
+                </Box>
+
+                <Divider sx={{ my: 1 }} />
+
+                {/* Action Buttons: Save Changes and Confirm Skills */}
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <Button
+                    variant="contained"
+                    onClick={handleSaveSkills}
+                    disabled={savingSkills || confirmingSkills}
+                    startIcon={savingSkills ? <CircularProgress size={16} color="inherit" /> : null}
+                  >
+                    {savingSkills ? "Saving Changes..." : "Save Changes"}
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handleConfirmSkills}
+                    disabled={
+                      savingSkills ||
+                      confirmingSkills ||
+                      skillsList.map((s) => s.trim()).filter(Boolean).length === 0
+                    }
+                    startIcon={
+                      confirmingSkills ? (
+                        <CircularProgress size={16} color="inherit" />
+                      ) : (
+                        <CheckCircleRoundedIcon />
+                      )
+                    }
+                  >
+                    {confirmingSkills ? "Confirming..." : "Confirm Skills"}
+                  </Button>
+                </Stack>
+              </Stack>
+            )}
+          </AppCard>
+        )}
       </Stack>
     </DashboardLayout>
   );
