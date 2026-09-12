@@ -6,8 +6,6 @@ from app.database.database import SessionLocal
 from app.models.user import User
 from app.models.resume import Resume
 from app.models.resume_analysis import ResumeAnalysis
-from app.models.coding_question import CodingQuestion
-from app.models.coding_submission import CodingSubmission
 from app.core.security import create_access_token
 
 
@@ -44,7 +42,6 @@ class TestUserProfile(unittest.TestCase):
         finally:
             self.db.close()
 
-
     def test_unauthorized_access(self):
         response = self.client.get("/users/profile")
         self.assertEqual(response.status_code, 401)
@@ -57,7 +54,7 @@ class TestUserProfile(unittest.TestCase):
         # Verify top-level sections
         self.assertIn("user", data)
         self.assertIn("resume", data)
-        self.assertIn("coding", data)
+        self.assertNotIn("coding", data)
 
         # Verify user section
         self.assertEqual(data["user"]["name"], self.user.name)
@@ -69,18 +66,7 @@ class TestUserProfile(unittest.TestCase):
         self.assertIn("filename", data["resume"])
         self.assertIn("ats_score", data["resume"])
 
-        # Verify coding section
-        self.assertIn("total_solved", data["coding"])
-        self.assertIn("easy", data["coding"])
-        self.assertIn("medium", data["coding"])
-        self.assertIn("hard", data["coding"])
-        self.assertIn("total_submissions", data["coding"])
-        self.assertIn("acceptance_rate", data["coding"])
-        self.assertIn("favorite_language", data["coding"])
-        self.assertIn("recent_activity", data["coding"])
-        self.assertIsInstance(data["coding"]["recent_activity"], list)
-
-    def test_profile_with_resume_and_submissions(self):
+    def test_profile_with_resume(self):
         # Create a mock resume if not present
         existing_resume = self.db.query(Resume).filter(Resume.user_id == self.user.id).first()
         if not existing_resume:
@@ -106,24 +92,6 @@ class TestUserProfile(unittest.TestCase):
             self.db.add(analysis)
             self.db.commit()
 
-        # Check question exists
-        question = self.db.query(CodingQuestion).first()
-        if question:
-            # Create a submission
-            sub = CodingSubmission(
-                user_id=self.user.id,
-                question_id=question.id,
-                language="python",
-                status="Accepted",
-                source_code="def solution(): pass",
-                runtime_ms=35,
-                score=100,
-                passed_test_cases=5,
-                total_test_cases=5,
-            )
-            self.db.add(sub)
-            self.db.commit()
-
         response = self.client.get("/users/profile", headers=self.headers)
         self.assertEqual(response.status_code, 200)
         data = response.json()
@@ -131,16 +99,8 @@ class TestUserProfile(unittest.TestCase):
         self.assertTrue(data["resume"]["uploaded"])
         self.assertEqual(data["resume"]["filename"], "test_resume.pdf")
         self.assertEqual(data["resume"]["ats_score"], 85)
-        self.assertGreaterEqual(data["coding"]["total_submissions"], 1)
-        self.assertEqual(data["coding"]["favorite_language"], "Python")
-        self.assertGreaterEqual(len(data["coding"]["recent_activity"]), 1)
-        activity_item = data["coding"]["recent_activity"][0]
-        self.assertIn("problem_name", activity_item)
-        self.assertIn("status", activity_item)
-        self.assertIn("language", activity_item)
-        self.assertIn("runtime_ms", activity_item)
-        self.assertIn("submitted_at", activity_item)
 
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -48,42 +48,6 @@ function JourneyItem({ done, title, subtitle }) {
   );
 }
 
-function CodingProgressItem({ title, value }) {
-  return (
-    <Box
-      sx={{
-        p: 2,
-        border: 1,
-        borderColor: "divider",
-      }}
-    >
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        fontWeight={700}
-      >
-        {title}
-      </Typography>
-      <Typography
-        variant="h5"
-        sx={{ mt: 1 }}
-      >
-        {value}
-      </Typography>
-    </Box>
-  );
-}
-
-function formatSubmissionStatus(status) {
-  if (!status) {
-    return "No submissions yet";
-  }
-
-  return status
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
 export default function Dashboard() {
   const navigate = useNavigate();
   const { dashboard, loading } = useDashboard();
@@ -100,17 +64,6 @@ export default function Dashboard() {
   const hasAnalysis = Boolean(dashboard.analysis);
   const ats = hasAnalysis ? `${dashboard.analysis.ats_score}%` : "--";
   const progress = hasAnalysis ? 40 : hasResume ? 20 : 0;
-  const codingProgress = dashboard.coding_progress;
-  const solvedProblems = codingProgress
-    ? codingProgress.total_solved
-    : 0;
-  const codingAcceptanceRate = codingProgress
-    ? `${codingProgress.acceptance_rate}%`
-    : "--";
-  const recentSubmissionStatus =
-    formatSubmissionStatus(
-      codingProgress?.recent_submission_status
-    );
   const recommendations = splitSuggestions(dashboard.analysis?.suggestions);
 
   return (
@@ -162,30 +115,6 @@ export default function Dashboard() {
           <DashboardCard title="Progress" value={`${progress}%`} progress={progress} />
         </Box>
 
-        <AppCard>
-          <SectionHeader
-            title="Coding Progress"
-            subtitle="Your latest coding practice summary."
-            action={
-              <Button size="small" variant="outlined" onClick={() => navigate("/coding/progress")}>
-                View progress
-              </Button>
-            }
-          />
-
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
-              gap: 2,
-            }}
-          >
-            <CodingProgressItem title="Solved Problems" value={solvedProblems} />
-            <CodingProgressItem title="Acceptance Rate" value={codingAcceptanceRate} />
-            <CodingProgressItem title="Recent Submission Status" value={recentSubmissionStatus} />
-          </Box>
-        </AppCard>
-
         <Box
           sx={{
             display: "grid",
@@ -209,11 +138,6 @@ export default function Dashboard() {
                 done={hasAnalysis}
                 title="Resume Analyzed"
                 subtitle={hasAnalysis ? "Your latest AI report is available." : "Run Gemini analysis after uploading a resume."}
-              />
-              <JourneyItem
-                done={Boolean(solvedProblems > 0)}
-                title="Coding Practice"
-                subtitle={solvedProblems > 0 ? `${solvedProblems} problem${solvedProblems === 1 ? "" : "s"} solved.` : "Solve problems to build interview readiness."}
               />
               <JourneyItem done={false} title="Mock Interview" subtitle="Simulate live technical interview rounds." />
               <JourneyItem done={false} title="HR Interview" subtitle="Practice behavioral and culture-fit scenarios." />

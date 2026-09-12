@@ -1,15 +1,4 @@
 from app.models.user import User
 from app.models.resume import Resume
 from app.models.resume_analysis import ResumeAnalysis
-from .coding_question import CodingQuestion
-from .coding_example import CodingExample
-from .coding_test_case import CodingTestCase
-from .coding_starter_code import CodingStarterCode
-from .coding_submission import CodingSubmission
-from .coding_progress import CodingProgress
-from .coding_tag import CodingTag
-from .coding_question_tag import CodingQuestionTag
-from .coding_company import CodingCompany
-from .coding_question_company import CodingQuestionCompany
-from .coding_hint import CodingHint
-from .coding_favorite import CodingFavorite
+

@@ -8,12 +8,6 @@ import Analysis from "./pages/Analysis";
 import Profile from "./pages/Profile";
 
 import ProtectedRoute from "./components/ProtectedRoute";
-import CodingPractice from "./pages/CodingPractice";
-import CodingProblem from "./pages/CodingProblem";
-import CodingProgress from "./pages/CodingProgress";
-import CodingFavorites from "./pages/CodingFavorites";
-import CodingSubmissions from "./pages/CodingSubmissions";
-import CodingSubmissionDetail from "./pages/CodingSubmissionDetail";
 
 function App() {
   return (
@@ -56,60 +50,6 @@ function App() {
           element={
             <ProtectedRoute>
               <Analysis />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/coding"
-          element={
-            <ProtectedRoute>
-              <CodingPractice />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/coding/progress"
-          element={
-            <ProtectedRoute>
-              <CodingProgress />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/coding/favorites"
-          element={
-            <ProtectedRoute>
-              <CodingFavorites />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/coding/submissions"
-          element={
-            <ProtectedRoute>
-              <CodingSubmissions />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/coding/submissions/:id"
-          element={
-            <ProtectedRoute>
-              <CodingSubmissionDetail />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/coding/:slug"
-          element={
-            <ProtectedRoute>
-              <CodingProblem />
             </ProtectedRoute>
           }
         />

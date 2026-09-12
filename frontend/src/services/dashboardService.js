@@ -4,7 +4,6 @@ export async function getDashboard() {
   const result = {
     resume: null,
     analysis: null,
-    coding_progress: null,
   };
 
   try {
@@ -21,14 +20,6 @@ export async function getDashboard() {
   } catch {
     // Analysis might not exist yet
     result.analysis = null;
-  }
-
-  try {
-    const codingProgress = await api.get("/coding/progress/me");
-    result.coding_progress = codingProgress.data;
-  } catch {
-    // Coding progress might not exist yet
-    result.coding_progress = null;
   }
 
   return result;

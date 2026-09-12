@@ -45,21 +45,3 @@ class User(Base):
         cascade="all, delete-orphan",
     )
 
-    coding_submissions = relationship(
-    "CodingSubmission",
-    back_populates="user",
-    cascade="all, delete-orphan",
-    )
-
-    coding_progress = relationship(
-        "CodingProgress",
-        back_populates="user",
-        uselist=False,
-        cascade="all, delete-orphan",
-    )
-
-    coding_favorites = relationship(
-        "CodingFavorite",
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )

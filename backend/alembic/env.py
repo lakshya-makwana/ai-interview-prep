@@ -15,20 +15,10 @@ sys.path.append(
 
 from app.database.base import Base
 
-# Existing models
 from app.models.user import User
 from app.models.resume import Resume
 from app.models.resume_analysis import ResumeAnalysis
 
-# Coding Practice models
-from app.models.coding_question import CodingQuestion
-from app.models.coding_example import CodingExample
-from app.models.coding_test_case import CodingTestCase
-from app.models.coding_starter_code import CodingStarterCode
-from app.models.coding_submission import CodingSubmission
-from app.models.coding_progress import CodingProgress
-from app.models.coding_tag import CodingTag
-from app.models.coding_question_tag import CodingQuestionTag
 
 
 config = context.config

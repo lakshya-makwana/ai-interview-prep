@@ -8,18 +8,6 @@ from app.database.database import engine
 import app.models.user
 import app.models.resume
 import app.models.resume_analysis
-import app.models.coding_question
-import app.models.coding_example
-import app.models.coding_progress
-import app.models.coding_submission
-import app.models.coding_starter_code
-import app.models.coding_test_case
-import app.models.coding_tag
-import app.models.coding_question_tag
-import app.models.coding_company
-import app.models.coding_question_company
-import app.models.coding_hint
-import app.models.coding_favorite
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -29,25 +17,6 @@ from app.api.auth import router as auth_router
 from app.api.users import router as users_router
 from app.api.resume import router as resume_router
 from app.api.analysis import router as analysis_router
-
-from app.routers.coding_question_router import (
-    router as coding_question_router,
-)
-from app.routers.coding_progress_router import (
-    router as coding_progress_router,
-)
-from app.routers.coding_statistics_router import (
-    router as coding_statistics_router,
-)
-from app.routers.coding_submission_router import (
-    router as coding_submission_router,
-)
-from app.routers.coding_favorite_router import (
-    router as coding_favorite_router,
-)
-from app.routers.code_execution_router import (
-    router as code_execution_router,
-)
 
 app = FastAPI(
     title="AI Interview Preparation API",
@@ -71,13 +40,6 @@ app.include_router(users_router)
 app.include_router(resume_router)
 app.include_router(analysis_router)
 
-app.include_router(coding_question_router)
-app.include_router(coding_progress_router)
-app.include_router(coding_statistics_router)
-app.include_router(coding_submission_router)
-app.include_router(coding_favorite_router)
-
-app.include_router(code_execution_router)
 
 @app.get("/")
 def root():

@@ -27,7 +27,7 @@ const pageMetadata = {
   },
   "/profile": {
     title: "User Profile",
-    subtitle: "Manage your account, resume status, and practice history.",
+    subtitle: "Manage your account and resume status.",
   },
   "/resume": {
     title: "Resume",
@@ -36,22 +36,6 @@ const pageMetadata = {
   "/analysis": {
     title: "AI Analysis",
     subtitle: "In-depth resume evaluation and tailored preparation feedback.",
-  },
-  "/coding": {
-    title: "Coding Practice",
-    subtitle: "Master data structures and algorithms with interactive problems.",
-  },
-  "/coding/progress": {
-    title: "Coding Progress",
-    subtitle: "Track solved problems, acceptance rates, and submission streaks.",
-  },
-  "/coding/favorites": {
-    title: "Favorite Problems",
-    subtitle: "Quickly access your bookmarked coding challenges.",
-  },
-  "/coding/submissions": {
-    title: "My Submissions",
-    subtitle: "Review your code submission history and execution results.",
   },
 };
 
@@ -68,25 +52,10 @@ export default function Topbar({ onMenuClick }) {
 
   const atsScore = dashboard.analysis ? `${dashboard.analysis.ats_score}%` : "Not analyzed";
 
-  let meta = pageMetadata[location.pathname];
-  if (!meta) {
-    if (location.pathname.startsWith("/coding/submissions/")) {
-      meta = {
-        title: "Submission Details",
-        subtitle: "Inspect evaluation metrics and source code.",
-      };
-    } else if (location.pathname.startsWith("/coding/")) {
-      meta = {
-        title: "Coding Problem",
-        subtitle: "Solve algorithmic challenges with multi-language execution.",
-      };
-    } else {
-      meta = {
-        title: "AI Interview",
-        subtitle: "Preparation workspace and coding practice.",
-      };
-    }
-  }
+  let meta = pageMetadata[location.pathname] || {
+    title: "AI Interview",
+    subtitle: "Preparation workspace.",
+  };
 
   function handleLogout() {
     logout();
