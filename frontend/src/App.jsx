@@ -7,6 +7,7 @@ import Resume from "./pages/Resume";
 import Analysis from "./pages/Analysis";
 import Profile from "./pages/Profile";
 import JobDescription from "./pages/JobDescription";
+import JobMatch from "./pages/JobMatch";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -51,6 +52,15 @@ function App() {
           element={
             <ProtectedRoute>
               <JobDescription />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/job-match"
+          element={
+            <ProtectedRoute>
+              <JobMatch />
             </ProtectedRoute>
           }
         />
