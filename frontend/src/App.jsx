@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Resume from "./pages/Resume";
 import Analysis from "./pages/Analysis";
 import Profile from "./pages/Profile";
+import JobDescription from "./pages/JobDescription";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -41,6 +42,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Resume />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/job-description"
+          element={
+            <ProtectedRoute>
+              <JobDescription />
             </ProtectedRoute>
           }
         />

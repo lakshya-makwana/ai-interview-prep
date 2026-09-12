@@ -8,6 +8,8 @@ from app.database.database import engine
 import app.models.user
 import app.models.resume
 import app.models.resume_analysis
+import app.models.job
+import app.models.job_requirement
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -17,6 +19,7 @@ from app.api.auth import router as auth_router
 from app.api.users import router as users_router
 from app.api.resume import router as resume_router
 from app.api.analysis import router as analysis_router
+from app.api.job import router as job_router
 
 app = FastAPI(
     title="AI Interview Preparation API",
@@ -39,6 +42,7 @@ app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(resume_router)
 app.include_router(analysis_router)
+app.include_router(job_router)
 
 
 @app.get("/")

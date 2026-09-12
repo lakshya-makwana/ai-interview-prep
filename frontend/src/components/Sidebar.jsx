@@ -20,6 +20,7 @@ import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import SmartToyRoundedIcon from "@mui/icons-material/SmartToyRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -31,6 +32,7 @@ const menuItems = [
   { title: "Dashboard", path: "/", icon: <DashboardRoundedIcon /> },
   { title: "Profile", path: "/profile", icon: <PersonRoundedIcon /> },
   { title: "Resume", path: "/resume", icon: <DescriptionRoundedIcon /> },
+  { title: "Job Description", path: "/job-description", icon: <WorkOutlineRoundedIcon /> },
   { title: "AI Analysis", path: "/analysis", icon: <PsychologyRoundedIcon /> },
   { title: "Mock Interview", icon: <MicRoundedIcon />, comingSoon: true },
   { title: "Settings", icon: <SettingsRoundedIcon />, comingSoon: true },
@@ -110,7 +112,7 @@ function SidebarContent({ onNavigate }) {
               <ListItemIcon sx={{ minWidth: 40, color: "inherit" }}>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.title} primaryTypographyProps={{ fontWeight: 700 }} />
+              <ListItemText primary={item.title} slotProps={{ primary: { fontWeight: 700 } }} />
               {item.comingSoon && <Chip label="Soon" color="warning" size="small" />}
             </ListItemButton>
           );
@@ -123,7 +125,7 @@ function SidebarContent({ onNavigate }) {
           <ListItemIcon sx={{ minWidth: 40 }}>
             <LogoutRoundedIcon color="error" />
           </ListItemIcon>
-          <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 700 }} />
+          <ListItemText primary="Logout" slotProps={{ primary: { fontWeight: 700 } }} />
         </ListItemButton>
 
         <Typography
