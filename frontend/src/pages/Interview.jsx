@@ -35,7 +35,6 @@ import TimerRoundedIcon from "@mui/icons-material/TimerRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 
 import AppCard from "../components/AppCard";
-import SectionHeader from "../components/SectionHeader";
 import DashboardLayout from "../layouts/DashboardLayout";
 import {
   getCurrentInterview,
@@ -86,14 +85,12 @@ export default function Interview() {
   // Review state
   const [completedInterview, setCompletedInterview] = useState(null);
 
-  // Initialize view based on URL param or current active interview
   useEffect(() => {
     let isMounted = true;
 
     async function initInterviewState() {
       setError("");
 
-      // 1. If URL has :id (e.g. /interview/5), directly load evaluation for this interview
       if (urlInterviewId) {
         try {
           setLoading(true);
@@ -116,7 +113,6 @@ export default function Interview() {
         return;
       }
 
-      // 2. If on /interview without :id, check if there is an in-progress interview
       try {
         const data = await getCurrentInterview();
         if (isMounted) {
@@ -141,7 +137,6 @@ export default function Interview() {
         }
       } catch {
         if (isMounted) {
-          // If 404, no active interview, show start screen
           setView("start");
         }
       }
@@ -154,7 +149,6 @@ export default function Interview() {
     };
   }, [urlInterviewId]);
 
-  // Handle Start Interview
   const handleStartInterview = async () => {
     setLoading(true);
     setError("");
@@ -188,7 +182,6 @@ export default function Interview() {
     }
   };
 
-  // Handle Answer Submission (chat response)
   const handleSubmitAnswer = async () => {
     if (!currentQuestion) return;
     if (!answerText.trim()) {
@@ -200,7 +193,6 @@ export default function Interview() {
     setLoading(true);
     setError("");
 
-    // Append candidate message immediately
     const updatedHistory = [
       ...chatHistory,
       { sender: "candidate", text: submittedAnswer },
@@ -218,7 +210,6 @@ export default function Interview() {
         setCurrentQuestionNumber(data.current_question_number);
         setCurrentQuestion(data.next_question);
 
-        // Append next question from AI Interviewer
         if (data.next_question) {
           setChatHistory([
             ...updatedHistory,
@@ -241,7 +232,6 @@ export default function Interview() {
     }
   };
 
-  // Handle View Interview Review & Evaluation
   const handleViewInterview = async () => {
     if (!interviewId) return;
     setEvaluating(true);
@@ -263,83 +253,112 @@ export default function Interview() {
 
   return (
     <DashboardLayout>
-      <Box sx={{ maxWidth: 900, mx: "auto" }}>
+      <Stack spacing={3}>
         {/* Page Header */}
-        <Box sx={{ mb: 4 }}>
-          <SectionHeader
-            title="Technical Interview Session"
-            subtitle="Conversational technical interview with AI-powered multi-dimensional answer evaluation."
-          />
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800}>
+              Technical Interview
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Interactive technical interview session with multi-dimensional AI answer evaluation.
+            </Typography>
+          </Box>
+
+          {view === "review" && (
+            <Stack direction="row" spacing={1.5}>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<ReplayRoundedIcon fontSize="small" />}
+                onClick={() => {
+                  setInterviewId(null);
+                  setCompletedInterview(null);
+                  navigate("/interview", { replace: true });
+                  setView("start");
+                }}
+              >
+                Start New
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                endIcon={<ArrowForwardRoundedIcon fontSize="small" />}
+                onClick={() => navigate("/career-readiness")}
+              >
+                Career Readiness
+              </Button>
+            </Stack>
+          )}
         </Box>
 
         {/* Global Error Banner */}
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError("")}>
+          <Alert severity="error" onClose={() => setError("")}>
             {error}
           </Alert>
         )}
 
         {/* 1. Loading View */}
         {view === "loading" && (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
-            <CircularProgress />
+          <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+            <CircularProgress size={32} />
           </Box>
         )}
 
         {/* 2. Start Screen */}
         {view === "start" && (
-          <AppCard sx={{ textAlign: "center", py: 6, px: 4 }}>
+          <AppCard sx={{ textAlign: "center", py: 4, px: 3 }}>
             <Box
               sx={{
-                width: 72,
-                height: 72,
-                borderRadius: "50%",
+                width: 52,
+                height: 52,
+                borderRadius: 2,
                 bgcolor: "primary.main",
                 color: "primary.contrastText",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 mx: "auto",
-                mb: 3,
-                boxShadow: 3,
+                mb: 2,
               }}
             >
-              <QuizRoundedIcon sx={{ fontSize: 38 }} />
+              <QuizRoundedIcon />
             </Box>
 
-            <Typography variant="h4" fontWeight={800} gutterBottom>
-              Technical Interview
+            <Typography variant="h5" fontWeight={700} gutterBottom>
+              Technical Interview Session
             </Typography>
 
-            <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 580, mx: "auto", mb: 4 }}>
-              Engage in a structured text conversation with the AI Interviewer covering core engineering fundamentals. Upon completion, each answer is thoroughly analyzed with score breakdowns, strengths, missing concepts, and targeted feedback.
+            <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 540, mx: "auto", mb: 3 }}>
+              Answer five core technical questions tailored to your target profile. Answers are evaluated across Technical Correctness, Completeness, Relevance, and Communication.
             </Typography>
 
             <Stack
               direction={{ xs: "column", sm: "row" }}
-              spacing={3}
+              spacing={2}
               justifyContent="center"
-              sx={{ mb: 5 }}
+              sx={{ mb: 3.5 }}
             >
               <Paper
                 variant="outlined"
                 sx={{
-                  p: 2,
-                  minWidth: 160,
-                  borderRadius: 2,
+                  p: 1.75,
+                  minWidth: 150,
+                  borderRadius: 1.5,
                   display: "flex",
                   alignItems: "center",
-                  gap: 1.5,
+                  gap: 1.25,
                   justifyContent: "center",
                 }}
               >
-                <HelpOutlineRoundedIcon color="primary" />
+                <HelpOutlineRoundedIcon color="primary" fontSize="small" />
                 <Box sx={{ textAlign: "left" }}>
                   <Typography variant="caption" color="text.secondary" display="block">
                     Format
                   </Typography>
                   <Typography variant="subtitle2" fontWeight={700}>
-                    Five Questions
+                    5 Questions
                   </Typography>
                 </Box>
               </Paper>
@@ -347,16 +366,16 @@ export default function Interview() {
               <Paper
                 variant="outlined"
                 sx={{
-                  p: 2,
-                  minWidth: 160,
-                  borderRadius: 2,
+                  p: 1.75,
+                  minWidth: 150,
+                  borderRadius: 1.5,
                   display: "flex",
                   alignItems: "center",
-                  gap: 1.5,
+                  gap: 1.25,
                   justifyContent: "center",
                 }}
               >
-                <TimerRoundedIcon color="warning" />
+                <TimerRoundedIcon color="warning" fontSize="small" />
                 <Box sx={{ textAlign: "left" }}>
                   <Typography variant="caption" color="text.secondary" display="block">
                     Estimated Time
@@ -370,30 +389,23 @@ export default function Interview() {
 
             <Button
               variant="contained"
-              size="large"
-              startIcon={<PlayArrowRoundedIcon />}
+              startIcon={<PlayArrowRoundedIcon fontSize="small" />}
               onClick={handleStartInterview}
               disabled={loading}
-              sx={{
-                px: 5,
-                py: 1.5,
-                fontSize: "1.05rem",
-                fontWeight: 700,
-                borderRadius: 2.5,
-              }}
+              sx={{ px: 4 }}
             >
               {loading ? "Starting Interview..." : "Start Interview"}
             </Button>
           </AppCard>
         )}
 
-        {/* 3. Active Conversational Chat Interview Screen */}
+        {/* 3. Active Conversational Chat Screen */}
         {view === "active" && currentQuestion && (
           <AppCard>
-            {/* Progress Bar & Question Indicator */}
-            <Box sx={{ mb: 3 }}>
+            {/* Progress Indicator */}
+            <Box sx={{ mb: 2.5 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-                <Typography variant="subtitle1" fontWeight={800} color="primary.main">
+                <Typography variant="subtitle2" fontWeight={700} color="primary.main">
                   Question {currentQuestionNumber} of {totalQuestions}
                 </Typography>
                 <Stack direction="row" spacing={1}>
@@ -402,13 +414,11 @@ export default function Interview() {
                     size="small"
                     variant="outlined"
                     color="primary"
-                    sx={{ fontWeight: 600 }}
                   />
                   <Chip
                     label={currentQuestion.difficulty}
                     size="small"
                     color={getDifficultyColor(currentQuestion.difficulty)}
-                    sx={{ fontWeight: 600 }}
                   />
                 </Stack>
               </Box>
@@ -416,28 +426,23 @@ export default function Interview() {
               <LinearProgress
                 variant="determinate"
                 value={(currentQuestionNumber / totalQuestions) * 100}
-                sx={{
-                  height: 6,
-                  borderRadius: 3,
-                  bgcolor: "action.hover",
-                  "& .MuiLinearProgress-bar": { borderRadius: 3 },
-                }}
+                sx={{ height: 6, borderRadius: 3 }}
               />
             </Box>
 
-            <Divider sx={{ mb: 3 }} />
+            <Divider sx={{ mb: 2.5 }} />
 
-            {/* Chat Conversation Stream */}
-            <Box sx={{ minHeight: 280, mb: 3 }}>
+            {/* Chat Messages */}
+            <Box sx={{ minHeight: 260, mb: 2.5 }}>
               {chatHistory.map((msg, index) =>
                 msg.sender === "ai" ? (
-                  <Box key={index} sx={{ display: "flex", gap: 1.5, alignItems: "flex-start", mb: 3 }}>
-                    <Avatar sx={{ bgcolor: "primary.main", width: 40, height: 40, mt: 0.5 }}>
+                  <Box key={index} sx={{ display: "flex", gap: 1.5, alignItems: "flex-start", mb: 2.5 }}>
+                    <Avatar sx={{ bgcolor: "primary.main", width: 34, height: 34, mt: 0.25, borderRadius: 1.5 }}>
                       <SmartToyRoundedIcon fontSize="small" />
                     </Avatar>
                     <Box sx={{ maxWidth: "85%" }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
-                        <Typography variant="subtitle2" fontWeight={800} color="text.primary">
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                        <Typography variant="caption" fontWeight={700} color="text.primary">
                           AI Interviewer
                         </Typography>
                         {msg.topic && (
@@ -445,46 +450,45 @@ export default function Interview() {
                             label={msg.topic}
                             size="small"
                             variant="outlined"
-                            sx={{ height: 20, fontSize: "0.75rem", fontWeight: 600 }}
+                            sx={{ height: 18, fontSize: "0.7rem" }}
                           />
                         )}
                       </Box>
                       <Paper
                         variant="outlined"
                         sx={{
-                          p: 2.5,
-                          borderRadius: "4px 18px 18px 18px",
+                          p: 2,
+                          borderRadius: 2,
                           bgcolor: "action.hover",
-                          borderColor: "divider",
                         }}
                       >
-                        <Typography variant="body1" fontWeight={500} sx={{ lineHeight: 1.6 }}>
+                        <Typography variant="body2" sx={{ lineHeight: 1.6, fontWeight: 500 }}>
                           {msg.text}
                         </Typography>
                       </Paper>
                     </Box>
                   </Box>
                 ) : (
-                  <Box key={index} sx={{ display: "flex", justifyContent: "flex-end", gap: 1.5, alignItems: "flex-start", mb: 3 }}>
+                  <Box key={index} sx={{ display: "flex", justifyContent: "flex-end", gap: 1.5, alignItems: "flex-start", mb: 2.5 }}>
                     <Box sx={{ maxWidth: "85%", textAlign: "right" }}>
-                      <Typography variant="subtitle2" fontWeight={800} color="text.secondary" sx={{ mb: 0.75 }}>
+                      <Typography variant="caption" fontWeight={700} color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
                         You
                       </Typography>
                       <Paper
                         sx={{
-                          p: 2.5,
-                          borderRadius: "18px 4px 18px 18px",
-                          bgcolor: "primary.main",
+                          p: 2,
+                          borderRadius: 2,
+                          bgcolor: "primary.dark",
                           color: "primary.contrastText",
                           textAlign: "left",
                         }}
                       >
-                        <Typography variant="body1" sx={{ lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                        <Typography variant="body2" sx={{ lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
                           {msg.text}
                         </Typography>
                       </Paper>
                     </Box>
-                    <Avatar sx={{ bgcolor: "secondary.main", width: 40, height: 40, mt: 0.5 }}>
+                    <Avatar sx={{ bgcolor: "secondary.main", width: 34, height: 34, mt: 0.25, borderRadius: 1.5 }}>
                       <PersonRoundedIcon fontSize="small" />
                     </Avatar>
                   </Box>
@@ -492,7 +496,7 @@ export default function Interview() {
               )}
             </Box>
 
-            {/* Chat Input Dock (Minimalist, no character counter or helper text) */}
+            {/* Input Dock */}
             <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-end", pt: 2, borderTop: 1, borderColor: "divider" }}>
               <TextField
                 multiline
@@ -503,31 +507,24 @@ export default function Interview() {
                 value={answerText}
                 onChange={(e) => setAnswerText(e.target.value)}
                 disabled={loading}
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2.5,
-                  },
-                }}
+                sx={{ bgcolor: "background.default" }}
               />
               <Button
                 variant="contained"
-                endIcon={<SendRoundedIcon />}
+                endIcon={<SendRoundedIcon fontSize="small" />}
                 onClick={handleSubmitAnswer}
                 disabled={loading || !answerText.trim()}
                 sx={{
-                  minHeight: 52,
-                  px: 3.5,
-                  borderRadius: 2.5,
-                  fontWeight: 700,
+                  minHeight: 44,
+                  px: 2.5,
                   flexShrink: 0,
                 }}
               >
                 {loading
-                  ? "Sending..."
+                  ? "Submitting..."
                   : currentQuestionNumber === totalQuestions
                   ? "Finish"
-                  : "Send"}
+                  : "Submit"}
               </Button>
             </Box>
           </AppCard>
@@ -535,138 +532,92 @@ export default function Interview() {
 
         {/* 4. Completion Screen */}
         {view === "completed" && (
-          <AppCard sx={{ textAlign: "center", py: 6, px: 4 }}>
+          <AppCard sx={{ textAlign: "center", py: 4, px: 3 }}>
             <Box
               sx={{
-                width: 72,
-                height: 72,
-                borderRadius: "50%",
+                width: 52,
+                height: 52,
+                borderRadius: 2,
                 bgcolor: "success.main",
                 color: "success.contrastText",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 mx: "auto",
-                mb: 3,
-                boxShadow: 3,
+                mb: 2,
               }}
             >
-              <CheckCircleRoundedIcon sx={{ fontSize: 42 }} />
+              <CheckCircleRoundedIcon />
             </Box>
 
-            <Typography variant="h4" fontWeight={800} gutterBottom>
+            <Typography variant="h5" fontWeight={700} gutterBottom>
               Interview Completed
             </Typography>
 
-            <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 520, mx: "auto", mb: 4 }}>
-              Congratulations! All five questions have been answered. Ready to view the AI-generated evaluation and feedback for each question?
+            <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 500, mx: "auto", mb: 3 }}>
+              All five questions have been answered. View the AI evaluation to inspect score breakdowns, strengths, and targeted feedback.
             </Typography>
 
             <Stack
               direction={{ xs: "column", sm: "row" }}
-              spacing={3}
+              spacing={2}
               justifyContent="center"
-              sx={{ mb: 5 }}
+              sx={{ mb: 3.5 }}
             >
-              <Paper variant="outlined" sx={{ p: 2.5, minWidth: 160, borderRadius: 2 }}>
+              <Paper variant="outlined" sx={{ p: 2, minWidth: 140, borderRadius: 1.5 }}>
                 <Typography variant="caption" color="text.secondary" display="block">
                   Total Questions
                 </Typography>
-                <Typography variant="h5" fontWeight={800} color="primary.main">
+                <Typography variant="h5" fontWeight={700} color="primary.main">
                   5
                 </Typography>
               </Paper>
 
-              <Paper variant="outlined" sx={{ p: 2.5, minWidth: 160, borderRadius: 2 }}>
+              <Paper variant="outlined" sx={{ p: 2, minWidth: 140, borderRadius: 1.5 }}>
                 <Typography variant="caption" color="text.secondary" display="block">
                   Answered Questions
                 </Typography>
-                <Typography variant="h5" fontWeight={800} color="success.main">
+                <Typography variant="h5" fontWeight={700} color="success.main">
                   5
                 </Typography>
               </Paper>
             </Stack>
 
             {evaluating ? (
-              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                <CircularProgress size={36} />
-                <Typography variant="body2" color="text.secondary" fontWeight={600}>
-                  Evaluating your answers with Gemini AI... Please wait a few seconds.
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1.5 }}>
+                <CircularProgress size={32} />
+                <Typography variant="body2" color="text.secondary">
+                  Evaluating answers with Gemini AI... Please wait a moment.
                 </Typography>
               </Box>
             ) : (
               <Button
                 variant="contained"
-                size="large"
-                startIcon={<AutoAwesomeRoundedIcon />}
-                endIcon={<ArrowForwardRoundedIcon />}
+                startIcon={<AutoAwesomeRoundedIcon fontSize="small" />}
+                endIcon={<ArrowForwardRoundedIcon fontSize="small" />}
                 onClick={handleViewInterview}
                 disabled={evaluating}
-                sx={{
-                  px: 5,
-                  py: 1.5,
-                  fontSize: "1.05rem",
-                  fontWeight: 700,
-                  borderRadius: 2.5,
-                }}
+                sx={{ px: 3.5 }}
               >
-                View Interview & Evaluations
+                View Evaluations
               </Button>
             )}
           </AppCard>
         )}
 
-        {/* 5. Review Screen (Interview Timeline Flow) */}
+        {/* 5. Review Screen */}
         {view === "review" && completedInterview && (
-          <Stack spacing={4}>
-            {/* Review Header Banner */}
-            <AppCard>
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 2 }}>
-                <Box>
-                  <Typography variant="h5" fontWeight={800}>
-                    Interview Review & AI Evaluation
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Conversation timeline with AI-evaluated technical accuracy, completeness, relevance, and communication scores.
-                  </Typography>
-                </Box>
-                <Stack direction="row" spacing={1.5}>
-                  <Button
-                    variant="contained"
-                    endIcon={<ArrowForwardRoundedIcon />}
-                    onClick={() => navigate("/career-readiness")}
-                    sx={{ borderRadius: 2, fontWeight: 700 }}
-                  >
-                    View Career Readiness
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<ReplayRoundedIcon />}
-                    onClick={() => {
-                      setInterviewId(null);
-                      setCompletedInterview(null);
-                      navigate("/interview", { replace: true });
-                      setView("start");
-                    }}
-                    sx={{ borderRadius: 2, fontWeight: 700 }}
-                  >
-                    Start New Interview
-                  </Button>
-                </Stack>
-              </Box>
-            </AppCard>
-
-            {/* Conversation Timeline */}
+          <Stack spacing={3}>
             {completedInterview.questions.map((q) => (
               <AppCard key={q.id}>
-                {/* 1. AI Interviewer Message (Left) */}
-                <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-start", mb: 2.5 }}>
-                  <Avatar sx={{ bgcolor: "primary.main", width: 38, height: 38, mt: 0.5 }}>
+                {/* AI Interviewer Question */}
+                <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-start", mb: 2 }}>
+                  <Avatar sx={{ bgcolor: "primary.main", width: 32, height: 32, mt: 0.25, borderRadius: 1.5 }}>
                     <SmartToyRoundedIcon fontSize="small" />
                   </Avatar>
-                  <Box sx={{ maxWidth: "88%" }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
-                      <Typography variant="subtitle2" fontWeight={800} color="text.primary">
+                  <Box sx={{ maxWidth: "90%" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                      <Typography variant="caption" fontWeight={700} color="text.primary">
                         AI Interviewer
                       </Typography>
                       <Chip
@@ -674,69 +625,70 @@ export default function Interview() {
                         size="small"
                         variant="outlined"
                         color="primary"
-                        sx={{ height: 20, fontSize: "0.75rem", fontWeight: 700 }}
+                        sx={{ height: 18, fontSize: "0.7rem" }}
                       />
                       <Chip
                         label={q.difficulty}
                         size="small"
                         color={getDifficultyColor(q.difficulty)}
-                        sx={{ height: 20, fontSize: "0.75rem", fontWeight: 700 }}
+                        sx={{ height: 18, fontSize: "0.7rem" }}
                       />
                     </Box>
                     <Paper
                       variant="outlined"
                       sx={{
-                        p: 2.5,
-                        borderRadius: "4px 18px 18px 18px",
+                        p: 2,
+                        borderRadius: 2,
                         bgcolor: "action.hover",
-                        borderColor: "divider",
                       }}
                     >
-                      <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.4, fontSize: "1.05rem" }}>
+                      <Typography variant="subtitle2" fontWeight={600} sx={{ lineHeight: 1.5 }}>
                         {q.question_text}
                       </Typography>
                     </Paper>
                   </Box>
                 </Box>
 
-                {/* 2. Candidate Response (Right) */}
-                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1.5, alignItems: "flex-start", mb: 3 }}>
-                  <Box sx={{ maxWidth: "88%", textAlign: "right" }}>
-                    <Typography variant="subtitle2" fontWeight={800} color="text.secondary" sx={{ mb: 0.75 }}>
+                {/* Candidate Response */}
+                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1.5, alignItems: "flex-start", mb: 2.5 }}>
+                  <Box sx={{ maxWidth: "90%", textAlign: "right" }}>
+                    <Typography variant="caption" fontWeight={700} color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
                       You
                     </Typography>
                     <Paper
                       sx={{
-                        p: 2.5,
-                        borderRadius: "18px 4px 18px 18px",
-                        bgcolor: "primary.main",
-                        color: "primary.contrastText",
+                        p: 2,
+                        borderRadius: 2,
+                        bgcolor: "action.hover",
+                        border: 1,
+                        borderColor: "divider",
                         textAlign: "left",
                       }}
                     >
                       <Typography
-                        variant="body1"
+                        variant="body2"
                         sx={{
                           whiteSpace: "pre-wrap",
                           lineHeight: 1.6,
                           fontStyle: q.candidate_answer ? "normal" : "italic",
+                          color: q.candidate_answer ? "text.primary" : "text.secondary",
                         }}
                       >
                         {q.candidate_answer || "No answer provided."}
                       </Typography>
                     </Paper>
                   </Box>
-                  <Avatar sx={{ bgcolor: "secondary.main", width: 38, height: 38, mt: 0.5 }}>
+                  <Avatar sx={{ bgcolor: "secondary.main", width: 32, height: 32, mt: 0.25, borderRadius: 1.5 }}>
                     <PersonRoundedIcon fontSize="small" />
                   </Avatar>
                 </Box>
 
-                {/* 3. AI Evaluation for this exchange */}
+                {/* AI Evaluation */}
                 {q.evaluation ? (
-                  <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                  <Box sx={{ mt: 2.5, pt: 2, borderTop: 1, borderColor: "divider" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
                       <AutoAwesomeRoundedIcon color="primary" fontSize="small" />
-                      <Typography variant="subtitle1" fontWeight={800}>
+                      <Typography variant="subtitle2" fontWeight={700}>
                         AI Answer Evaluation
                       </Typography>
                     </Box>
@@ -746,34 +698,32 @@ export default function Interview() {
                       <Paper
                         variant="outlined"
                         sx={{
-                          p: 2,
-                          mb: 3,
-                          borderRadius: 2,
-                          bgcolor: "primary.50",
-                          borderColor: "primary.200",
-                          borderLeftWidth: 4,
-                          borderLeftColor: "primary.main",
+                          p: 1.75,
+                          mb: 2.5,
+                          borderRadius: 1.5,
+                          bgcolor: "rgba(59, 130, 246, 0.06)",
+                          borderColor: "rgba(59, 130, 246, 0.25)",
                         }}
                       >
-                        <Typography variant="caption" color="primary.dark" fontWeight={700} sx={{ textTransform: "uppercase", letterSpacing: 0.8, display: "block", mb: 0.5 }}>
-                          Overall Summary
+                        <Typography variant="caption" color="primary.main" fontWeight={700} sx={{ textTransform: "uppercase", display: "block", mb: 0.5 }}>
+                          Evaluation Summary
                         </Typography>
-                        <Typography variant="body2" color="text.primary" fontWeight={500} sx={{ lineHeight: 1.5 }}>
+                        <Typography variant="body2" color="text.primary" sx={{ lineHeight: 1.5 }}>
                           {q.evaluation.summary}
                         </Typography>
                       </Paper>
                     )}
 
-                    {/* Score Card */}
-                    <Card variant="outlined" sx={{ p: 2.5, mb: 3, borderRadius: 2 }}>
-                      <Grid container spacing={3} alignItems="center">
+                    {/* Score Breakdown */}
+                    <Card variant="outlined" sx={{ p: 2, mb: 2.5, borderRadius: 1.5 }}>
+                      <Grid container spacing={2.5} alignItems="center">
                         <Grid size={{ xs: 12, sm: 3 }} sx={{ textAlign: "center", borderRight: { sm: 1 }, borderColor: { sm: "divider" } }}>
-                          <Typography variant="caption" color="text.secondary" fontWeight={700} sx={{ textTransform: "uppercase", letterSpacing: 0.5 }}>
+                          <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
                             Overall Score
                           </Typography>
                           <Typography
-                            variant="h3"
-                            fontWeight={900}
+                            variant="h4"
+                            fontWeight={800}
                             sx={{ color: getScoreColor(q.evaluation.overall_score), my: 0.5 }}
                           >
                             {q.evaluation.overall_score}
@@ -784,72 +734,71 @@ export default function Interview() {
                         </Grid>
 
                         <Grid size={{ xs: 12, sm: 9 }}>
-                          <Grid container spacing={2}>
+                          <Grid container spacing={1.5}>
                             <Grid size={{ xs: 12, sm: 6 }}>
                               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                                <Typography variant="caption" fontWeight={700} color="text.secondary">
+                                <Typography variant="caption" color="text.secondary">
                                   Technical Correctness
                                 </Typography>
-                                <Typography variant="caption" fontWeight={800} sx={{ color: getScoreColor(q.evaluation.technical_correctness) }}>
+                                <Typography variant="caption" fontWeight={700} sx={{ color: getScoreColor(q.evaluation.technical_correctness) }}>
                                   {q.evaluation.technical_correctness} / 10
                                 </Typography>
                               </Box>
                               <LinearProgress
                                 variant="determinate"
                                 value={(q.evaluation.technical_correctness / 10) * 100}
-                                color={q.evaluation.technical_correctness >= 8 ? "success" : q.evaluation.technical_correctness >= 6 ? "warning" : "error"}
-                                sx={{ height: 6, borderRadius: 3 }}
+                                sx={{ height: 5, borderRadius: 2.5 }}
                               />
                             </Grid>
 
                             <Grid size={{ xs: 12, sm: 6 }}>
                               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                                <Typography variant="caption" fontWeight={700} color="text.secondary">
+                                <Typography variant="caption" color="text.secondary">
                                   Completeness
                                 </Typography>
-                                <Typography variant="caption" fontWeight={800} sx={{ color: getScoreColor(q.evaluation.completeness) }}>
+                                <Typography variant="caption" fontWeight={700} sx={{ color: getScoreColor(q.evaluation.completeness) }}>
                                   {q.evaluation.completeness} / 10
                                 </Typography>
                               </Box>
                               <LinearProgress
                                 variant="determinate"
                                 value={(q.evaluation.completeness / 10) * 100}
-                                color={q.evaluation.completeness >= 8 ? "success" : q.evaluation.completeness >= 6 ? "warning" : "error"}
-                                sx={{ height: 6, borderRadius: 3 }}
+                                color="secondary"
+                                sx={{ height: 5, borderRadius: 2.5 }}
                               />
                             </Grid>
 
                             <Grid size={{ xs: 12, sm: 6 }}>
                               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                                <Typography variant="caption" fontWeight={700} color="text.secondary">
+                                <Typography variant="caption" color="text.secondary">
                                   Relevance
                                 </Typography>
-                                <Typography variant="caption" fontWeight={800} sx={{ color: getScoreColor(q.evaluation.relevance) }}>
+                                <Typography variant="caption" fontWeight={700} sx={{ color: getScoreColor(q.evaluation.relevance) }}>
                                   {q.evaluation.relevance} / 10
                                 </Typography>
                               </Box>
                               <LinearProgress
                                 variant="determinate"
                                 value={(q.evaluation.relevance / 10) * 100}
-                                color={q.evaluation.relevance >= 8 ? "success" : q.evaluation.relevance >= 6 ? "warning" : "error"}
-                                sx={{ height: 6, borderRadius: 3 }}
+                                color="success"
+                                sx={{ height: 5, borderRadius: 2.5 }}
                               />
                             </Grid>
 
                             <Grid size={{ xs: 12, sm: 6 }}>
                               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                                <Typography variant="caption" fontWeight={700} color="text.secondary">
+                                <Typography variant="caption" color="text.secondary">
                                   Communication
                                 </Typography>
-                                <Typography variant="caption" fontWeight={800} sx={{ color: getScoreColor(q.evaluation.communication) }}>
+                                <Typography variant="caption" fontWeight={700} sx={{ color: getScoreColor(q.evaluation.communication) }}>
                                   {q.evaluation.communication} / 10
                                 </Typography>
                               </Box>
                               <LinearProgress
                                 variant="determinate"
                                 value={(q.evaluation.communication / 10) * 100}
-                                color={q.evaluation.communication >= 8 ? "success" : q.evaluation.communication >= 6 ? "warning" : "error"}
-                                sx={{ height: 6, borderRadius: 3 }}
+                                color="warning"
+                                sx={{ height: 5, borderRadius: 2.5 }}
                               />
                             </Grid>
                           </Grid>
@@ -858,74 +807,73 @@ export default function Interview() {
                     </Card>
 
                     {/* Strengths */}
-                    <Box sx={{ mb: 2.5 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                        <ThumbUpAltRoundedIcon color="success" fontSize="small" />
-                        <Typography variant="subtitle2" fontWeight={700}>
-                          Strengths
-                        </Typography>
+                    {q.evaluation.strengths?.length > 0 && (
+                      <Box sx={{ mb: 2 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
+                          <ThumbUpAltRoundedIcon color="success" fontSize="small" />
+                          <Typography variant="caption" fontWeight={700} textTransform="uppercase">
+                            Strengths
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                          {q.evaluation.strengths.map((str, idx) => (
+                            <Chip
+                              key={idx}
+                              label={str}
+                              color="success"
+                              variant="outlined"
+                              size="small"
+                            />
+                          ))}
+                        </Box>
                       </Box>
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                        {q.evaluation.strengths?.map((str, idx) => (
-                          <Chip
-                            key={idx}
-                            label={str}
-                            color="success"
-                            variant="outlined"
-                            sx={{ fontWeight: 500, fontSize: "0.85rem" }}
-                          />
-                        ))}
-                      </Box>
-                    </Box>
+                    )}
 
                     {/* Missing Concepts */}
-                    <Box sx={{ mb: 2.5 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                        <WarningAmberRoundedIcon color="warning" fontSize="small" />
-                        <Typography variant="subtitle2" fontWeight={700}>
-                          Missing Concepts & Blind Spots
-                        </Typography>
-                      </Box>
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                        {q.evaluation.missing_concepts?.map((mc, idx) => (
-                          <Chip
-                            key={idx}
-                            label={mc}
-                            color="warning"
-                            variant="outlined"
-                            sx={{ fontWeight: 500, fontSize: "0.85rem" }}
-                          />
-                        ))}
-                      </Box>
-                    </Box>
-
-                    {/* Feedback Card */}
-                    <Box sx={{ mt: 2 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                        <LightbulbRoundedIcon color="primary" fontSize="small" />
-                        <Typography variant="subtitle2" fontWeight={700}>
-                          Actionable Feedback
-                        </Typography>
-                      </Box>
-                      <Card
-                        variant="outlined"
-                        sx={{
-                          borderRadius: 2,
-                          bgcolor: "action.hover",
-                          borderColor: "divider",
-                        }}
-                      >
-                        <CardContent sx={{ py: 2, px: 2.5, "&:last-child": { pb: 2 } }}>
-                          <Typography variant="body2" color="text.primary" sx={{ lineHeight: 1.6 }}>
-                            {q.evaluation.feedback}
+                    {q.evaluation.missing_concepts?.length > 0 && (
+                      <Box sx={{ mb: 2 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
+                          <WarningAmberRoundedIcon color="warning" fontSize="small" />
+                          <Typography variant="caption" fontWeight={700} textTransform="uppercase">
+                            Missing Concepts & Gaps
                           </Typography>
-                        </CardContent>
-                      </Card>
-                    </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                          {q.evaluation.missing_concepts.map((mc, idx) => (
+                            <Chip
+                              key={idx}
+                              label={mc}
+                              color="warning"
+                              variant="outlined"
+                              size="small"
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+                    )}
+
+                    {/* Actionable Feedback */}
+                    {q.evaluation.feedback && (
+                      <Box sx={{ mt: 1.5 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
+                          <LightbulbRoundedIcon color="primary" fontSize="small" />
+                          <Typography variant="caption" fontWeight={700} textTransform="uppercase">
+                            Actionable Feedback
+                          </Typography>
+                        </Box>
+                        <Card variant="outlined" sx={{ borderRadius: 1.5 }}>
+                          <CardContent sx={{ py: 1.5, px: 2, "&:last-child": { pb: 1.5 } }}>
+                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                              {q.evaluation.feedback}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </Box>
+                    )}
                   </Box>
                 ) : (
                   <Box sx={{ mt: 2 }}>
-                    <Alert severity="info" variant="outlined" sx={{ borderRadius: 2 }}>
+                    <Alert severity="info" variant="outlined">
                       Evaluation pending or not requested for this question.
                     </Alert>
                   </Box>
@@ -934,7 +882,7 @@ export default function Interview() {
             ))}
           </Stack>
         )}
-      </Box>
+      </Stack>
     </DashboardLayout>
   );
 }

@@ -20,16 +20,14 @@ import {
   Typography,
 } from "@mui/material";
 
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
-import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
-import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 
 import AppCard from "../components/AppCard";
+import EmptyState from "../components/EmptyState";
 import SectionHeader from "../components/SectionHeader";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { getMatchingReport } from "../services/matchingService";
@@ -46,33 +44,30 @@ function getEvidenceChip(evidence) {
     case "Strong":
       return (
         <Chip
-          icon={<CheckCircleRoundedIcon />}
+          icon={<CheckCircleRoundedIcon fontSize="small" />}
           label="Strong (1.0)"
           size="small"
           color="success"
-          sx={{ fontWeight: 600 }}
         />
       );
     case "Partial":
       return (
         <Chip
-          icon={<WarningAmberRoundedIcon />}
+          icon={<WarningAmberRoundedIcon fontSize="small" />}
           label="Partial (0.5)"
           size="small"
           color="warning"
-          sx={{ fontWeight: 600 }}
         />
       );
     case "Missing":
     default:
       return (
         <Chip
-          icon={<CancelRoundedIcon />}
+          icon={<CancelRoundedIcon fontSize="small" />}
           label="Missing (0.0)"
           size="small"
           variant="outlined"
           color="error"
-          sx={{ fontWeight: 600 }}
         />
       );
   }
@@ -82,7 +77,7 @@ export default function JobMatch() {
   const navigate = useNavigate();
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [errorStatus, setErrorStatus] = useState(null); // 404 or other
+  const [errorStatus, setErrorStatus] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleRefresh = async () => {
@@ -150,19 +145,24 @@ export default function JobMatch() {
 
   return (
     <DashboardLayout>
-      <Box sx={{ maxWidth: 1100, mx: "auto" }}>
-        {/* Header */}
-        <Box sx={{ mb: 4, display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 2 }}>
-          <SectionHeader
-            title="Resume ↔ Job Matching Engine"
-            subtitle="Deterministic weighted matching between your verified candidate profile and AI-extracted job requirements."
-          />
+      <Stack spacing={3}>
+        {/* Page Header */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800}>
+              Job Match
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Deterministic weighted matching between verified candidate skills and AI-extracted job requirements.
+            </Typography>
+          </Box>
+
           <Button
             variant="outlined"
-            startIcon={<RefreshRoundedIcon />}
+            size="small"
+            startIcon={<RefreshRoundedIcon fontSize="small" />}
             onClick={handleRefresh}
             disabled={loading}
-            sx={{ borderRadius: 2 }}
           >
             Refresh Match
           </Button>
@@ -171,61 +171,40 @@ export default function JobMatch() {
         {/* Loading */}
         {loading && (
           <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
-            <CircularProgress />
+            <CircularProgress size={32} />
           </Box>
         )}
 
         {/* 404 / Missing Pre-requisite alert */}
         {!loading && errorStatus === 404 && (
-          <AppCard sx={{ textAlign: "center", py: 5, px: 3 }}>
-            <CompareArrowsRoundedIcon sx={{ fontSize: 56, color: "text.secondary", mb: 2 }} />
-            <Typography variant="h5" fontWeight={700} gutterBottom>
-              Missing Requirements for Job Matching
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, mx: "auto", mb: 4 }}>
-              {errorMessage}
-            </Typography>
-
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="center">
-              <Button
-                variant="outlined"
-                startIcon={<DescriptionRoundedIcon />}
-                endIcon={<ArrowForwardRoundedIcon />}
-                onClick={() => navigate("/resume")}
-                sx={{ borderRadius: 2 }}
-              >
-                Go to Resume & Verify Skills
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<WorkOutlineRoundedIcon />}
-                endIcon={<ArrowForwardRoundedIcon />}
-                onClick={() => navigate("/job-description")}
-                sx={{ borderRadius: 2 }}
-              >
-                Analyze Job Description
-              </Button>
-            </Stack>
-          </AppCard>
+          <EmptyState
+            icon={CompareArrowsRoundedIcon}
+            title="Prerequisites Needed for Matching"
+            description={errorMessage}
+            actionLabel="Verify Skills"
+            onAction={() => navigate("/resume")}
+            secondaryActionLabel="Analyze Job Description"
+            onSecondaryAction={() => navigate("/job-description")}
+          />
         )}
 
         {/* General Error */}
         {!loading && errorStatus && errorStatus !== 404 && (
-          <Alert severity="error" sx={{ mb: 3 }}>
+          <Alert severity="error">
             {errorMessage}
           </Alert>
         )}
 
         {/* Report Content */}
         {!loading && !errorStatus && report && (
-          <Stack spacing={4}>
+          <Stack spacing={3}>
             {/* Overall Match Card */}
             <AppCard>
               <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", gap: 4 }}>
                 {/* Score Section */}
-                <Box sx={{ textAlign: "center", minWidth: 220 }}>
-                  <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: 1.2, fontWeight: 700 }}>
-                    OVERALL MATCH
+                <Box sx={{ textAlign: "center", minWidth: 200 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ letterSpacing: "0.06em", fontWeight: 700, textTransform: "uppercase" }}>
+                    Overall Match
                   </Typography>
                   <Typography
                     variant="h2"
@@ -235,7 +214,7 @@ export default function JobMatch() {
                     {report.match_score}%
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    Deterministic Weighted Score
+                    Weighted Deterministic Score
                   </Typography>
                 </Box>
 
@@ -255,18 +234,16 @@ export default function JobMatch() {
                     variant="determinate"
                     value={Math.min(report.match_score, 100)}
                     sx={{
-                      height: 10,
-                      borderRadius: 5,
-                      bgcolor: "action.hover",
+                      height: 8,
+                      borderRadius: 4,
+                      mb: 1.5,
                       "& .MuiLinearProgress-bar": {
                         bgcolor: getScoreColor(report.match_score),
-                        borderRadius: 5,
                       },
-                      mb: 2,
                     }}
                   />
                   <Typography variant="body2" color="text.secondary">
-                    Calculated using verified evidence: Required skills (weight = 2.0), Preferred skills (weight = 1.0). Strong match gives 100% weight credit, alias match gives 50%.
+                    Required skills (2.0x weight), Preferred skills (1.0x weight). Exact match provides 100% credit; partial match provides 50%.
                   </Typography>
                 </Box>
               </Box>
@@ -274,9 +251,9 @@ export default function JobMatch() {
 
             {/* Summary Metrics */}
             <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(5, 1fr)" }, gap: 2 }}>
-              <AppCard sx={{ textAlign: "center", py: 2 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700}>
-                  MATCHED SKILLS
+              <AppCard sx={{ textAlign: "center" }} contentSx={{ p: 2 }}>
+                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                  Matched Skills
                 </Typography>
                 <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5, color: "success.main" }}>
                   {report.matched_skills.length}
@@ -286,9 +263,9 @@ export default function JobMatch() {
                 </Typography>
               </AppCard>
 
-              <AppCard sx={{ textAlign: "center", py: 2 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700}>
-                  REQUIRED MATCHED
+              <AppCard sx={{ textAlign: "center" }} contentSx={{ p: 2 }}>
+                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                  Required Matched
                 </Typography>
                 <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5, color: "primary.main" }}>
                   {report.matched_required_count}
@@ -298,9 +275,9 @@ export default function JobMatch() {
                 </Typography>
               </AppCard>
 
-              <AppCard sx={{ textAlign: "center", py: 2 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700}>
-                  PREFERRED MATCHED
+              <AppCard sx={{ textAlign: "center" }} contentSx={{ p: 2 }}>
+                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                  Preferred Matched
                 </Typography>
                 <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5, color: "secondary.main" }}>
                   {report.matched_preferred_count}
@@ -310,9 +287,9 @@ export default function JobMatch() {
                 </Typography>
               </AppCard>
 
-              <AppCard sx={{ textAlign: "center", py: 2 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700}>
-                  MISSING REQUIRED
+              <AppCard sx={{ textAlign: "center" }} contentSx={{ p: 2 }}>
+                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                  Missing Required
                 </Typography>
                 <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5, color: report.missing_required_skills.length > 0 ? "error.main" : "text.secondary" }}>
                   {report.missing_required_skills.length}
@@ -322,9 +299,9 @@ export default function JobMatch() {
                 </Typography>
               </AppCard>
 
-              <AppCard sx={{ textAlign: "center", py: 2 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700}>
-                  MISSING PREFERRED
+              <AppCard sx={{ textAlign: "center" }} contentSx={{ p: 2 }}>
+                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                  Missing Preferred
                 </Typography>
                 <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5, color: report.missing_preferred_skills.length > 0 ? "warning.main" : "text.secondary" }}>
                   {report.missing_preferred_skills.length}
@@ -336,30 +313,32 @@ export default function JobMatch() {
             </Box>
 
             {/* Missing Skills Section */}
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 3 }}>
+            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2.5 }}>
               {/* Missing Required Skills */}
               <AppCard>
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
                   <CancelRoundedIcon color="error" fontSize="small" />
-                  Missing Required Skills
-                </Typography>
+                  <Typography variant="subtitle1" fontWeight={700}>
+                    Missing Required Skills
+                  </Typography>
+                </Box>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Critical requirements not found in your verified profile.
+                  Critical requirements not found in your verified candidate profile.
                 </Typography>
 
                 {report.missing_required_skills.length === 0 ? (
-                  <Alert severity="success" sx={{ borderRadius: 2 }}>
-                    Great job! You have satisfied all required skills for this position.
+                  <Alert severity="success">
+                    All required skills have been matched.
                   </Alert>
                 ) : (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
                     {report.missing_required_skills.map((skill, index) => (
                       <Chip
                         key={index}
                         label={skill}
                         variant="outlined"
                         color="error"
-                        sx={{ fontWeight: 600 }}
+                        size="small"
                       />
                     ))}
                   </Box>
@@ -368,27 +347,29 @@ export default function JobMatch() {
 
               {/* Missing Preferred Skills */}
               <AppCard>
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
                   <WarningAmberRoundedIcon color="warning" fontSize="small" />
-                  Missing Preferred Skills
-                </Typography>
+                  <Typography variant="subtitle1" fontWeight={700}>
+                    Missing Preferred Skills
+                  </Typography>
+                </Box>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Nice-to-have skills that could give you an extra competitive edge.
+                  Optional skills that could provide a competitive advantage.
                 </Typography>
 
                 {report.missing_preferred_skills.length === 0 ? (
-                  <Alert severity="info" sx={{ borderRadius: 2 }}>
+                  <Alert severity="info">
                     All preferred skills matched or none were specified.
                   </Alert>
                 ) : (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
                     {report.missing_preferred_skills.map((skill, index) => (
                       <Chip
                         key={index}
                         label={skill}
                         variant="outlined"
                         color="warning"
-                        sx={{ fontWeight: 600 }}
+                        size="small"
                       />
                     ))}
                   </Box>
@@ -398,21 +379,19 @@ export default function JobMatch() {
 
             {/* Skill Comparison Table */}
             <AppCard>
-              <Typography variant="h6" fontWeight={700} gutterBottom>
-                Skill Comparison & Breakdown
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Detailed breakdown of each requirement, candidate evidence category, weight multiplier, and score contribution.
-              </Typography>
+              <SectionHeader
+                title="Skill Comparison & Breakdown"
+                subtitle="Detailed breakdown of requirements, evidence categories, and weighted contribution."
+              />
 
-              <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, overflow: "hidden" }}>
-                <Table>
-                  <TableHead sx={{ bgcolor: "action.hover" }}>
+              <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 1.5, overflow: "hidden" }}>
+                <Table size="small">
+                  <TableHead>
                     <TableRow>
-                      <TableCell sx={{ fontWeight: 700 }}>Skill</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Required / Preferred</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Evidence</TableCell>
-                      <TableCell align="right" sx={{ fontWeight: 700 }}>Contribution</TableCell>
+                      <TableCell>Skill</TableCell>
+                      <TableCell>Type</TableCell>
+                      <TableCell>Evidence</TableCell>
+                      <TableCell align="right">Contribution</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -425,7 +404,6 @@ export default function JobMatch() {
                             size="small"
                             variant="outlined"
                             color={row.requirement_type === "Required" ? "primary" : "secondary"}
-                            sx={{ fontWeight: 600 }}
                           />
                         </TableCell>
                         <TableCell>{getEvidenceChip(row.candidate_evidence)}</TableCell>
@@ -446,7 +424,7 @@ export default function JobMatch() {
             </AppCard>
           </Stack>
         )}
-      </Box>
+      </Stack>
     </DashboardLayout>
   );
 }

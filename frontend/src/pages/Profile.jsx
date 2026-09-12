@@ -25,13 +25,11 @@ import StatusChip from "../components/StatusChip";
 import { getUserProfile } from "../services/userService";
 
 function formatJoinDate(value) {
-  if (!value) {
-    return "--";
-  }
+  if (!value) return "--";
 
   return new Date(value).toLocaleDateString(undefined, {
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric",
   });
 }
@@ -80,69 +78,71 @@ export default function Profile() {
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        {/* ==================== 1. Profile Information ==================== */}
+      <Stack spacing={2}>
+        {/* Standard Page Header */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 1.5 }}>
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: 700, fontSize: "1.125rem", letterSpacing: "-0.01em" }}>
+              User Profile
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, fontSize: "0.8125rem" }}>
+              Account credentials, verified resume status, and platform identity.
+            </Typography>
+          </Box>
+
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<DescriptionRoundedIcon sx={{ fontSize: 16 }} />}
+            onClick={() => navigate(resume.uploaded ? "/analysis" : "/resume")}
+          >
+            {resume.uploaded ? "View Analysis" : "Upload Resume"}
+          </Button>
+        </Box>
+
+        {/* Profile Information Card */}
         <AppCard>
           <Stack
             direction={{ xs: "column", sm: "row" }}
             alignItems={{ xs: "flex-start", sm: "center" }}
             justifyContent="space-between"
-            spacing={3}
+            spacing={2}
           >
-            <Stack
-              direction="row"
-              spacing={2.5}
-              alignItems="center"
-            >
+            <Stack direction="row" spacing={1.75} alignItems="center">
               <Avatar
                 sx={{
-                  width: 72,
-                  height: 72,
+                  width: 44,
+                  height: 44,
                   bgcolor: "primary.main",
-                  fontSize: "1.75rem",
-                  fontWeight: 800,
-                  boxShadow: 2,
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  borderRadius: 1,
                 }}
               >
                 {user.name ? user.name.charAt(0).toUpperCase() : <PersonRoundedIcon />}
               </Avatar>
 
               <Box>
-                <Stack direction="row" alignItems="center" spacing={1.5}>
-                  <Typography variant="h4" fontWeight={800}>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600, fontSize: "0.9375rem" }}>
                     {user.name}
                   </Typography>
-                  <StatusChip
-                    label="Active"
-                    color="success"
-                  />
+                  <StatusChip label="Active" color="success" />
                 </Stack>
 
                 <Stack
                   direction={{ xs: "column", sm: "row" }}
                   spacing={{ xs: 0.5, sm: 2 }}
-                  sx={{ mt: 1 }}
+                  sx={{ mt: 0.5 }}
                 >
-                  <Stack
-                    direction="row"
-                    spacing={0.75}
-                    alignItems="center"
-                    color="text.secondary"
-                  >
-                    <EmailRoundedIcon sx={{ fontSize: 18 }} />
-                    <Typography variant="body2">
-                      {user.email}
-                    </Typography>
+                  <Stack direction="row" spacing={0.5} alignItems="center" color="text.secondary">
+                    <EmailRoundedIcon sx={{ fontSize: 14 }} />
+                    <Typography variant="caption" sx={{ fontSize: "0.75rem" }}>{user.email}</Typography>
                   </Stack>
 
-                  <Stack
-                    direction="row"
-                    spacing={0.75}
-                    alignItems="center"
-                    color="text.secondary"
-                  >
-                    <CalendarMonthRoundedIcon sx={{ fontSize: 18 }} />
-                    <Typography variant="body2">
+                  <Stack direction="row" spacing={0.5} alignItems="center" color="text.secondary">
+                    <CalendarMonthRoundedIcon sx={{ fontSize: 14 }} />
+                    <Typography variant="caption" sx={{ fontSize: "0.75rem" }}>
                       Joined {formatJoinDate(user.joined_at)}
                     </Typography>
                   </Stack>
@@ -152,22 +152,11 @@ export default function Profile() {
           </Stack>
         </AppCard>
 
-        {/* ==================== 2. Resume Summary ==================== */}
+        {/* Resume Summary Card */}
         <AppCard>
           <SectionHeader
-            title="Resume Summary"
-            subtitle="Overview of your uploaded resume and ATS evaluation."
-            action={
-              <Button
-                variant={resume.uploaded ? "outlined" : "contained"}
-                size="small"
-                onClick={() =>
-                  navigate(resume.uploaded ? "/analysis" : "/resume")
-                }
-              >
-                View Analysis
-              </Button>
-            }
+            title="Resume & Evaluation Summary"
+            subtitle="Current candidate credentials and analysis status."
           />
 
           <Box
@@ -178,37 +167,28 @@ export default function Profile() {
                 sm: "1fr 1fr",
                 md: "repeat(3, 1fr)",
               },
-              gap: 2,
-              mt: 1,
+              gap: 1.5,
             }}
           >
             <Box
               sx={{
-                p: 2,
+                p: 1.5,
                 border: 1,
                 borderColor: "divider",
-                borderRadius: 2,
+                borderRadius: 1,
+                bgcolor: "background.default",
               }}
             >
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={700}
-              >
+              <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase" sx={{ fontSize: "0.6875rem", letterSpacing: "0.03em" }}>
                 Resume Status
               </Typography>
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                sx={{ mt: 1 }}
-              >
+              <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mt: 0.75 }}>
                 {resume.uploaded ? (
-                  <CheckCircleRoundedIcon color="success" />
+                  <CheckCircleRoundedIcon color="success" sx={{ fontSize: 16 }} />
                 ) : (
-                  <RadioButtonUncheckedRoundedIcon color="disabled" />
+                  <RadioButtonUncheckedRoundedIcon color="disabled" sx={{ fontSize: 16 }} />
                 )}
-                <Typography fontWeight={700}>
+                <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.8125rem" }}>
                   {resume.uploaded ? "Uploaded" : "Not Uploaded"}
                 </Typography>
               </Stack>
@@ -216,62 +196,45 @@ export default function Profile() {
 
             <Box
               sx={{
-                p: 2,
+                p: 1.5,
                 border: 1,
                 borderColor: "divider",
-                borderRadius: 2,
+                borderRadius: 1,
+                bgcolor: "background.default",
               }}
             >
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={700}
-              >
-                Filename
+              <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase" sx={{ fontSize: "0.6875rem", letterSpacing: "0.03em" }}>
+                Active Filename
               </Typography>
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                sx={{ mt: 1 }}
-              >
-                <DescriptionRoundedIcon color="primary" />
-                <Typography
-                  fontWeight={600}
-                  noWrap
-                  title={resume.filename || "No file uploaded"}
-                >
-                  {resume.filename || "No resume uploaded"}
+              <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mt: 0.75 }}>
+                <DescriptionRoundedIcon color="primary" sx={{ fontSize: 16 }} />
+                <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.8125rem" }} noWrap title={resume.filename || "No file uploaded"}>
+                  {resume.filename || "No file uploaded"}
                 </Typography>
               </Stack>
             </Box>
 
             <Box
               sx={{
-                p: 2,
+                p: 1.5,
                 border: 1,
                 borderColor: "divider",
-                borderRadius: 2,
+                borderRadius: 1,
+                bgcolor: "background.default",
               }}
             >
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={700}
-              >
-                ATS Score
+              <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase" sx={{ fontSize: "0.6875rem", letterSpacing: "0.03em" }}>
+                ATS Compatibility
               </Typography>
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                sx={{ mt: 1 }}
-              >
-                <PsychologyRoundedIcon color={resume.ats_score != null ? "primary" : "disabled"} />
+              <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mt: 0.5 }}>
+                <PsychologyRoundedIcon color={resume.ats_score != null ? "primary" : "disabled"} sx={{ fontSize: 16 }} />
                 <Typography
-                  variant="h6"
-                  fontWeight={800}
-                  color={resume.ats_score != null ? "primary.main" : "text.secondary"}
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: "1rem",
+                    color: resume.ats_score != null ? "primary.main" : "text.secondary",
+                  }}
                 >
                   {resume.ats_score != null ? `${resume.ats_score}%` : "--"}
                 </Typography>
@@ -283,4 +246,3 @@ export default function Profile() {
     </DashboardLayout>
   );
 }
-

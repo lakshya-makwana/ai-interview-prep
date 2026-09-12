@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 
 export default function EmptyState({
@@ -13,44 +14,53 @@ export default function EmptyState({
 }) {
   return (
     <Paper
-      elevation={0}
+      variant="outlined"
       sx={{
-        p: { xs: 3, sm: 5 },
+        p: { xs: 2.5, sm: 3.5 },
         textAlign: "center",
-        borderRadius: 3,
-        border: 1,
-        borderColor: "divider",
         bgcolor: "background.paper",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: 280,
+        minHeight: 180,
         ...sx,
       }}
     >
       {Icon && (
         <Box
           sx={{
-            width: 64,
-            height: 64,
-            borderRadius: "50%",
-            bgcolor: "rgba(79, 140, 255, 0.1)",
+            width: 36,
+            height: 36,
+            borderRadius: 1,
+            bgcolor: "rgba(59, 130, 246, 0.08)",
             color: "primary.main",
             display: "grid",
             placeItems: "center",
-            mb: 2,
+            mb: 1.25,
             "& svg": {
-              fontSize: 32,
+              fontSize: 20,
             },
           }}
         >
-          {typeof Icon === "function" ? <Icon /> : Icon}
+          {React.isValidElement(Icon) ? (
+            Icon
+          ) : typeof Icon === "function" || (typeof Icon === "object" && Icon !== null) ? (
+            <Icon />
+          ) : null}
         </Box>
       )}
 
       {title && (
-        <Typography variant="h6" fontWeight={700} gutterBottom>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            fontWeight: 600,
+            fontSize: "0.875rem",
+            color: "text.primary",
+            mb: 0.5,
+          }}
+        >
           {title}
         </Typography>
       )}
@@ -59,7 +69,12 @@ export default function EmptyState({
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ maxWidth: 460, mb: action || actionLabel ? 3 : 0 }}
+          sx={{
+            maxWidth: 420,
+            fontSize: "0.8125rem",
+            lineHeight: 1.5,
+            mb: action || actionLabel ? 2 : 0,
+          }}
         >
           {description}
         </Typography>
@@ -68,12 +83,12 @@ export default function EmptyState({
       {action ? (
         action
       ) : (
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
           {actionLabel && onAction && (
             <Button
               variant="contained"
+              size="small"
               onClick={onAction}
-              sx={{ px: 3, fontWeight: 700 }}
             >
               {actionLabel}
             </Button>
@@ -82,8 +97,8 @@ export default function EmptyState({
           {secondaryActionLabel && onSecondaryAction && (
             <Button
               variant="outlined"
+              size="small"
               onClick={onSecondaryAction}
-              sx={{ px: 3, fontWeight: 700 }}
             >
               {secondaryActionLabel}
             </Button>

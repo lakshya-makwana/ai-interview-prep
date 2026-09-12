@@ -13,23 +13,38 @@ import StatusChip from "./StatusChip";
 function ActivityItem({ icon, title, subtitle, color, status, isLast }) {
   return (
     <Box>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-        <Stack direction="row" alignItems="center" spacing={2} sx={{ minWidth: 0 }}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1.5}>
+        <Stack direction="row" alignItems="center" spacing={1.25} sx={{ minWidth: 0 }}>
           <Avatar
             sx={{
-              width: 40,
-              height: 40,
+              width: 28,
+              height: 28,
               bgcolor: `${color}.main`,
+              borderRadius: 0.75,
             }}
           >
             {icon}
           </Avatar>
 
           <Box sx={{ minWidth: 0 }}>
-            <Typography fontWeight={800} noWrap>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontWeight: 600,
+                fontSize: "0.8125rem",
+                lineHeight: 1.2,
+                color: "text.primary",
+              }}
+              noWrap
+            >
               {title}
             </Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              noWrap
+              sx={{ display: "block", fontSize: "0.725rem", mt: 0.2 }}
+            >
               {subtitle}
             </Typography>
           </Box>
@@ -38,7 +53,7 @@ function ActivityItem({ icon, title, subtitle, color, status, isLast }) {
         <StatusChip label={status} color={status === "Completed" ? "success" : "warning"} />
       </Stack>
 
-      {!isLast && <Divider sx={{ my: 2 }} />}
+      {!isLast && <Divider sx={{ my: 1.25 }} />}
     </Box>
   );
 }
@@ -50,7 +65,7 @@ export default function RecentActivity() {
 
   if (dashboard.resume) {
     activities.push({
-      icon: <DescriptionRoundedIcon />,
+      icon: <DescriptionRoundedIcon sx={{ fontSize: 16 }} />,
       color: "success",
       title: "Resume Uploaded",
       subtitle: dashboard.resume.filename || "Resume file ready",
@@ -60,7 +75,7 @@ export default function RecentActivity() {
 
   if (dashboard.analysis) {
     activities.push({
-      icon: <PsychologyRoundedIcon />,
+      icon: <PsychologyRoundedIcon sx={{ fontSize: 16 }} />,
       color: "primary",
       title: "AI Analysis Complete",
       subtitle: `ATS Score: ${dashboard.analysis.ats_score}%`,
@@ -69,16 +84,16 @@ export default function RecentActivity() {
   }
 
   activities.push({
-    icon: <FlagRoundedIcon />,
+    icon: <FlagRoundedIcon sx={{ fontSize: 16 }} />,
     color: "warning",
-    title: "Next Step",
-    subtitle: "Mock Interview module",
+    title: "Next Milestone",
+    subtitle: "Interview practice and Career Readiness",
     status: "Upcoming",
   });
 
   return (
     <AppCard>
-      <SectionHeader title="Recent Activity" subtitle="Your latest preparation milestones." />
+      <SectionHeader title="Activity" subtitle="Recent account and preparation milestones." />
 
       <Stack>
         {activities.map((activity, index) => (

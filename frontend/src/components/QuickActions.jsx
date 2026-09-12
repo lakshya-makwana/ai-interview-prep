@@ -18,6 +18,7 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
 import { analyzeResume } from "../services/analysisService";
 import { useDashboard } from "../context/DashboardContext";
+import { useSnackbar } from "../context/SnackbarContext";
 
 import AppCard from "./AppCard";
 import LoadingOverlay from "./LoadingOverlay";
@@ -34,36 +35,35 @@ function ActionTile({ icon, title, subtitle, color = "primary", status, onClick,
       disabled={disabled}
       sx={{
         width: "100%",
-        minHeight: 118,
-        p: 2,
-        borderRadius: 2,
+        minHeight: 88,
+        p: 1.5,
+        borderRadius: 1,
         border: 1,
         borderColor: "divider",
-        bgcolor: disabled ? "action.disabledBackground" : "background.default",
+        bgcolor: disabled ? "action.disabledBackground" : "background.paper",
         textAlign: "left",
         alignItems: "stretch",
         justifyContent: "flex-start",
-        transition: theme.transitions.create(["transform", "border-color", "background-color"]),
+        transition: theme.transitions.create(["border-color", "background-color"]),
         "&:hover": disabled
           ? {}
           : {
-              transform: "translateY(-2px)",
-              borderColor: palette.main,
-              bgcolor: alpha(palette.main, 0.08),
+              borderColor: alpha(palette.main, 0.4),
+              bgcolor: alpha(palette.main, 0.03),
             },
       }}
     >
-      <Stack sx={{ width: "100%" }} spacing={1.5}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+      <Stack sx={{ width: "100%" }} spacing={1}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1.5}>
           <Box
             sx={{
-              width: 38,
-              height: 38,
-              borderRadius: 2,
+              width: 28,
+              height: 28,
+              borderRadius: 0.75,
               display: "grid",
               placeItems: "center",
               color: palette.main,
-              bgcolor: alpha(palette.main, 0.12),
+              bgcolor: alpha(palette.main, 0.08),
             }}
           >
             {icon}
@@ -72,8 +72,26 @@ function ActionTile({ icon, title, subtitle, color = "primary", status, onClick,
         </Stack>
 
         <Box>
-          <Typography fontWeight={800}>{title}</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+              fontSize: "0.8125rem",
+              lineHeight: 1.2,
+              color: "text.primary",
+            }}
+          >
+            {title}
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              display: "block",
+              fontSize: "0.725rem",
+              mt: 0.25,
+            }}
+          >
             {subtitle}
           </Typography>
         </Box>
@@ -85,6 +103,7 @@ function ActionTile({ icon, title, subtitle, color = "primary", status, onClick,
 export default function QuickActions() {
   const navigate = useNavigate();
   const { refreshDashboard } = useDashboard();
+  const { showError } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
   async function handleAnalyze() {
@@ -95,7 +114,7 @@ export default function QuickActions() {
       navigate("/analysis");
     } catch (err) {
       console.error(err);
-      alert("Analysis failed.");
+      showError("Analysis failed. Please ensure a valid resume is uploaded.");
     } finally {
       setLoading(false);
     }
@@ -107,22 +126,22 @@ export default function QuickActions() {
 
       <AppCard>
         <SectionHeader
-          title="Preparation Center"
-          subtitle="Continue the core interview preparation workflow."
-          action={loading ? <CircularProgress size={22} /> : null}
+          title="Preparation Actions"
+          subtitle="Core execution steps in your preparation workflow."
+          action={loading ? <CircularProgress size={16} /> : null}
         />
 
         <Box
           sx={{
             display: "grid",
             gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-            gap: 2,
+            gap: 1.25,
           }}
         >
           <ActionTile
-            icon={<DescriptionRoundedIcon />}
+            icon={<DescriptionRoundedIcon sx={{ fontSize: 16 }} />}
             title="Resume"
-            subtitle="Upload or replace your resume."
+            subtitle="Upload or update resume."
             status="Ready"
             color="success"
             onClick={() => navigate("/resume")}
@@ -130,9 +149,9 @@ export default function QuickActions() {
           />
 
           <ActionTile
-            icon={<PsychologyRoundedIcon />}
-            title="AI Analysis"
-            subtitle="Run Gemini resume analysis."
+            icon={<PsychologyRoundedIcon sx={{ fontSize: 16 }} />}
+            title="Run Analysis"
+            subtitle="Analyze resume with Gemini."
             status="Run"
             color="primary"
             onClick={handleAnalyze}
@@ -140,9 +159,9 @@ export default function QuickActions() {
           />
 
           <ActionTile
-            icon={<VisibilityRoundedIcon />}
+            icon={<VisibilityRoundedIcon sx={{ fontSize: 16 }} />}
             title="Analysis Report"
-            subtitle="Open your latest AI report."
+            subtitle="Inspect evaluation results."
             status="View"
             color="secondary"
             onClick={() => navigate("/analysis")}
@@ -150,12 +169,13 @@ export default function QuickActions() {
           />
 
           <ActionTile
-            icon={<MicRoundedIcon />}
-            title="Mock Interview"
-            subtitle="Interview practice module."
-            status="Soon"
+            icon={<MicRoundedIcon sx={{ fontSize: 16 }} />}
+            title="Technical Interview"
+            subtitle="Practice mock questions."
+            status="Ready"
             color="warning"
-            disabled
+            onClick={() => navigate("/interview")}
+            disabled={loading}
           />
         </Box>
       </AppCard>

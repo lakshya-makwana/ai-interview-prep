@@ -71,34 +71,37 @@ export default function Register() {
         py: 4,
       }}
     >
-      <Container maxWidth="sm">
-        <Stack spacing={3} alignItems="center" sx={{ mb: 3 }}>
+      <Container maxWidth="xs">
+        <Stack spacing={2} alignItems="center" sx={{ mb: 3 }}>
           <Box
             sx={{
-              width: 56,
-              height: 56,
-              borderRadius: 3,
+              width: 40,
+              height: 40,
+              borderRadius: 1.5,
               display: "grid",
               placeItems: "center",
               bgcolor: "primary.main",
               color: "primary.contrastText",
             }}
           >
-            <SmartToyRoundedIcon />
+            <SmartToyRoundedIcon fontSize="small" />
           </Box>
           <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h4">Create your account</Typography>
-            <Typography color="text.secondary" sx={{ mt: 1 }}>
-              Start building a stronger resume and interview workflow.
+            <Typography variant="h5" fontWeight={800}>
+              Create Account
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Start your automated technical interview preparation.
             </Typography>
           </Box>
         </Stack>
 
         <AppCard>
           <Box component="form" onSubmit={handleSubmit}>
-            <Stack spacing={2.5}>
+            <Stack spacing={2}>
               <TextField
-                label="Name"
+                label="Full name"
+                size="small"
                 value={form.name}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, name: event.target.value }))
@@ -108,8 +111,9 @@ export default function Register() {
               />
 
               <TextField
-                label="Email"
+                label="Email address"
                 type="email"
+                size="small"
                 value={form.email}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, email: event.target.value }))
@@ -121,6 +125,7 @@ export default function Register() {
               <TextField
                 label="Password"
                 type="password"
+                size="small"
                 value={form.password}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, password: event.target.value }))
@@ -134,17 +139,17 @@ export default function Register() {
               <Button
                 type="submit"
                 variant="contained"
-                size="large"
                 disabled={loading}
-                startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                startIcon={loading ? <CircularProgress size={16} color="inherit" /> : null}
+                sx={{ mt: 1 }}
               >
                 {loading ? "Creating account..." : "Register"}
               </Button>
 
-              <Typography align="center" color="text.secondary">
+              <Typography variant="body2" align="center" color="text.secondary" sx={{ pt: 1 }}>
                 Already have an account?{" "}
-                <Link component={RouterLink} to="/login" underline="hover">
-                  Login
+                <Link component={RouterLink} to="/login" underline="hover" color="primary.main" fontWeight={600}>
+                  Sign in
                 </Link>
               </Typography>
             </Stack>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Alert,
@@ -12,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
@@ -42,7 +44,7 @@ function ListSection({ title, items }) {
 
   return (
     <Box>
-      <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 700 }}>
+      <Typography variant="caption" color="text.secondary" sx={{ mb: 1, fontWeight: 700, textTransform: "uppercase", display: "block" }}>
         {title}
       </Typography>
       {list.length === 0 ? (
@@ -55,7 +57,7 @@ function ListSection({ title, items }) {
             <Stack key={`${item}-${index}`} direction="row" spacing={1} alignItems="flex-start">
               <CheckCircleOutlineRoundedIcon
                 color="primary"
-                sx={{ fontSize: 18, mt: 0.25, flexShrink: 0 }}
+                sx={{ fontSize: 16, mt: 0.35, flexShrink: 0 }}
               />
               <Typography variant="body2" color="text.primary">
                 {item}
@@ -73,7 +75,7 @@ function ChipSection({ title, items, color = "default" }) {
 
   return (
     <Box>
-      <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 700 }}>
+      <Typography variant="caption" color="text.secondary" sx={{ mb: 1, fontWeight: 700, textTransform: "uppercase", display: "block" }}>
         {title}
       </Typography>
       {chips.length === 0 ? (
@@ -81,7 +83,7 @@ function ChipSection({ title, items, color = "default" }) {
           Not specified
         </Typography>
       ) : (
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
           {chips.map((chip, index) => (
             <Chip
               key={`${chip}-${index}`}
@@ -98,6 +100,7 @@ function ChipSection({ title, items, color = "default" }) {
 }
 
 export default function JobDescription() {
+  const navigate = useNavigate();
   const { showSuccess, showError } = useSnackbar();
 
   const [jobText, setJobText] = useState("");
@@ -116,7 +119,6 @@ export default function JobDescription() {
           setJobText(saved.job_description || "");
         }
       } catch (err) {
-        // 404 is normal if no job has been submitted yet
         if (err?.response?.status !== 404) {
           console.error("Failed to fetch saved job:", err);
         }
@@ -177,24 +179,39 @@ export default function JobDescription() {
   return (
     <DashboardLayout>
       <Stack spacing={3}>
-        <Box>
-          <Typography variant="h4">Job Description</Typography>
-          <Typography color="text.secondary" sx={{ mt: 1 }}>
-            Paste a target software engineering job description to automatically extract key skills,
-            requirements, and qualifications using Gemini AI.
-          </Typography>
+        {/* Page Header */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800}>
+              Job Description
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Paste a target job description to extract structured skills, responsibilities, and qualifications.
+            </Typography>
+          </Box>
+
+          {analyzedJob && (
+            <Button
+              variant="outlined"
+              size="small"
+              endIcon={<ArrowForwardRoundedIcon fontSize="small" />}
+              onClick={() => navigate("/job-match")}
+            >
+              Go to Job Match
+            </Button>
+          )}
         </Box>
 
         {pageLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
-            <CircularProgress />
+            <CircularProgress size={32} />
           </Box>
         ) : (
           <Box
             sx={{
               display: "grid",
               gridTemplateColumns: { xs: "1fr", lg: analyzedJob ? "1fr 1fr" : "1fr" },
-              gap: 3,
+              gap: 2.5,
               alignItems: "start",
             }}
           >
@@ -214,7 +231,7 @@ export default function JobDescription() {
 
               <TextField
                 multiline
-                rows={12}
+                rows={11}
                 fullWidth
                 placeholder="Paste the target job description here (e.g. responsibilities, requirements, technical skills)..."
                 value={jobText}
@@ -225,7 +242,6 @@ export default function JobDescription() {
                 disabled={analyzing || clearing}
                 sx={{
                   bgcolor: "background.default",
-                  borderRadius: 2,
                 }}
               />
 
@@ -235,17 +251,16 @@ export default function JobDescription() {
                 </Alert>
               )}
 
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 3 }}>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ mt: 2.5 }}>
                 <Button
                   variant="contained"
-                  size="large"
                   onClick={handleAnalyze}
                   disabled={analyzing || clearing || !jobText.trim()}
                   startIcon={
                     analyzing ? (
-                      <CircularProgress size={18} color="inherit" />
+                      <CircularProgress size={16} color="inherit" />
                     ) : (
-                      <AutoAwesomeRoundedIcon />
+                      <AutoAwesomeRoundedIcon fontSize="small" />
                     )
                   }
                 >
@@ -256,14 +271,13 @@ export default function JobDescription() {
                   <Button
                     variant="outlined"
                     color="error"
-                    size="large"
                     onClick={handleClear}
                     disabled={analyzing || clearing}
                     startIcon={
                       clearing ? (
-                        <CircularProgress size={18} color="inherit" />
+                        <CircularProgress size={16} color="inherit" />
                       ) : (
-                        <DeleteOutlineRoundedIcon />
+                        <DeleteOutlineRoundedIcon fontSize="small" />
                       )
                     }
                   >
@@ -281,35 +295,37 @@ export default function JobDescription() {
                   subtitle="Structured requirements stored in PostgreSQL."
                 />
 
-                <Stack spacing={2.5}>
+                <Stack spacing={2}>
                   {/* Job Title & Company */}
                   <Box
                     sx={{
-                      p: 2,
-                      borderRadius: 2,
+                      p: 1.75,
+                      borderRadius: 1.5,
                       bgcolor: "action.hover",
+                      border: 1,
+                      borderColor: "divider",
                     }}
                   >
-                    <Stack direction="row" spacing={2} alignItems="center">
+                    <Stack direction="row" spacing={1.5} alignItems="center">
                       <Box
                         sx={{
-                          width: 44,
-                          height: 44,
-                          borderRadius: 2,
+                          width: 36,
+                          height: 36,
+                          borderRadius: 1.5,
                           display: "grid",
                           placeItems: "center",
                           bgcolor: "primary.main",
                           color: "primary.contrastText",
                         }}
                       >
-                        <WorkOutlineRoundedIcon />
+                        <WorkOutlineRoundedIcon fontSize="small" />
                       </Box>
                       <Box sx={{ minWidth: 0, flex: 1 }}>
-                        <Typography variant="h6" fontWeight={700}>
+                        <Typography variant="subtitle1" fontWeight={700}>
                           {analyzedJob.title || "Software Engineering Role"}
                         </Typography>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                          <BusinessRoundedIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                        <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mt: 0.25 }}>
+                          <BusinessRoundedIcon sx={{ fontSize: 14, color: "text.secondary" }} />
                           <Typography variant="body2" color="text.secondary">
                             {analyzedJob.company_name || "Company Not Specified"}
                           </Typography>
@@ -342,7 +358,7 @@ export default function JobDescription() {
                   <ChipSection
                     title="Technologies"
                     items={req?.technologies}
-                    color="info"
+                    color="default"
                   />
 
                   <Divider />

@@ -23,6 +23,7 @@ import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
 import VerifiedUserRoundedIcon from "@mui/icons-material/VerifiedUserRounded";
 
 import AppCard from "../components/AppCard";
+import EmptyState from "../components/EmptyState";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -193,25 +194,39 @@ export default function Resume() {
   return (
     <DashboardLayout>
       <Stack spacing={3}>
-        <Box>
-          <Typography variant="h4">Resume</Typography>
-          <Typography color="text.secondary" sx={{ mt: 1 }}>
-            Upload your resume, review ATS analysis, and verify candidate skills for job matching.
-          </Typography>
+        {/* Page Header */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800}>
+              Resume & Skills
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Upload your resume, review ATS analysis, and verify candidate skills for job matching.
+            </Typography>
+          </Box>
+
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<PsychologyRoundedIcon fontSize="small" />}
+            onClick={() => navigate("/analysis")}
+          >
+            View Analysis
+          </Button>
         </Box>
 
         <Box
           sx={{
             display: "grid",
             gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 1.2fr) minmax(320px, 0.8fr)" },
-            gap: 3,
+            gap: 2.5,
           }}
         >
           {/* Upload Card */}
           <AppCard>
             <SectionHeader
               title="Upload Resume"
-              subtitle="PDF files work best for consistent text extraction."
+              subtitle="PDF files work best for structured text extraction."
               action={
                 <StatusChip
                   label={dashboard.resume ? "Resume saved" : "No resume"}
@@ -223,11 +238,11 @@ export default function Resume() {
             <Box
               component="label"
               sx={{
-                minHeight: 280,
+                minHeight: 220,
                 border: 1,
                 borderStyle: "dashed",
                 borderColor: "divider",
-                borderRadius: 3,
+                borderRadius: 2,
                 bgcolor: "background.default",
                 display: "flex",
                 alignItems: "center",
@@ -256,43 +271,42 @@ export default function Resume() {
                 }}
               />
 
-              <Stack alignItems="center" spacing={2}>
-                <CloudUploadRoundedIcon color="primary" sx={{ fontSize: 64 }} />
+              <Stack alignItems="center" spacing={1.5}>
+                <CloudUploadRoundedIcon color="primary" sx={{ fontSize: 48 }} />
                 <Box>
-                  <Typography variant="h6">
+                  <Typography variant="subtitle1" fontWeight={700}>
                     {file ? file.name : "Choose a resume PDF"}
                   </Typography>
-                  <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-                    Click this area to select a file from your device.
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
+                    Click to browse or drop a PDF file here.
                   </Typography>
                 </Box>
               </Stack>
             </Box>
 
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 3 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ mt: 2.5 }}>
               <Button
                 variant="contained"
-                size="large"
                 onClick={handleUpload}
                 disabled={loading}
-                startIcon={loading ? <CircularProgress size={18} color="inherit" /> : <CloudUploadRoundedIcon />}
+                startIcon={loading ? <CircularProgress size={16} color="inherit" /> : <CloudUploadRoundedIcon fontSize="small" />}
               >
                 {loading ? "Uploading..." : dashboard.resume ? "Replace Resume" : "Upload Resume"}
               </Button>
 
-              <Button variant="outlined" size="large" onClick={() => navigate("/analysis")}>
+              <Button variant="outlined" onClick={() => navigate("/analysis")}>
                 View Analysis
               </Button>
             </Stack>
 
             {success && (
-              <Alert severity="success" sx={{ mt: 3 }}>
+              <Alert severity="success" sx={{ mt: 2 }}>
                 {success}
               </Alert>
             )}
 
             {error && (
-              <Alert severity="error" sx={{ mt: 3 }}>
+              <Alert severity="error" sx={{ mt: 2 }}>
                 {error}
               </Alert>
             )}
@@ -300,29 +314,29 @@ export default function Resume() {
 
           {/* Current Resume Card */}
           <AppCard>
-            <SectionHeader title="Current Resume" subtitle="The file used for your latest analysis." />
+            <SectionHeader title="Current Resume" subtitle="The active file used for analysis." />
 
             {dashboard.resume ? (
-              <Stack spacing={2.5}>
-                <Stack direction="row" spacing={2} alignItems="center">
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={1.5} alignItems="center">
                   <Box
                     sx={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 2,
+                      width: 40,
+                      height: 40,
+                      borderRadius: 1.5,
                       display: "grid",
                       placeItems: "center",
                       bgcolor: "action.hover",
                       color: "primary.main",
                     }}
                   >
-                    <DescriptionRoundedIcon />
+                    <DescriptionRoundedIcon fontSize="small" />
                   </Box>
                   <Box sx={{ minWidth: 0 }}>
-                    <Typography fontWeight={800} noWrap>
+                    <Typography variant="subtitle2" fontWeight={700} noWrap>
                       {dashboard.resume.filename || "Uploaded resume"}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary">
                       Ready for AI analysis
                     </Typography>
                   </Box>
@@ -330,16 +344,16 @@ export default function Resume() {
 
                 <Divider />
 
-                <Stack spacing={1.5}>
-                  <Stack direction="row" spacing={1.5} alignItems="center">
-                    <PsychologyRoundedIcon color={dashboard.analysis ? "success" : "disabled"} />
-                    <Typography color={dashboard.analysis ? "text.primary" : "text.secondary"}>
+                <Stack spacing={1.25}>
+                  <Stack direction="row" spacing={1.25} alignItems="center">
+                    <PsychologyRoundedIcon color={dashboard.analysis ? "success" : "disabled"} fontSize="small" />
+                    <Typography variant="body2" color={dashboard.analysis ? "text.primary" : "text.secondary"}>
                       {dashboard.analysis ? "Analysis completed" : "Analysis pending"}
                     </Typography>
                   </Stack>
 
                   {dashboard.analysis && (
-                    <StatusChip label={`ATS Score ${dashboard.analysis.ats_score}%`} color="primary" />
+                    <StatusChip label={`ATS Score: ${dashboard.analysis.ats_score}%`} color="primary" />
                   )}
 
                   {profile && (
@@ -351,42 +365,11 @@ export default function Resume() {
                 </Stack>
               </Stack>
             ) : (
-              <Stack
-                spacing={2}
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                  py: 4,
-                  px: 2,
-                  textAlign: "center",
-                  borderRadius: 2,
-                  bgcolor: "rgba(255, 255, 255, 0.02)",
-                  border: "1px dashed",
-                  borderColor: "divider",
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: "50%",
-                    bgcolor: "rgba(79, 140, 255, 0.1)",
-                    color: "primary.main",
-                    display: "grid",
-                    placeItems: "center",
-                  }}
-                >
-                  <DescriptionRoundedIcon sx={{ fontSize: 28 }} />
-                </Box>
-                <Box>
-                  <Typography fontWeight={700} gutterBottom>
-                    No Resume Uploaded
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Select a PDF file on the left to upload your resume and run automated AI analysis.
-                  </Typography>
-                </Box>
-              </Stack>
+              <EmptyState
+                icon={DescriptionRoundedIcon}
+                title="No Resume Uploaded"
+                description="Upload a PDF file to begin analysis and skill extraction."
+              />
             )}
           </AppCard>
         </Box>
@@ -396,11 +379,11 @@ export default function Resume() {
           <AppCard>
             <SectionHeader
               title="Candidate Skill Verification"
-              subtitle="Review, edit, and confirm AI-extracted skills before matching."
+              subtitle="Review, edit, and confirm AI-extracted skills before job matching."
               action={
                 profile?.skills_verified ? (
                   <Chip
-                    icon={<CheckCircleRoundedIcon />}
+                    icon={<CheckCircleRoundedIcon fontSize="small" />}
                     label="Skills Verified"
                     color="success"
                     size="small"
@@ -417,29 +400,29 @@ export default function Resume() {
 
             {profileLoading ? (
               <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-                <CircularProgress size={32} />
+                <CircularProgress size={28} />
               </Box>
             ) : (
-              <Stack spacing={2.5}>
+              <Stack spacing={2}>
                 {profile?.skills_verified && (
-                  <Alert severity="success" icon={<VerifiedUserRoundedIcon />}>
+                  <Alert severity="success" icon={<VerifiedUserRoundedIcon fontSize="small" />}>
                     Skills Verified. These skills are confirmed as your trusted profile for job matching.
                   </Alert>
                 )}
 
                 <Typography variant="body2" color="text.secondary">
                   {profile?.skills_verified
-                    ? "Your skills have been confirmed. You can still modify and re-save if needed."
-                    : "The skills below were extracted by Gemini AI from your resume. Edit, remove, or add skills, then confirm."}
+                    ? "Your skills have been confirmed. You can modify and re-save if needed."
+                    : "The skills below were extracted by Gemini AI from your resume. Review and confirm them for matching."}
                 </Typography>
 
                 {/* Editable Skills List */}
-                <Stack spacing={1.5}>
+                <Stack spacing={1.25}>
                   {skillsList.map((skill, index) => (
                     <Stack
                       key={index}
                       direction="row"
-                      spacing={1.5}
+                      spacing={1.25}
                       alignItems="center"
                     >
                       <TextField
@@ -449,7 +432,7 @@ export default function Resume() {
                         value={skill}
                         onChange={(e) => handleSkillChange(index, e.target.value)}
                         disabled={savingSkills || confirmingSkills}
-                        sx={{ bgcolor: "background.default", borderRadius: 1.5 }}
+                        sx={{ bgcolor: "background.default" }}
                       />
                       <IconButton
                         color="error"
@@ -458,7 +441,7 @@ export default function Resume() {
                         size="small"
                         aria-label="Remove skill"
                       >
-                        <DeleteOutlineRoundedIcon />
+                        <DeleteOutlineRoundedIcon fontSize="small" />
                       </IconButton>
                     </Stack>
                   ))}
@@ -475,7 +458,7 @@ export default function Resume() {
                   <Button
                     variant="outlined"
                     size="small"
-                    startIcon={<AddRoundedIcon />}
+                    startIcon={<AddRoundedIcon fontSize="small" />}
                     onClick={handleAddSkill}
                     disabled={savingSkills || confirmingSkills}
                   >
@@ -483,22 +466,24 @@ export default function Resume() {
                   </Button>
                 </Box>
 
-                <Divider sx={{ my: 1 }} />
+                <Divider sx={{ my: 0.5 }} />
 
-                {/* Action Buttons: Save Changes and Confirm Skills */}
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                {/* Action Buttons */}
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
                   <Button
                     variant="contained"
+                    size="small"
                     onClick={handleSaveSkills}
                     disabled={savingSkills || confirmingSkills}
-                    startIcon={savingSkills ? <CircularProgress size={16} color="inherit" /> : null}
+                    startIcon={savingSkills ? <CircularProgress size={14} color="inherit" /> : null}
                   >
-                    {savingSkills ? "Saving Changes..." : "Save Changes"}
+                    {savingSkills ? "Saving..." : "Save Changes"}
                   </Button>
 
                   <Button
                     variant="contained"
                     color="success"
+                    size="small"
                     onClick={handleConfirmSkills}
                     disabled={
                       savingSkills ||
@@ -507,9 +492,9 @@ export default function Resume() {
                     }
                     startIcon={
                       confirmingSkills ? (
-                        <CircularProgress size={16} color="inherit" />
+                        <CircularProgress size={14} color="inherit" />
                       ) : (
-                        <CheckCircleRoundedIcon />
+                        <CheckCircleRoundedIcon fontSize="small" />
                       )
                     }
                   >

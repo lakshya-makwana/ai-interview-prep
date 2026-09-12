@@ -7,6 +7,10 @@ export default function StatusChip({ label, color = "default", ...props }) {
       color={color}
       size="small"
       variant={color === "default" ? "outlined" : "filled"}
+      sx={{
+        fontWeight: 600,
+        ...props.sx,
+      }}
       {...props}
     />
   );

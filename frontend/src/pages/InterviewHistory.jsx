@@ -5,8 +5,6 @@ import {
   Alert,
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   CircularProgress,
   Collapse,
@@ -25,7 +23,6 @@ import {
   Typography,
 } from "@mui/material";
 
-import DatasetRoundedIcon from "@mui/icons-material/DatasetRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
@@ -34,25 +31,29 @@ import MicRoundedIcon from "@mui/icons-material/MicRounded";
 import QuestionAnswerRoundedIcon from "@mui/icons-material/QuestionAnswerRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import TableChartRoundedIcon from "@mui/icons-material/TableChartRounded";
 
+import AppCard from "../components/AppCard";
+import EmptyState from "../components/EmptyState";
+import SectionHeader from "../components/SectionHeader";
+import StatusChip from "../components/StatusChip";
+import DashboardLayout from "../layouts/DashboardLayout";
 import { getDataset, getDatasetStatistics } from "../services/datasetService";
 
+function getDifficultyColor(diff) {
+  switch (diff?.toLowerCase()) {
+    case "easy":
+      return "success";
+    case "medium":
+      return "warning";
+    case "hard":
+      return "error";
+    default:
+      return "default";
+  }
+}
+
 function RowItem({ row, isOpen, onToggle }) {
-  const getDifficultyColor = (diff) => {
-    switch (diff?.toLowerCase()) {
-      case "easy":
-        return { bg: "#ecfdf5", color: "#065f46", border: "#a7f3d0" };
-      case "medium":
-        return { bg: "#eff6ff", color: "#1e40af", border: "#bfdbfe" };
-      case "hard":
-        return { bg: "#fef2f2", color: "#991b1b", border: "#fecaca" };
-      default:
-        return { bg: "#f1f5f9", color: "#334155", border: "#cbd5e1" };
-    }
-  };
-
-  const diffStyle = getDifficultyColor(row.difficulty);
-
   return (
     <>
       <TableRow
@@ -60,17 +61,16 @@ function RowItem({ row, isOpen, onToggle }) {
         onClick={onToggle}
         sx={{
           cursor: "pointer",
-          backgroundColor: isOpen ? "#f8fafc" : "inherit",
+          backgroundColor: isOpen ? "action.hover" : "inherit",
           "& > *": { borderBottom: isOpen ? "unset" : undefined },
-          transition: "background-color 0.15s ease",
         }}
       >
-        <TableCell sx={{ width: 48, pr: 0 }}>
+        <TableCell sx={{ width: 44, pr: 0 }}>
           <IconButton size="small" onClick={(e) => { e.stopPropagation(); onToggle(); }}>
-            {isOpen ? <KeyboardArrowUpRoundedIcon /> : <KeyboardArrowDownRoundedIcon />}
+            {isOpen ? <KeyboardArrowUpRoundedIcon fontSize="small" /> : <KeyboardArrowDownRoundedIcon fontSize="small" />}
           </IconButton>
         </TableCell>
-        <TableCell sx={{ whiteSpace: "nowrap", color: "#64748b", fontSize: "0.85rem" }}>
+        <TableCell sx={{ whiteSpace: "nowrap", color: "text.secondary", fontSize: "0.8rem" }}>
           {row.created_at ? new Date(row.created_at).toLocaleDateString(undefined, {
             month: "short",
             day: "numeric",
@@ -83,27 +83,16 @@ function RowItem({ row, isOpen, onToggle }) {
           <Chip
             label={row.topic}
             size="small"
-            sx={{
-              backgroundColor: "#f1f5f9",
-              color: "#334155",
-              fontWeight: 600,
-              fontSize: "0.75rem",
-            }}
+            variant="outlined"
+            sx={{ fontWeight: 600 }}
           />
         </TableCell>
         <TableCell>
           <Chip
             label={row.difficulty}
             size="small"
-            sx={{
-              backgroundColor: diffStyle.bg,
-              color: diffStyle.color,
-              borderColor: diffStyle.border,
-              borderWidth: 1,
-              borderStyle: "solid",
-              fontWeight: 600,
-              fontSize: "0.75rem",
-            }}
+            color={getDifficultyColor(row.difficulty)}
+            sx={{ fontWeight: 600 }}
           />
         </TableCell>
         <TableCell sx={{ maxWidth: 360 }}>
@@ -111,7 +100,6 @@ function RowItem({ row, isOpen, onToggle }) {
             variant="body2"
             sx={{
               fontWeight: 500,
-              color: "#1e293b",
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
@@ -122,27 +110,21 @@ function RowItem({ row, isOpen, onToggle }) {
           </Typography>
         </TableCell>
         <TableCell align="right">
-          <Chip
+          <StatusChip
             label={`${row.overall_score.toFixed(1)} / 10`}
-            size="small"
-            sx={{
-              backgroundColor: row.overall_score >= 8.0 ? "#ecfdf5" : row.overall_score >= 6.0 ? "#eff6ff" : "#fffbeb",
-              color: row.overall_score >= 8.0 ? "#065f46" : row.overall_score >= 6.0 ? "#1e40af" : "#92400e",
-              fontWeight: 700,
-              fontSize: "0.8rem",
-            }}
+            color={row.overall_score >= 8.0 ? "success" : row.overall_score >= 6.0 ? "primary" : "warning"}
           />
         </TableCell>
       </TableRow>
 
-      <TableRow sx={{ backgroundColor: "#f8fafc" }}>
+      <TableRow sx={{ backgroundColor: "action.hover" }}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={isOpen} timeout="auto" unmountOnExit>
             <Box sx={{ py: 2.5, px: 1 }}>
-              <Grid container spacing={3}>
+              <Grid container spacing={2.5}>
                 {/* Candidate Answer Box */}
                 <Grid size={{ xs: 12, md: 7 }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "#64748b" }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, textTransform: "uppercase", color: "text.secondary", display: "block" }}>
                     Candidate Answer
                   </Typography>
                   <Paper
@@ -150,20 +132,19 @@ function RowItem({ row, isOpen, onToggle }) {
                     sx={{
                       p: 2,
                       mt: 1,
-                      backgroundColor: "#ffffff",
-                      borderRadius: 2,
-                      borderColor: "#e2e8f0",
-                      maxHeight: 220,
+                      backgroundColor: "background.paper",
+                      borderRadius: 1.5,
+                      maxHeight: 200,
                       overflowY: "auto",
                     }}
                   >
-                    <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", color: "#334155", lineHeight: 1.6 }}>
-                      {row.candidate_answer}
+                    <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+                      {row.candidate_answer || "No answer recorded."}
                     </Typography>
                   </Paper>
 
                   {/* Feedback Card */}
-                  <Typography variant="caption" sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "#64748b", display: "block", mt: 2 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, textTransform: "uppercase", color: "text.secondary", display: "block", mt: 2 }}>
                     AI Evaluator Feedback
                   </Typography>
                   <Paper
@@ -171,14 +152,14 @@ function RowItem({ row, isOpen, onToggle }) {
                     sx={{
                       p: 2,
                       mt: 1,
-                      backgroundColor: "#f0fdf4",
-                      borderColor: "#bbf7d0",
-                      borderRadius: 2,
+                      backgroundColor: "rgba(16, 185, 129, 0.06)",
+                      borderColor: "rgba(16, 185, 129, 0.25)",
+                      borderRadius: 1.5,
                     }}
                   >
-                    <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                      <LightbulbRoundedIcon sx={{ color: "#16a34a", fontSize: 20, mt: 0.2 }} />
-                      <Typography variant="body2" sx={{ color: "#166534", lineHeight: 1.6 }}>
+                    <Stack direction="row" spacing={1.25} alignItems="flex-start">
+                      <LightbulbRoundedIcon sx={{ color: "success.main", fontSize: 18, mt: 0.2 }} />
+                      <Typography variant="body2" sx={{ color: "text.primary", lineHeight: 1.6 }}>
                         {row.feedback}
                       </Typography>
                     </Stack>
@@ -187,7 +168,7 @@ function RowItem({ row, isOpen, onToggle }) {
 
                 {/* Score Breakdown & Chips */}
                 <Grid size={{ xs: 12, md: 5 }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "#64748b" }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, textTransform: "uppercase", color: "text.secondary", display: "block" }}>
                     Dimension Scores
                   </Typography>
                   <Paper
@@ -195,65 +176,64 @@ function RowItem({ row, isOpen, onToggle }) {
                     sx={{
                       p: 2,
                       mt: 1,
-                      backgroundColor: "#ffffff",
-                      borderRadius: 2,
-                      borderColor: "#e2e8f0",
+                      backgroundColor: "background.paper",
+                      borderRadius: 1.5,
                     }}
                   >
-                    <Stack spacing={1.5}>
+                    <Stack spacing={1.25}>
                       <Box>
                         <Stack direction="row" justifyContent="space-between">
                           <Typography variant="caption" color="text.secondary">Technical Correctness</Typography>
-                          <Typography variant="caption" fontWeight={700}>{row.technical_correctness.toFixed(1)}/10</Typography>
+                          <Typography variant="caption" fontWeight={700}>{row.technical_correctness.toFixed(1)} / 10</Typography>
                         </Stack>
-                        <LinearProgress variant="determinate" value={row.technical_correctness * 10} sx={{ height: 6, borderRadius: 3, mt: 0.5 }} />
+                        <LinearProgress variant="determinate" value={row.technical_correctness * 10} sx={{ height: 5, borderRadius: 2.5, mt: 0.5 }} />
                       </Box>
                       <Box>
                         <Stack direction="row" justifyContent="space-between">
                           <Typography variant="caption" color="text.secondary">Completeness</Typography>
-                          <Typography variant="caption" fontWeight={700}>{row.completeness.toFixed(1)}/10</Typography>
+                          <Typography variant="caption" fontWeight={700}>{row.completeness.toFixed(1)} / 10</Typography>
                         </Stack>
-                        <LinearProgress variant="determinate" value={row.completeness * 10} color="secondary" sx={{ height: 6, borderRadius: 3, mt: 0.5 }} />
+                        <LinearProgress variant="determinate" value={row.completeness * 10} color="secondary" sx={{ height: 5, borderRadius: 2.5, mt: 0.5 }} />
                       </Box>
                       <Box>
                         <Stack direction="row" justifyContent="space-between">
                           <Typography variant="caption" color="text.secondary">Relevance</Typography>
-                          <Typography variant="caption" fontWeight={700}>{row.relevance.toFixed(1)}/10</Typography>
+                          <Typography variant="caption" fontWeight={700}>{row.relevance.toFixed(1)} / 10</Typography>
                         </Stack>
-                        <LinearProgress variant="determinate" value={row.relevance * 10} color="success" sx={{ height: 6, borderRadius: 3, mt: 0.5 }} />
+                        <LinearProgress variant="determinate" value={row.relevance * 10} color="success" sx={{ height: 5, borderRadius: 2.5, mt: 0.5 }} />
                       </Box>
                       <Box>
                         <Stack direction="row" justifyContent="space-between">
                           <Typography variant="caption" color="text.secondary">Communication</Typography>
-                          <Typography variant="caption" fontWeight={700}>{row.communication.toFixed(1)}/10</Typography>
+                          <Typography variant="caption" fontWeight={700}>{row.communication.toFixed(1)} / 10</Typography>
                         </Stack>
-                        <LinearProgress variant="determinate" value={row.communication * 10} color="warning" sx={{ height: 6, borderRadius: 3, mt: 0.5 }} />
+                        <LinearProgress variant="determinate" value={row.communication * 10} color="warning" sx={{ height: 5, borderRadius: 2.5, mt: 0.5 }} />
                       </Box>
                     </Stack>
                   </Paper>
 
                   {/* Strengths & Missing Concepts */}
                   <Box sx={{ mt: 2 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: "#166534", display: "block", mb: 0.5 }}>
+                    <Typography variant="caption" color="success.main" sx={{ fontWeight: 700, display: "block", mb: 0.5, textTransform: "uppercase" }}>
                       Demonstrated Strengths
                     </Typography>
                     <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap sx={{ mb: 1.5 }}>
                       {Array.isArray(row.strengths) && row.strengths.length > 0 ? (
                         row.strengths.map((s, idx) => (
-                          <Chip key={idx} label={s} size="small" sx={{ backgroundColor: "#dcfce7", color: "#166534", fontSize: "0.75rem" }} />
+                          <Chip key={idx} label={s} size="small" color="success" variant="outlined" />
                         ))
                       ) : (
                         <Typography variant="caption" color="text.secondary">None logged</Typography>
                       )}
                     </Stack>
 
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: "#b45309", display: "block", mb: 0.5 }}>
-                      Missing Concepts / Growth Areas
+                    <Typography variant="caption" color="warning.main" sx={{ fontWeight: 700, display: "block", mb: 0.5, textTransform: "uppercase" }}>
+                      Missing Concepts & Gaps
                     </Typography>
                     <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
                       {Array.isArray(row.missing_concepts) && row.missing_concepts.length > 0 ? (
                         row.missing_concepts.map((m, idx) => (
-                          <Chip key={idx} label={m} size="small" sx={{ backgroundColor: "#fef3c7", color: "#92400e", fontSize: "0.75rem" }} />
+                          <Chip key={idx} label={m} size="small" color="warning" variant="outlined" />
                         ))
                       ) : (
                         <Typography variant="caption" color="text.secondary">None logged</Typography>
@@ -344,242 +324,219 @@ export default function InterviewHistory() {
     setOpenRowId((prev) => (prev === id ? null : id));
   };
 
-  if (loading) {
-    return (
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", py: 12 }}>
-        <CircularProgress size={44} thickness={4} />
-        <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
-          Loading interview dataset...
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
-    <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, sm: 3 }, py: 4 }}>
-      {/* Header */}
-      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }} spacing={2} sx={{ mb: 4 }}>
-        <Box>
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <DatasetRoundedIcon sx={{ fontSize: 32, color: "#3b82f6" }} />
-            <Typography variant="h4" sx={{ fontWeight: 800, color: "#0f172a", letterSpacing: -0.5 }}>
+    <DashboardLayout>
+      <Stack spacing={3}>
+        {/* Page Header */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800}>
               Interview History
             </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Structured interview dataset collected for evaluation analytics and machine learning.
+            </Typography>
+          </Box>
+
+          <Stack direction="row" spacing={1.5}>
+            <Tooltip title="Refresh Dataset">
+              <IconButton onClick={fetchData} size="small" sx={{ border: 1, borderColor: "divider" }}>
+                <RefreshRoundedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<MicRoundedIcon fontSize="small" />}
+              onClick={() => navigate("/interview")}
+            >
+              New Interview
+            </Button>
           </Stack>
-          <Typography variant="body2" sx={{ mt: 0.5, color: "#64748b" }}>
-            Structured interview dataset collected for performance evaluation and future ML pipelines
-          </Typography>
         </Box>
-        <Stack direction="row" spacing={1.5}>
-          <Tooltip title="Refresh Dataset">
-            <IconButton onClick={fetchData} sx={{ border: "1px solid #e2e8f0" }}>
-              <RefreshRoundedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Button
-            variant="contained"
-            startIcon={<MicRoundedIcon />}
-            onClick={() => navigate("/interview")}
-            sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              borderRadius: 2,
-              px: 2.5,
-              backgroundColor: "#2563eb",
-              "&:hover": { backgroundColor: "#1d4ed8" },
-            }}
-          >
-            New Interview
-          </Button>
-        </Stack>
+
+        {error && (
+          <Alert severity="error" onClose={() => setError("")}>
+            {error}
+          </Alert>
+        )}
+
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+            <CircularProgress size={32} />
+          </Box>
+        ) : (
+          <>
+            {/* Summary KPI Cards */}
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 6, sm: 3 }}>
+                <AppCard contentSx={{ p: 2 }}>
+                  <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Box sx={{ p: 1, borderRadius: 1.5, bgcolor: "action.hover", color: "primary.main" }}>
+                      <HistoryRoundedIcon fontSize="small" />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                        Interviews
+                      </Typography>
+                      <Typography variant="h5" fontWeight={800}>
+                        {stats.total_interviews}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </AppCard>
+              </Grid>
+
+              <Grid size={{ xs: 6, sm: 3 }}>
+                <AppCard contentSx={{ p: 2 }}>
+                  <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Box sx={{ p: 1, borderRadius: 1.5, bgcolor: "action.hover", color: "success.main" }}>
+                      <QuestionAnswerRoundedIcon fontSize="small" />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                        Answered
+                      </Typography>
+                      <Typography variant="h5" fontWeight={800}>
+                        {stats.total_answered_questions}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </AppCard>
+              </Grid>
+
+              <Grid size={{ xs: 6, sm: 3 }}>
+                <AppCard contentSx={{ p: 2 }}>
+                  <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Box sx={{ p: 1, borderRadius: 1.5, bgcolor: "action.hover", color: "secondary.main" }}>
+                      <TableChartRoundedIcon fontSize="small" />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                        Dataset Rows
+                      </Typography>
+                      <Typography variant="h5" fontWeight={800}>
+                        {stats.total_dataset_records}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </AppCard>
+              </Grid>
+
+              <Grid size={{ xs: 6, sm: 3 }}>
+                <AppCard contentSx={{ p: 2 }}>
+                  <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Box sx={{ p: 1, borderRadius: 1.5, bgcolor: "action.hover", color: "warning.main" }}>
+                      <StarRoundedIcon fontSize="small" />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
+                        Avg Score
+                      </Typography>
+                      <Typography variant="h5" fontWeight={800}>
+                        {stats.average_overall_score > 0 ? `${stats.average_overall_score.toFixed(1)} / 10` : "—"}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </AppCard>
+              </Grid>
+            </Grid>
+
+            {/* Topics & Difficulty Chips */}
+            {records.length > 0 && (
+              <AppCard contentSx={{ p: 2 }}>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography variant="caption" fontWeight={700} textTransform="uppercase" color="text.secondary" display="block" sx={{ mb: 0.75 }}>
+                      Topics Encountered ({stats.topics_encountered.length})
+                    </Typography>
+                    <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
+                      {stats.topics_encountered.map((topic, i) => (
+                        <Chip
+                          key={i}
+                          label={topic}
+                          size="small"
+                          variant="outlined"
+                          sx={{ fontWeight: 600 }}
+                        />
+                      ))}
+                    </Stack>
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography variant="caption" fontWeight={700} textTransform="uppercase" color="text.secondary" display="block" sx={{ mb: 0.75 }}>
+                      Difficulty Distribution
+                    </Typography>
+                    <Stack direction="row" spacing={1}>
+                      <Chip
+                        label={`Easy: ${stats.difficulty_distribution?.Easy || 0}`}
+                        size="small"
+                        color="success"
+                        variant="outlined"
+                      />
+                      <Chip
+                        label={`Medium: ${stats.difficulty_distribution?.Medium || 0}`}
+                        size="small"
+                        color="warning"
+                        variant="outlined"
+                      />
+                      <Chip
+                        label={`Hard: ${stats.difficulty_distribution?.Hard || 0}`}
+                        size="small"
+                        color="error"
+                        variant="outlined"
+                      />
+                    </Stack>
+                  </Grid>
+                </Grid>
+              </AppCard>
+            )}
+
+            {/* Dataset Table / Empty State */}
+            {records.length === 0 ? (
+              <EmptyState
+                icon={HistoryRoundedIcon}
+                title="No Interview Records Yet"
+                description="Complete your first technical interview session to start collecting structured records for analytics and career readiness."
+                actionLabel="Start Interview"
+                onAction={() => navigate("/interview")}
+              />
+            ) : (
+              <AppCard contentSx={{ p: 0, "&:last-child": { pb: 0 } }}>
+                <SectionHeader
+                  title="Structured Question Records"
+                  subtitle="Click any row to expand answer text, evaluation feedback, and dimension scores."
+                  sx={{ p: 2, pb: 1, mb: 0 }}
+                />
+
+                <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 0, border: "none", overflow: "hidden" }}>
+                  <Table aria-label="interview dataset table" size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ width: 44 }} />
+                        <TableCell>Date</TableCell>
+                        <TableCell>Topic</TableCell>
+                        <TableCell>Difficulty</TableCell>
+                        <TableCell>Question</TableCell>
+                        <TableCell align="right">Score</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {records.map((row) => (
+                        <RowItem
+                          key={row.id}
+                          row={row}
+                          isOpen={openRowId === row.id}
+                          onToggle={() => handleToggleRow(row.id)}
+                        />
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AppCard>
+            )}
+          </>
+        )}
       </Stack>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 4, borderRadius: 2 }} onClose={() => setError("")}>
-          {error}
-        </Alert>
-      )}
-
-      {/* Summary KPI Cards */}
-      <Grid container spacing={2.5} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 6, sm: 3 }}>
-          <Card variant="outlined" sx={{ borderRadius: 3, borderColor: "#e2e8f0", backgroundColor: "#ffffff" }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1.5}>
-                <Box sx={{ p: 1, borderRadius: 2, backgroundColor: "#eff6ff", color: "#2563eb" }}>
-                  <HistoryRoundedIcon fontSize="small" />
-                </Box>
-                <Box>
-                  <Typography variant="caption" sx={{ color: "#64748b", fontWeight: 600, textTransform: "uppercase" }}>
-                    Interviews
-                  </Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 800, color: "#0f172a" }}>
-                    {stats.total_interviews}
-                  </Typography>
-                </Box>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={{ xs: 6, sm: 3 }}>
-          <Card variant="outlined" sx={{ borderRadius: 3, borderColor: "#e2e8f0", backgroundColor: "#ffffff" }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1.5}>
-                <Box sx={{ p: 1, borderRadius: 2, backgroundColor: "#f0fdf4", color: "#16a34a" }}>
-                  <QuestionAnswerRoundedIcon fontSize="small" />
-                </Box>
-                <Box>
-                  <Typography variant="caption" sx={{ color: "#64748b", fontWeight: 600, textTransform: "uppercase" }}>
-                    Answered
-                  </Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 800, color: "#0f172a" }}>
-                    {stats.total_answered_questions}
-                  </Typography>
-                </Box>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={{ xs: 6, sm: 3 }}>
-          <Card variant="outlined" sx={{ borderRadius: 3, borderColor: "#e2e8f0", backgroundColor: "#ffffff" }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1.5}>
-                <Box sx={{ p: 1, borderRadius: 2, backgroundColor: "#fdf4ff", color: "#a855f7" }}>
-                  <DatasetRoundedIcon fontSize="small" />
-                </Box>
-                <Box>
-                  <Typography variant="caption" sx={{ color: "#64748b", fontWeight: 600, textTransform: "uppercase" }}>
-                    Dataset Rows
-                  </Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 800, color: "#0f172a" }}>
-                    {stats.total_dataset_records}
-                  </Typography>
-                </Box>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={{ xs: 6, sm: 3 }}>
-          <Card variant="outlined" sx={{ borderRadius: 3, borderColor: "#e2e8f0", backgroundColor: "#ffffff" }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1.5}>
-                <Box sx={{ p: 1, borderRadius: 2, backgroundColor: "#fffbeb", color: "#d97706" }}>
-                  <StarRoundedIcon fontSize="small" />
-                </Box>
-                <Box>
-                  <Typography variant="caption" sx={{ color: "#64748b", fontWeight: 600, textTransform: "uppercase" }}>
-                    Avg Score
-                  </Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 800, color: "#0f172a" }}>
-                    {stats.average_overall_score > 0 ? `${stats.average_overall_score.toFixed(1)} / 10` : "—"}
-                  </Typography>
-                </Box>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Dataset Metadata Chips: Topics & Difficulty */}
-      {records.length > 0 && (
-        <Paper variant="outlined" sx={{ p: 2.5, mb: 4, borderRadius: 3, borderColor: "#e2e8f0" }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="caption" sx={{ fontWeight: 700, textTransform: "uppercase", color: "#64748b", display: "block", mb: 1 }}>
-                Topics Encountered ({stats.topics_encountered.length})
-              </Typography>
-              <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
-                {stats.topics_encountered.map((topic, i) => (
-                  <Chip
-                    key={i}
-                    label={topic}
-                    size="small"
-                    sx={{ backgroundColor: "#f8fafc", borderColor: "#cbd5e1", borderWidth: 1, borderStyle: "solid", fontWeight: 600 }}
-                  />
-                ))}
-              </Stack>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="caption" sx={{ fontWeight: 700, textTransform: "uppercase", color: "#64748b", display: "block", mb: 1 }}>
-                Difficulty Distribution
-              </Typography>
-              <Stack direction="row" spacing={1}>
-                <Chip
-                  label={`Easy: ${stats.difficulty_distribution?.Easy || 0}`}
-                  size="small"
-                  sx={{ backgroundColor: "#ecfdf5", color: "#065f46", fontWeight: 600 }}
-                />
-                <Chip
-                  label={`Medium: ${stats.difficulty_distribution?.Medium || 0}`}
-                  size="small"
-                  sx={{ backgroundColor: "#eff6ff", color: "#1e40af", fontWeight: 600 }}
-                />
-                <Chip
-                  label={`Hard: ${stats.difficulty_distribution?.Hard || 0}`}
-                  size="small"
-                  sx={{ backgroundColor: "#fef2f2", color: "#991b1b", fontWeight: 600 }}
-                />
-              </Stack>
-            </Grid>
-          </Grid>
-        </Paper>
-      )}
-
-      {/* Empty State */}
-      {records.length === 0 ? (
-        <Card variant="outlined" sx={{ p: 6, textAlign: "center", borderRadius: 3, borderColor: "#e2e8f0" }}>
-          <HistoryRoundedIcon sx={{ fontSize: 56, color: "#94a3b8", mb: 2 }} />
-          <Typography variant="h6" sx={{ fontWeight: 700, color: "#1e293b", mb: 1 }}>
-            No Interview Records Yet
-          </Typography>
-          <Typography variant="body2" sx={{ color: "#64748b", maxWidth: 460, mx: "auto", mb: 3 }}>
-            Complete your first technical interview to start collecting structured data for analytics and your career readiness roadmap.
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<MicRoundedIcon />}
-            onClick={() => navigate("/interview")}
-            sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              borderRadius: 2,
-              px: 3,
-              backgroundColor: "#2563eb",
-            }}
-          >
-            Start Technical Interview
-          </Button>
-        </Card>
-      ) : (
-        /* Dataset Table */
-        <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 3, borderColor: "#e2e8f0", overflow: "hidden" }}>
-          <Table aria-label="interview dataset table">
-            <TableHead sx={{ backgroundColor: "#f8fafc" }}>
-              <TableRow>
-                <TableCell sx={{ width: 48 }} />
-                <TableCell sx={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem" }}>Date</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem" }}>Topic</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem" }}>Difficulty</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem" }}>Question</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem" }}>Overall Score</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {records.map((row) => (
-                <RowItem
-                  key={row.id}
-                  row={row}
-                  isOpen={openRowId === row.id}
-                  onToggle={() => handleToggleRow(row.id)}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </Box>
+    </DashboardLayout>
   );
 }

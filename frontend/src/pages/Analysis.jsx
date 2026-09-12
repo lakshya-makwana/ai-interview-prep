@@ -56,11 +56,24 @@ export default function Analysis() {
   return (
     <DashboardLayout>
       <Stack spacing={3}>
-        <Box>
-          <Typography variant="h4">AI Analysis</Typography>
-          <Typography color="text.secondary" sx={{ mt: 1 }}>
-            Review your ATS score and prioritized improvements from the latest Gemini analysis.
-          </Typography>
+        {/* Page Header */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800}>
+              AI Analysis
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Review ATS score and prioritized recommendations extracted from your resume.
+            </Typography>
+          </Box>
+
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => navigate("/resume")}
+          >
+            Replace Resume
+          </Button>
         </Box>
 
         {!analysis ? (
@@ -78,22 +91,22 @@ export default function Analysis() {
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: { xs: "1fr", lg: "360px minmax(0, 1fr)" },
-                gap: 3,
+                gridTemplateColumns: { xs: "1fr", lg: "340px minmax(0, 1fr)" },
+                gap: 2.5,
               }}
             >
               <AppCard>
-                <SectionHeader title="ATS Score" subtitle="Current resume compatibility." />
+                <SectionHeader title="ATS Score" subtitle="Overall resume compatibility." />
 
-                <Stack spacing={2.5}>
-                  <Typography variant="h2" color={`${color}.main`} sx={{ lineHeight: 1 }}>
+                <Stack spacing={2}>
+                  <Typography variant="h2" color={`${color}.main`} sx={{ lineHeight: 1, fontWeight: 800 }}>
                     {score}%
                   </Typography>
                   <LinearProgress
                     variant="determinate"
                     value={score}
                     color={color}
-                    sx={{ height: 10, borderRadius: 999 }}
+                    sx={{ height: 8, borderRadius: 4 }}
                   />
                   <StatusChip
                     label={score >= 85 ? "Excellent" : score >= 70 ? "Good" : score >= 50 ? "Needs improvement" : "High priority"}
@@ -104,7 +117,7 @@ export default function Analysis() {
               </AppCard>
 
               <AppCard>
-                <SectionHeader title="Report Summary" subtitle="What the system analyzed." />
+                <SectionHeader title="Report Summary" subtitle="Analyzed resume metadata." />
 
                 <Box
                   sx={{
@@ -113,22 +126,22 @@ export default function Analysis() {
                     gap: 2,
                   }}
                 >
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <DescriptionRoundedIcon color="success" />
-                    <Box>
-                      <Typography fontWeight={800}>Resume</Typography>
-                      <Typography variant="body2" color="text.secondary">
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <DescriptionRoundedIcon color="success" fontSize="small" />
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="subtitle2" fontWeight={600}>Resume File</Typography>
+                      <Typography variant="body2" color="text.secondary" noWrap>
                         {dashboard.resume?.filename || "Uploaded file"}
                       </Typography>
                     </Box>
                   </Stack>
 
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <PsychologyRoundedIcon color="primary" />
-                    <Box>
-                      <Typography fontWeight={800}>AI Analysis</Typography>
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <PsychologyRoundedIcon color="primary" fontSize="small" />
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="subtitle2" fontWeight={600}>Model Review</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Gemini resume review completed
+                        Gemini ATS review completed
                       </Typography>
                     </Box>
                   </Stack>
@@ -136,8 +149,10 @@ export default function Analysis() {
 
                 {analysis.summary && (
                   <>
-                    <Divider sx={{ my: 2.5 }} />
-                    <Typography color="text.secondary">{analysis.summary}</Typography>
+                    <Divider sx={{ my: 2 }} />
+                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                      {analysis.summary}
+                    </Typography>
                   </>
                 )}
               </AppCard>
@@ -146,24 +161,29 @@ export default function Analysis() {
             <AppCard>
               <SectionHeader
                 title="Recommended Improvements"
-                subtitle="Apply these changes before rerunning analysis."
-                action={<Button variant="outlined" onClick={() => navigate("/resume")}>Replace resume</Button>}
+                subtitle="Apply these actionable changes to improve your ATS score."
               />
 
               {suggestions.length === 0 ? (
-                <Typography color="text.secondary">
+                <Typography variant="body2" color="text.secondary">
                   No written suggestions were returned with this report.
                 </Typography>
               ) : (
                 <Stack divider={<Divider flexItem />} spacing={1.5}>
                   {suggestions.map((item, index) => (
                     <Stack key={`${item}-${index}`} direction="row" spacing={1.5} alignItems="flex-start">
-                      <CheckCircleRoundedIcon color={index < 2 ? "warning" : "primary"} />
+                      <CheckCircleRoundedIcon
+                        color={index < 2 ? "warning" : "primary"}
+                        fontSize="small"
+                        sx={{ mt: 0.25, flexShrink: 0 }}
+                      />
                       <Box>
-                        <Typography fontWeight={800}>
-                          {index === 0 ? "High priority" : index === 1 ? "Medium priority" : "Improvement"}
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          {index === 0 ? "High Priority" : index === 1 ? "Medium Priority" : "Suggested Improvement"}
                         </Typography>
-                        <Typography color="text.secondary">{item}</Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
+                          {item}
+                        </Typography>
                       </Box>
                     </Stack>
                   ))}

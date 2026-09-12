@@ -17,19 +17,19 @@ import StatusChip from "./StatusChip";
 
 const cardConfig = {
   "ATS Score": {
-    icon: <TrendingUpRoundedIcon />,
+    icon: <TrendingUpRoundedIcon sx={{ fontSize: 16 }} />,
     color: "primary",
   },
   Resume: {
-    icon: <DescriptionRoundedIcon />,
+    icon: <DescriptionRoundedIcon sx={{ fontSize: 16 }} />,
     color: "success",
   },
   Analysis: {
-    icon: <PsychologyRoundedIcon />,
+    icon: <PsychologyRoundedIcon sx={{ fontSize: 16 }} />,
     color: "secondary",
   },
   Progress: {
-    icon: <TaskAltRoundedIcon />,
+    icon: <TaskAltRoundedIcon sx={{ fontSize: 16 }} />,
     color: "warning",
   },
 };
@@ -46,16 +46,16 @@ function getStatus(title, value) {
   if (title === "Resume") {
     return value === "Uploaded"
       ? { label: "Ready", color: "success" }
-      : { label: "Upload needed", color: "warning" };
+      : { label: "Pending", color: "warning" };
   }
 
   if (title === "Analysis") {
     return value === "Completed"
-      ? { label: "Report ready", color: "success" }
+      ? { label: "Ready", color: "success" }
       : { label: "Pending", color: "warning" };
   }
 
-  return { label: "Interview journey", color: "primary" };
+  return { label: "Preparation", color: "primary" };
 }
 
 export default function DashboardCard({ title, value, progress }) {
@@ -67,43 +67,58 @@ export default function DashboardCard({ title, value, progress }) {
   return (
     <AppCard
       sx={{
-        transition: theme.transitions.create(["transform", "border-color", "box-shadow"]),
+        transition: theme.transitions.create(["border-color"]),
         "&:hover": {
-          transform: "translateY(-3px)",
-          borderColor: palette.main,
-          boxShadow: `0 16px 40px ${alpha(palette.main, 0.14)}`,
+          borderColor: alpha(palette.main, 0.3),
         },
       }}
       contentSx={{
         height: "100%",
-        minHeight: 150,
+        minHeight: 104,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-        <Typography variant="body2" color="text.secondary" fontWeight={700}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            fontWeight: 600,
+            textTransform: "uppercase",
+            fontSize: "0.6875rem",
+            letterSpacing: "0.03em",
+          }}
+        >
           {title}
         </Typography>
 
         <Box
           sx={{
-            width: 40,
-            height: 40,
-            borderRadius: 2,
+            width: 24,
+            height: 24,
+            borderRadius: 0.75,
             display: "grid",
             placeItems: "center",
             color: palette.main,
-            bgcolor: alpha(palette.main, 0.12),
+            bgcolor: alpha(palette.main, 0.08),
           }}
         >
           {config.icon}
         </Box>
       </Stack>
 
-      <Box>
-        <Typography variant="h4" sx={{ lineHeight: 1 }}>
+      <Box sx={{ my: 0.75 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            lineHeight: 1,
+            fontWeight: 700,
+            fontSize: "1.25rem",
+            letterSpacing: "-0.01em",
+          }}
+        >
           {value}
         </Typography>
 
@@ -111,7 +126,7 @@ export default function DashboardCard({ title, value, progress }) {
           <LinearProgress
             variant="determinate"
             value={progress}
-            sx={{ mt: 2, height: 7, borderRadius: 999 }}
+            sx={{ mt: 1, height: 4, borderRadius: 2 }}
           />
         )}
       </Box>

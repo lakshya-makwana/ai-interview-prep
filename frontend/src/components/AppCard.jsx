@@ -9,15 +9,16 @@ export default function AppCard({ children, sx = {}, contentSx = {}, ...props })
         bgcolor: "background.paper",
         border: 1,
         borderColor: "divider",
+        borderRadius: 1,
         ...sx,
       }}
       {...props}
     >
       <CardContent
         sx={{
-          p: { xs: 2.5, sm: 3 },
+          p: { xs: 1.5, sm: 2 },
           "&:last-child": {
-            pb: { xs: 2.5, sm: 3 },
+            pb: { xs: 1.5, sm: 2 },
           },
           ...contentSx,
         }}

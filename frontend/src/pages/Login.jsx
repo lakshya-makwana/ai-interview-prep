@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
+import SmartToyRoundedIcon from "@mui/icons-material/SmartToyRounded";
 
 import api from "../api/api";
 import AppCard from "../components/AppCard";
@@ -48,7 +48,7 @@ export default function Login() {
       navigate("/");
     } catch (err) {
       console.error(err);
-      setError("Login failed. Check your email and password.");
+      setError("Login failed. Please check your email and password.");
     } finally {
       setLoading(false);
     }
@@ -65,35 +65,38 @@ export default function Login() {
         py: 4,
       }}
     >
-      <Container maxWidth="sm">
-        <Stack spacing={3} alignItems="center" sx={{ mb: 3 }}>
+      <Container maxWidth="xs">
+        <Stack spacing={2} alignItems="center" sx={{ mb: 3 }}>
           <Box
             sx={{
-              width: 56,
-              height: 56,
-              borderRadius: 3,
+              width: 40,
+              height: 40,
+              borderRadius: 1.5,
               display: "grid",
               placeItems: "center",
               bgcolor: "primary.main",
               color: "primary.contrastText",
             }}
           >
-            <PsychologyRoundedIcon />
+            <SmartToyRoundedIcon fontSize="small" />
           </Box>
           <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h4">Welcome back</Typography>
-            <Typography color="text.secondary" sx={{ mt: 1 }}>
-              Sign in to continue your interview preparation.
+            <Typography variant="h5" fontWeight={800}>
+              Sign In
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Enter your credentials to access your interview workspace.
             </Typography>
           </Box>
         </Stack>
 
         <AppCard>
           <Box component="form" onSubmit={handleSubmit}>
-            <Stack spacing={2.5}>
+            <Stack spacing={2}>
               <TextField
-                label="Email"
+                label="Email address"
                 type="email"
+                size="small"
                 value={form.email}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, email: event.target.value }))
@@ -105,6 +108,7 @@ export default function Login() {
               <TextField
                 label="Password"
                 type="password"
+                size="small"
                 value={form.password}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, password: event.target.value }))
@@ -118,16 +122,16 @@ export default function Login() {
               <Button
                 type="submit"
                 variant="contained"
-                size="large"
                 disabled={loading}
-                startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                startIcon={loading ? <CircularProgress size={16} color="inherit" /> : null}
+                sx={{ mt: 1 }}
               >
-                {loading ? "Signing in..." : "Login"}
+                {loading ? "Signing in..." : "Sign In"}
               </Button>
 
-              <Typography align="center" color="text.secondary">
-                New here?{" "}
-                <Link component={RouterLink} to="/register" underline="hover">
+              <Typography variant="body2" align="center" color="text.secondary" sx={{ pt: 1 }}>
+                Don&apos;t have an account?{" "}
+                <Link component={RouterLink} to="/register" underline="hover" color="primary.main" fontWeight={600}>
                   Create an account
                 </Link>
               </Typography>

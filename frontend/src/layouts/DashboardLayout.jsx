@@ -27,12 +27,12 @@ export default function DashboardLayout({ children }) {
           component="main"
           sx={{
             flex: 1,
-            p: { xs: 2, sm: 3, md: 4 },
+            p: { xs: 2, sm: 2.5 },
             display: "flex",
             justifyContent: "center",
           }}
         >
-          <Box sx={{ width: "100%", maxWidth: 1480 }}>{children}</Box>
+          <Box sx={{ width: "100%", maxWidth: 1280 }}>{children}</Box>
         </Box>
       </Box>
     </Box>

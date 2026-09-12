@@ -36,11 +36,13 @@ function JourneyItem({ done, title, subtitle }) {
   const Icon = done ? CheckCircleRoundedIcon : RadioButtonUncheckedRoundedIcon;
 
   return (
-    <Stack direction="row" spacing={2} alignItems="flex-start">
-      <Icon color={done ? "success" : "disabled"} />
-      <Box>
-        <Typography fontWeight={800}>{title}</Typography>
-        <Typography variant="body2" color="text.secondary">
+    <Stack direction="row" spacing={1.25} alignItems="flex-start">
+      <Icon color={done ? "success" : "disabled"} sx={{ fontSize: 16, mt: 0.2 }} />
+      <Box sx={{ minWidth: 0 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: "0.8125rem", lineHeight: 1.3 }}>
+          {title}
+        </Typography>
+        <Typography variant="caption" color="text.secondary" sx={{ display: "block", fontSize: "0.725rem", mt: 0.2 }}>
           {subtitle}
         </Typography>
       </Box>
@@ -63,50 +65,42 @@ export default function Dashboard() {
   const hasResume = Boolean(dashboard.resume);
   const hasAnalysis = Boolean(dashboard.analysis);
   const ats = hasAnalysis ? `${dashboard.analysis.ats_score}%` : "--";
-  const progress = hasAnalysis ? 40 : hasResume ? 20 : 0;
+  const progress = hasAnalysis ? 50 : hasResume ? 25 : 0;
   const recommendations = splitSuggestions(dashboard.analysis?.suggestions);
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        <AppCard>
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            alignItems={{ xs: "flex-start", md: "center" }}
-            justifyContent="space-between"
-            spacing={3}
-          >
-            <Box sx={{ maxWidth: 760 }}>
-              <Stack direction="row" spacing={1} sx={{ mb: 1.5, flexWrap: "wrap" }}>
-                <StatusChip label="Resume" color={hasResume ? "success" : "warning"} />
-                <StatusChip label="Analysis" color={hasAnalysis ? "success" : "default"} />
-                <StatusChip label="Interview" color="default" />
-                <StatusChip label="Progress" color="primary" />
-              </Stack>
+      <Stack spacing={2}>
+        {/* Standard Page Header */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 1.5 }}>
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: 700, fontSize: "1.125rem", letterSpacing: "-0.01em" }}>
+              Dashboard
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, fontSize: "0.8125rem" }}>
+              Preparation progress, resume ATS evaluation, and core interview milestones.
+            </Typography>
+          </Box>
 
-              <Typography variant="h4">AI Interview Preparation Platform</Typography>
-              <Typography color="text.secondary" sx={{ mt: 1 }}>
-                Upload your resume, improve your ATS score, and follow a clear path toward interview readiness.
+          <Box sx={{ width: { xs: "100%", sm: 180 } }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 0.5 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500, fontSize: "0.7rem" }}>
+                Readiness Progress
               </Typography>
-            </Box>
+              <Typography variant="caption" sx={{ fontWeight: 600, fontSize: "0.75rem" }}>
+                {progress}%
+              </Typography>
+            </Stack>
+            <LinearProgress variant="determinate" value={progress} sx={{ height: 4, borderRadius: 2 }} />
+          </Box>
+        </Box>
 
-            <Box sx={{ width: { xs: "100%", md: 280 } }}>
-              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
-                <Typography variant="body2" color="text.secondary" fontWeight={700}>
-                  Interview readiness
-                </Typography>
-                <Typography fontWeight={800}>{progress}%</Typography>
-              </Stack>
-              <LinearProgress variant="determinate" value={progress} sx={{ height: 9, borderRadius: 999 }} />
-            </Box>
-          </Stack>
-        </AppCard>
-
+        {/* Metric Cards Grid */}
         <Box
           sx={{
             display: "grid",
             gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", lg: "repeat(4, 1fr)" },
-            gap: 3,
+            gap: 1.5,
           }}
         >
           <DashboardCard title="ATS Score" value={ats} />
@@ -115,20 +109,21 @@ export default function Dashboard() {
           <DashboardCard title="Progress" value={`${progress}%`} progress={progress} />
         </Box>
 
+        {/* Journey and Quick Actions */}
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 0.9fr) minmax(0, 1.1fr)" },
-            gap: 3,
+            gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 0.95fr) minmax(0, 1.05fr)" },
+            gap: 1.5,
           }}
         >
           <AppCard>
             <SectionHeader
               title="Interview Journey"
-              subtitle="The v1 workflow is focused on resume quality and analysis."
+              subtitle="Core progress milestones toward job readiness."
             />
 
-            <Stack spacing={2.25}>
+            <Stack spacing={1.5}>
               <JourneyItem
                 done={hasResume}
                 title="Resume Uploaded"
@@ -137,27 +132,36 @@ export default function Dashboard() {
               <JourneyItem
                 done={hasAnalysis}
                 title="Resume Analyzed"
-                subtitle={hasAnalysis ? "Your latest AI report is available." : "Run Gemini analysis after uploading a resume."}
+                subtitle={hasAnalysis ? "AI evaluation report generated." : "Run Gemini analysis after uploading a resume."}
               />
-              <JourneyItem done={false} title="Mock Interview" subtitle="Simulate live technical interview rounds." />
-              <JourneyItem done={false} title="HR Interview" subtitle="Practice behavioral and culture-fit scenarios." />
+              <JourneyItem
+                done={false}
+                title="Technical Interview"
+                subtitle="Practice mock technical questions with AI evaluation."
+              />
+              <JourneyItem
+                done={false}
+                title="Career Readiness Report"
+                subtitle="Evaluate weighted job match and priority skill roadmap."
+              />
             </Stack>
           </AppCard>
 
           <QuickActions />
         </Box>
 
+        {/* Recommendations and Recent Activity */}
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 1.1fr) minmax(0, 0.9fr)" },
-            gap: 3,
+            gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 1.05fr) minmax(0, 0.95fr)" },
+            gap: 1.5,
           }}
         >
           <AppCard>
             <SectionHeader
               title="AI Recommendations"
-              subtitle="Top resume improvements from your latest analysis."
+              subtitle="Top resume improvements extracted from your latest evaluation."
               action={
                 hasAnalysis ? (
                   <Button size="small" variant="outlined" onClick={() => navigate("/analysis")}>
@@ -168,21 +172,23 @@ export default function Dashboard() {
             />
 
             {recommendations.length === 0 ? (
-              <Stack direction="row" spacing={1.5} alignItems="center" color="text.secondary">
-                <TipsAndUpdatesRoundedIcon />
-                <Typography>
-                  Upload and analyze your resume to unlock personalized recommendations.
+              <Stack direction="row" spacing={1} alignItems="center" color="text.secondary" sx={{ py: 1.5 }}>
+                <TipsAndUpdatesRoundedIcon sx={{ fontSize: 16 }} />
+                <Typography variant="body2" sx={{ fontSize: "0.8125rem" }}>
+                  Upload and analyze your resume to unlock recommendations.
                 </Typography>
               </Stack>
             ) : (
-              <Stack divider={<Divider flexItem />} spacing={1.5}>
+              <Stack divider={<Divider flexItem />} spacing={1.25}>
                 {recommendations.map((item, index) => (
-                  <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
+                  <Stack key={item} direction="row" spacing={1.25} alignItems="flex-start">
                     <StatusChip
                       label={index === 0 ? "High" : index === 1 ? "Medium" : "Improve"}
                       color={index === 0 ? "warning" : "primary"}
                     />
-                    <Typography>{item}</Typography>
+                    <Typography variant="body2" sx={{ fontSize: "0.8125rem", color: "text.primary" }}>
+                      {item}
+                    </Typography>
                   </Stack>
                 ))}
               </Stack>
