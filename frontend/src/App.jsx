@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import JobDescription from "./pages/JobDescription";
 import JobMatch from "./pages/JobMatch";
 import Interview from "./pages/Interview";
+import CareerReadiness from "./pages/CareerReadiness";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -89,6 +90,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Interview />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/career-readiness"
+          element={
+            <ProtectedRoute>
+              <CareerReadiness />
             </ProtectedRoute>
           }
         />

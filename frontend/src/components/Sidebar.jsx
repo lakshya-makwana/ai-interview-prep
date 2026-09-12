@@ -22,6 +22,7 @@ import SmartToyRoundedIcon from "@mui/icons-material/SmartToyRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
+import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -37,6 +38,7 @@ const menuItems = [
   { title: "Job Match", path: "/job-match", icon: <CompareArrowsRoundedIcon /> },
   { title: "AI Analysis", path: "/analysis", icon: <PsychologyRoundedIcon /> },
   { title: "Interview", path: "/interview", icon: <MicRoundedIcon /> },
+  { title: "Career Readiness", path: "/career-readiness", icon: <AssessmentRoundedIcon /> },
   { title: "Settings", icon: <SettingsRoundedIcon />, comingSoon: true },
 ];
 

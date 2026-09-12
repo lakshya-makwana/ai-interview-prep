@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Card,
@@ -23,10 +24,12 @@ import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import LightbulbRoundedIcon from "@mui/icons-material/LightbulbRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import QuizRoundedIcon from "@mui/icons-material/QuizRounded";
 import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
+import SmartToyRoundedIcon from "@mui/icons-material/SmartToyRounded";
 import ThumbUpAltRoundedIcon from "@mui/icons-material/ThumbUpAltRounded";
 import TimerRoundedIcon from "@mui/icons-material/TimerRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
@@ -77,6 +80,9 @@ export default function Interview() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [answerText, setAnswerText] = useState("");
 
+  // Conversational chat feed history
+  const [chatHistory, setChatHistory] = useState([]);
+
   // Review state
   const [completedInterview, setCompletedInterview] = useState(null);
 
@@ -118,6 +124,19 @@ export default function Interview() {
           setTotalQuestions(data.total_questions);
           setCurrentQuestionNumber(data.current_question_number);
           setCurrentQuestion(data.current_question);
+
+          if (data.current_question) {
+            setChatHistory([
+              {
+                sender: "ai",
+                questionNumber: data.current_question_number,
+                text: data.current_question.question_text,
+                topic: data.current_question.topic,
+                difficulty: data.current_question.difficulty,
+              },
+            ]);
+          }
+
           setView("active");
         }
       } catch {
@@ -146,6 +165,19 @@ export default function Interview() {
       setCurrentQuestionNumber(data.current_question_number);
       setCurrentQuestion(data.current_question);
       setAnswerText("");
+
+      if (data.current_question) {
+        setChatHistory([
+          {
+            sender: "ai",
+            questionNumber: 1,
+            text: data.current_question.question_text,
+            topic: data.current_question.topic,
+            difficulty: data.current_question.difficulty,
+          },
+        ]);
+      }
+
       setView("active");
     } catch (err) {
       setError(
@@ -156,7 +188,7 @@ export default function Interview() {
     }
   };
 
-  // Handle Answer Submission (responsive, no evaluation wait during questions 1-4)
+  // Handle Answer Submission (chat response)
   const handleSubmitAnswer = async () => {
     if (!currentQuestion) return;
     if (!answerText.trim()) {
@@ -164,11 +196,20 @@ export default function Interview() {
       return;
     }
 
+    const submittedAnswer = answerText.trim();
     setLoading(true);
     setError("");
 
+    // Append candidate message immediately
+    const updatedHistory = [
+      ...chatHistory,
+      { sender: "candidate", text: submittedAnswer },
+    ];
+    setChatHistory(updatedHistory);
+    setAnswerText("");
+
     try {
-      const data = await submitAnswer(currentQuestion.id, answerText.trim());
+      const data = await submitAnswer(currentQuestion.id, submittedAnswer);
 
       if (data.is_completed) {
         setInterviewId(data.interview_id);
@@ -176,7 +217,20 @@ export default function Interview() {
       } else {
         setCurrentQuestionNumber(data.current_question_number);
         setCurrentQuestion(data.next_question);
-        setAnswerText("");
+
+        // Append next question from AI Interviewer
+        if (data.next_question) {
+          setChatHistory([
+            ...updatedHistory,
+            {
+              sender: "ai",
+              questionNumber: data.current_question_number,
+              text: data.next_question.question_text,
+              topic: data.next_question.topic,
+              difficulty: data.next_question.difficulty,
+            },
+          ]);
+        }
       }
     } catch (err) {
       setError(
@@ -214,7 +268,7 @@ export default function Interview() {
         <Box sx={{ mb: 4 }}>
           <SectionHeader
             title="Technical Interview Session"
-            subtitle="Text-based technical interview with AI-powered multi-dimensional answer evaluation."
+            subtitle="Conversational technical interview with AI-powered multi-dimensional answer evaluation."
           />
         </Box>
 
@@ -258,7 +312,7 @@ export default function Interview() {
             </Typography>
 
             <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 580, mx: "auto", mb: 4 }}>
-              Answer five technical questions covering core computer science and engineering fundamentals. Upon completion, each answer is thoroughly analyzed by AI with individual scorecards, identified strengths, missing concepts, and targeted feedback.
+              Engage in a structured text conversation with the AI Interviewer covering core engineering fundamentals. Upon completion, each answer is thoroughly analyzed with score breakdowns, strengths, missing concepts, and targeted feedback.
             </Typography>
 
             <Stack
@@ -333,10 +387,10 @@ export default function Interview() {
           </AppCard>
         )}
 
-        {/* 3. Active Interview Screen */}
+        {/* 3. Active Conversational Chat Interview Screen */}
         {view === "active" && currentQuestion && (
           <AppCard>
-            {/* Progress Bar & Question Counter */}
+            {/* Progress Bar & Question Indicator */}
             <Box sx={{ mb: 3 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
                 <Typography variant="subtitle1" fontWeight={800} color="primary.main">
@@ -363,70 +417,117 @@ export default function Interview() {
                 variant="determinate"
                 value={(currentQuestionNumber / totalQuestions) * 100}
                 sx={{
-                  height: 8,
-                  borderRadius: 4,
+                  height: 6,
+                  borderRadius: 3,
                   bgcolor: "action.hover",
-                  "& .MuiLinearProgress-bar": {
-                    borderRadius: 4,
-                  },
+                  "& .MuiLinearProgress-bar": { borderRadius: 3 },
                 }}
               />
             </Box>
 
             <Divider sx={{ mb: 3 }} />
 
-            {/* Question Text */}
-            <Box sx={{ mb: 4 }}>
-              <Typography variant="body2" color="text.secondary" sx={{ textTransform: "uppercase", letterSpacing: 1, fontWeight: 700, mb: 1 }}>
-                Question Prompt
-              </Typography>
-              <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.5 }}>
-                {currentQuestion.question_text}
-              </Typography>
+            {/* Chat Conversation Stream */}
+            <Box sx={{ minHeight: 280, mb: 3 }}>
+              {chatHistory.map((msg, index) =>
+                msg.sender === "ai" ? (
+                  <Box key={index} sx={{ display: "flex", gap: 1.5, alignItems: "flex-start", mb: 3 }}>
+                    <Avatar sx={{ bgcolor: "primary.main", width: 40, height: 40, mt: 0.5 }}>
+                      <SmartToyRoundedIcon fontSize="small" />
+                    </Avatar>
+                    <Box sx={{ maxWidth: "85%" }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
+                        <Typography variant="subtitle2" fontWeight={800} color="text.primary">
+                          AI Interviewer
+                        </Typography>
+                        {msg.topic && (
+                          <Chip
+                            label={msg.topic}
+                            size="small"
+                            variant="outlined"
+                            sx={{ height: 20, fontSize: "0.75rem", fontWeight: 600 }}
+                          />
+                        )}
+                      </Box>
+                      <Paper
+                        variant="outlined"
+                        sx={{
+                          p: 2.5,
+                          borderRadius: "4px 18px 18px 18px",
+                          bgcolor: "action.hover",
+                          borderColor: "divider",
+                        }}
+                      >
+                        <Typography variant="body1" fontWeight={500} sx={{ lineHeight: 1.6 }}>
+                          {msg.text}
+                        </Typography>
+                      </Paper>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box key={index} sx={{ display: "flex", justifyContent: "flex-end", gap: 1.5, alignItems: "flex-start", mb: 3 }}>
+                    <Box sx={{ maxWidth: "85%", textAlign: "right" }}>
+                      <Typography variant="subtitle2" fontWeight={800} color="text.secondary" sx={{ mb: 0.75 }}>
+                        You
+                      </Typography>
+                      <Paper
+                        sx={{
+                          p: 2.5,
+                          borderRadius: "18px 4px 18px 18px",
+                          bgcolor: "primary.main",
+                          color: "primary.contrastText",
+                          textAlign: "left",
+                        }}
+                      >
+                        <Typography variant="body1" sx={{ lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                          {msg.text}
+                        </Typography>
+                      </Paper>
+                    </Box>
+                    <Avatar sx={{ bgcolor: "secondary.main", width: 40, height: 40, mt: 0.5 }}>
+                      <PersonRoundedIcon fontSize="small" />
+                    </Avatar>
+                  </Box>
+                )
+              )}
             </Box>
 
-            {/* Candidate Answer Input */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>
-                Your Answer
-              </Typography>
+            {/* Chat Input Dock (Minimalist, no character counter or helper text) */}
+            <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-end", pt: 2, borderTop: 1, borderColor: "divider" }}>
               <TextField
                 multiline
-                rows={7}
+                minRows={3}
+                maxRows={6}
                 fullWidth
-                placeholder="Type your structured technical answer here..."
+                placeholder="Type your answer to the interviewer..."
                 value={answerText}
                 onChange={(e) => setAnswerText(e.target.value)}
                 disabled={loading}
                 variant="outlined"
                 sx={{
                   "& .MuiOutlinedInput-root": {
-                    borderRadius: 2,
+                    borderRadius: 2.5,
                   },
                 }}
               />
-            </Box>
-
-            {/* Action Bar */}
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               <Button
                 variant="contained"
-                size="large"
                 endIcon={<SendRoundedIcon />}
                 onClick={handleSubmitAnswer}
                 disabled={loading || !answerText.trim()}
                 sx={{
-                  px: 4,
-                  py: 1.2,
-                  borderRadius: 2,
+                  minHeight: 52,
+                  px: 3.5,
+                  borderRadius: 2.5,
                   fontWeight: 700,
+                  flexShrink: 0,
                 }}
               >
                 {loading
-                  ? "Submitting..."
+                  ? "Sending..."
                   : currentQuestionNumber === totalQuestions
-                  ? "Submit & Finish"
-                  : "Submit Answer"}
+                  ? "Finish"
+                  : "Send"}
               </Button>
             </Box>
           </AppCard>
@@ -515,7 +616,7 @@ export default function Interview() {
           </AppCard>
         )}
 
-        {/* 5. Review Screen */}
+        {/* 5. Review Screen (Interview Timeline Flow) */}
         {view === "review" && completedInterview && (
           <Stack spacing={4}>
             {/* Review Header Banner */}
@@ -526,91 +627,113 @@ export default function Interview() {
                     Interview Review & AI Evaluation
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Detailed per-question breakdown, technical correctness, completeness, relevance, communication, and actionable feedback.
+                    Conversation timeline with AI-evaluated technical accuracy, completeness, relevance, and communication scores.
                   </Typography>
                 </Box>
-                <Button
-                  variant="outlined"
-                  startIcon={<ReplayRoundedIcon />}
-                  onClick={() => {
-                    setInterviewId(null);
-                    setCompletedInterview(null);
-                    navigate("/interview", { replace: true });
-                    setView("start");
-                  }}
-                  sx={{ borderRadius: 2, fontWeight: 700 }}
-                >
-                  Start New Interview
-                </Button>
+                <Stack direction="row" spacing={1.5}>
+                  <Button
+                    variant="contained"
+                    endIcon={<ArrowForwardRoundedIcon />}
+                    onClick={() => navigate("/career-readiness")}
+                    sx={{ borderRadius: 2, fontWeight: 700 }}
+                  >
+                    View Career Readiness
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<ReplayRoundedIcon />}
+                    onClick={() => {
+                      setInterviewId(null);
+                      setCompletedInterview(null);
+                      navigate("/interview", { replace: true });
+                      setView("start");
+                    }}
+                    sx={{ borderRadius: 2, fontWeight: 700 }}
+                  >
+                    Start New Interview
+                  </Button>
+                </Stack>
               </Box>
             </AppCard>
 
-            {/* Questions with Answer and AI Evaluation */}
+            {/* Conversation Timeline */}
             {completedInterview.questions.map((q) => (
               <AppCard key={q.id}>
-                {/* Question Info */}
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
-                  <Typography variant="subtitle2" fontWeight={700} color="primary.main">
-                    Question {q.display_order} of {completedInterview.total_questions}
-                  </Typography>
-                  <Stack direction="row" spacing={1}>
-                    <Chip
-                      label={q.topic}
-                      size="small"
+                {/* 1. AI Interviewer Message (Left) */}
+                <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-start", mb: 2.5 }}>
+                  <Avatar sx={{ bgcolor: "primary.main", width: 38, height: 38, mt: 0.5 }}>
+                    <SmartToyRoundedIcon fontSize="small" />
+                  </Avatar>
+                  <Box sx={{ maxWidth: "88%" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
+                      <Typography variant="subtitle2" fontWeight={800} color="text.primary">
+                        AI Interviewer
+                      </Typography>
+                      <Chip
+                        label={q.topic}
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        sx={{ height: 20, fontSize: "0.75rem", fontWeight: 700 }}
+                      />
+                      <Chip
+                        label={q.difficulty}
+                        size="small"
+                        color={getDifficultyColor(q.difficulty)}
+                        sx={{ height: 20, fontSize: "0.75rem", fontWeight: 700 }}
+                      />
+                    </Box>
+                    <Paper
                       variant="outlined"
-                      color="primary"
-                      sx={{ fontWeight: 600 }}
-                    />
-                    <Chip
-                      label={q.difficulty}
-                      size="small"
-                      color={getDifficultyColor(q.difficulty)}
-                      sx={{ fontWeight: 600 }}
-                    />
-                  </Stack>
-                </Box>
-
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 2, lineHeight: 1.4 }}>
-                  {q.question_text}
-                </Typography>
-
-                <Divider sx={{ my: 2 }} />
-
-                {/* Candidate Answer */}
-                <Box sx={{ mb: 3 }}>
-                  <Typography variant="caption" color="text.secondary" fontWeight={700} sx={{ textTransform: "uppercase", letterSpacing: 0.8, display: "block", mb: 1 }}>
-                    Your Submitted Answer
-                  </Typography>
-
-                  <Paper
-                    variant="outlined"
-                    sx={{
-                      p: 2.5,
-                      bgcolor: "action.hover",
-                      borderRadius: 2,
-                      borderColor: "divider",
-                    }}
-                  >
-                    <Typography
-                      variant="body1"
                       sx={{
-                        whiteSpace: "pre-wrap",
-                        fontFamily: "inherit",
-                        lineHeight: 1.6,
-                        color: q.candidate_answer ? "text.primary" : "text.secondary",
-                        fontStyle: q.candidate_answer ? "normal" : "italic",
+                        p: 2.5,
+                        borderRadius: "4px 18px 18px 18px",
+                        bgcolor: "action.hover",
+                        borderColor: "divider",
                       }}
                     >
-                      {q.candidate_answer || "No answer provided."}
-                    </Typography>
-                  </Paper>
+                      <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.4, fontSize: "1.05rem" }}>
+                        {q.question_text}
+                      </Typography>
+                    </Paper>
+                  </Box>
                 </Box>
 
-                {/* AI Evaluation Section */}
-                {q.evaluation ? (
-                  <Box sx={{ mt: 3 }}>
-                    <Divider sx={{ mb: 3 }} />
+                {/* 2. Candidate Response (Right) */}
+                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1.5, alignItems: "flex-start", mb: 3 }}>
+                  <Box sx={{ maxWidth: "88%", textAlign: "right" }}>
+                    <Typography variant="subtitle2" fontWeight={800} color="text.secondary" sx={{ mb: 0.75 }}>
+                      You
+                    </Typography>
+                    <Paper
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "18px 4px 18px 18px",
+                        bgcolor: "primary.main",
+                        color: "primary.contrastText",
+                        textAlign: "left",
+                      }}
+                    >
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          whiteSpace: "pre-wrap",
+                          lineHeight: 1.6,
+                          fontStyle: q.candidate_answer ? "normal" : "italic",
+                        }}
+                      >
+                        {q.candidate_answer || "No answer provided."}
+                      </Typography>
+                    </Paper>
+                  </Box>
+                  <Avatar sx={{ bgcolor: "secondary.main", width: 38, height: 38, mt: 0.5 }}>
+                    <PersonRoundedIcon fontSize="small" />
+                  </Avatar>
+                </Box>
 
+                {/* 3. AI Evaluation for this exchange */}
+                {q.evaluation ? (
+                  <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
                       <AutoAwesomeRoundedIcon color="primary" fontSize="small" />
                       <Typography variant="subtitle1" fontWeight={800}>
@@ -618,7 +741,7 @@ export default function Interview() {
                       </Typography>
                     </Box>
 
-                    {/* 1. Overall Summary */}
+                    {/* Overall Summary */}
                     {q.evaluation.summary && (
                       <Paper
                         variant="outlined"
@@ -641,10 +764,9 @@ export default function Interview() {
                       </Paper>
                     )}
 
-                    {/* 2. Score Card */}
+                    {/* Score Card */}
                     <Card variant="outlined" sx={{ p: 2.5, mb: 3, borderRadius: 2 }}>
                       <Grid container spacing={3} alignItems="center">
-                        {/* Overall Score Circle/Badge */}
                         <Grid size={{ xs: 12, sm: 3 }} sx={{ textAlign: "center", borderRight: { sm: 1 }, borderColor: { sm: "divider" } }}>
                           <Typography variant="caption" color="text.secondary" fontWeight={700} sx={{ textTransform: "uppercase", letterSpacing: 0.5 }}>
                             Overall Score
@@ -661,10 +783,8 @@ export default function Interview() {
                           </Typography>
                         </Grid>
 
-                        {/* Metric Breakdown Progress Bars */}
                         <Grid size={{ xs: 12, sm: 9 }}>
                           <Grid container spacing={2}>
-                            {/* Technical Correctness */}
                             <Grid size={{ xs: 12, sm: 6 }}>
                               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
                                 <Typography variant="caption" fontWeight={700} color="text.secondary">
@@ -682,7 +802,6 @@ export default function Interview() {
                               />
                             </Grid>
 
-                            {/* Completeness */}
                             <Grid size={{ xs: 12, sm: 6 }}>
                               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
                                 <Typography variant="caption" fontWeight={700} color="text.secondary">
@@ -700,7 +819,6 @@ export default function Interview() {
                               />
                             </Grid>
 
-                            {/* Relevance */}
                             <Grid size={{ xs: 12, sm: 6 }}>
                               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
                                 <Typography variant="caption" fontWeight={700} color="text.secondary">
@@ -718,7 +836,6 @@ export default function Interview() {
                               />
                             </Grid>
 
-                            {/* Communication */}
                             <Grid size={{ xs: 12, sm: 6 }}>
                               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
                                 <Typography variant="caption" fontWeight={700} color="text.secondary">
@@ -740,7 +857,7 @@ export default function Interview() {
                       </Grid>
                     </Card>
 
-                    {/* 3. Strengths */}
+                    {/* Strengths */}
                     <Box sx={{ mb: 2.5 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                         <ThumbUpAltRoundedIcon color="success" fontSize="small" />
@@ -761,7 +878,7 @@ export default function Interview() {
                       </Box>
                     </Box>
 
-                    {/* 4. Missing Concepts */}
+                    {/* Missing Concepts */}
                     <Box sx={{ mb: 2.5 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                         <WarningAmberRoundedIcon color="warning" fontSize="small" />
@@ -782,7 +899,7 @@ export default function Interview() {
                       </Box>
                     </Box>
 
-                    {/* 5. Feedback Card */}
+                    {/* Feedback Card */}
                     <Box sx={{ mt: 2 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                         <LightbulbRoundedIcon color="primary" fontSize="small" />
