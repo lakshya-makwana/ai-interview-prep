@@ -65,7 +65,7 @@ class Interview(Base):
 
     user = relationship(
         "User",
-        backref="interviews",
+        back_populates="interviews",
     )
 
     job = relationship(
@@ -134,4 +134,11 @@ class InterviewQuestion(Base):
     interview = relationship(
         "Interview",
         back_populates="questions",
+    )
+
+    evaluation = relationship(
+        "InterviewEvaluation",
+        back_populates="question",
+        uselist=False,
+        cascade="all, delete-orphan",
     )

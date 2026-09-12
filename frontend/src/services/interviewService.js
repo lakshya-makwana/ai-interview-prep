@@ -22,3 +22,8 @@ export async function getInterviewById(id) {
   const response = await api.get(`/interviews/${id}`);
   return response.data;
 }
+
+export async function getInterviewEvaluation(id) {
+  const response = await api.get(`/interviews/${id}/evaluation`);
+  return response.data;
+}

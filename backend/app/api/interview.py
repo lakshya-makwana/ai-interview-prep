@@ -11,6 +11,8 @@ from app.schemas.interview import (
     InterviewDetailResponse,
     StartInterviewResponse,
 )
+from app.schemas.interview_evaluation import InterviewEvaluationReportResponse
+from app.services.interview_evaluation_service import evaluate_and_get_interview_report
 from app.services.interview_service import (
     get_current_interview,
     get_interview_by_id,
@@ -61,6 +63,19 @@ def submit_answer_endpoint(
         payload.interview_question_id,
         payload.answer,
     )
+
+
+@router.get(
+    "/{id}/evaluation",
+    response_model=InterviewEvaluationReportResponse,
+    summary="Retrieve completed interview questions, answers, and evaluations",
+)
+def get_interview_evaluation_endpoint(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> InterviewEvaluationReportResponse:
+    return evaluate_and_get_interview_report(db, current_user, id)
 
 
 @router.get(

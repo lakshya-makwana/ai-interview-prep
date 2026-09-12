@@ -84,6 +84,15 @@ function App() {
           }
         />
 
+        <Route
+          path="/interview/:id"
+          element={
+            <ProtectedRoute>
+              <Interview />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );
