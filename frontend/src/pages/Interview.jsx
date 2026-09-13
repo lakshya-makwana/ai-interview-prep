@@ -463,7 +463,7 @@ export default function Interview() {
                         letterSpacing: "0.5px",
                       }}
                     >
-                      Topics
+                      Current Focus
                     </Typography>
                     <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
                       {interviewTopics.map((topic, idx) => {
@@ -491,10 +491,16 @@ export default function Interview() {
 
             {/* Progress Indicator */}
             <Box sx={{ mb: 2.5 }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-                <Typography variant="subtitle2" fontWeight={700} color="primary.main">
-                  Question {currentQuestionNumber} of {totalQuestions}
-                </Typography>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1, flexWrap: "wrap", gap: 1 }}>
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Typography variant="subtitle2" fontWeight={700} color="primary.main">
+                    Question {currentQuestionNumber} of {totalQuestions}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <TimerRoundedIcon sx={{ fontSize: 13 }} />
+                    ~{Math.max(2, (totalQuestions - currentQuestionNumber + 1) * 3)} mins remaining
+                  </Typography>
+                </Stack>
                 <Stack direction="row" spacing={1}>
                   <Chip
                     label={currentQuestion.topic}
@@ -695,6 +701,70 @@ export default function Interview() {
         {/* 5. Review Screen */}
         {view === "review" && completedInterview && (
           <Stack spacing={3}>
+            {/* Review Summary: Interview Focus & Topics Covered */}
+            <AppCard>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: "space-between",
+                  alignItems: { xs: "flex-start", sm: "center" },
+                  gap: 2,
+                }}
+              >
+                <Box>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      display: "block",
+                    }}
+                  >
+                    Interview Focus
+                  </Typography>
+                  <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                    {completedInterview.interview_focus || interviewFocus || "Technical Interview"}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: { xs: "flex-start", sm: "flex-end" }, gap: 0.5 }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Topics Covered
+                  </Typography>
+                  <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
+                    {(completedInterview.topics && completedInterview.topics.length > 0
+                      ? completedInterview.topics
+                      : Array.from(new Set(completedInterview.questions.map((q) => q.topic)))
+                    ).map((topic, idx) => (
+                      <Chip
+                        key={idx}
+                        label={topic}
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        sx={{
+                          height: 24,
+                          fontSize: "0.75rem",
+                          fontWeight: 600,
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              </Box>
+            </AppCard>
+
             {completedInterview.questions.map((q) => (
               <AppCard key={q.id}>
                 {/* AI Interviewer Question */}

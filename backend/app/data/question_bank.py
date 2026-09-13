@@ -1,7 +1,8 @@
 """
 Curated technical question bank for Adaptive Interview Engine.
-Contains technical questions across OOP, DBMS, OS, Computer Networks, Backend,
-Spring Boot, Kafka, SQL/Indexing, REST APIs, System Design, and DSA Fundamentals.
+Contains technical questions across OOP, DBMS, OS, Computer Networks, DSA,
+Backend, REST APIs, Spring Boot, Node.js, React, System Design, SQL,
+Concurrency, Caching, and Microservices.
 """
 
 from typing import Any, Dict, List
@@ -54,7 +55,7 @@ QUESTION_BANK: List[Dict[str, Any]] = [
     },
 
     # -------------------------------------------------------------
-    # DBMS (Database Management Systems & SQL)
+    # DBMS (Database Management Systems)
     # -------------------------------------------------------------
     {
         "question_id": "DBMS_01",
@@ -97,6 +98,31 @@ QUESTION_BANK: List[Dict[str, Any]] = [
         "difficulty": "Hard",
         "question_text": "How does B-Tree vs LSM-Tree (Log-Structured Merge-Tree) indexing differ in read/write throughput trade-offs, and why are LSM-trees prevalent in write-heavy storage engines?",
         "skills": ["DBMS", "Database Indexing", "Storage Engines", "SQL", "Indexing"],
+    },
+
+    # -------------------------------------------------------------
+    # SQL (Relational Query Language & Optimization)
+    # -------------------------------------------------------------
+    {
+        "question_id": "SQL_01",
+        "topic": "SQL",
+        "difficulty": "Easy",
+        "question_text": "Explain the difference between a PRIMARY KEY and a UNIQUE constraint. Can a table have multiple UNIQUE constraints, and how does SQL handle NULL values within UNIQUE columns?",
+        "skills": ["SQL", "DBMS", "PostgreSQL", "MySQL", "Databases"],
+    },
+    {
+        "question_id": "SQL_02",
+        "topic": "SQL",
+        "difficulty": "Medium",
+        "question_text": "Differentiate between INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL OUTER JOIN. How do database query planners use EXPLAIN ANALYZE to identify sequential scans versus index scans?",
+        "skills": ["SQL", "DBMS", "Query Optimization", "PostgreSQL"],
+    },
+    {
+        "question_id": "SQL_03",
+        "topic": "SQL",
+        "difficulty": "Hard",
+        "question_text": "Explain the usage of SQL Window Functions (e.g., ROW_NUMBER(), DENSE_RANK(), LAG(), LEAD()) versus GROUP BY. How does PARTITION BY differ from GROUP BY in query execution?",
+        "skills": ["SQL", "Analytics", "Database Optimization", "PostgreSQL"],
     },
 
     # -------------------------------------------------------------
@@ -146,6 +172,31 @@ QUESTION_BANK: List[Dict[str, Any]] = [
     },
 
     # -------------------------------------------------------------
+    # Concurrency & Multithreading
+    # -------------------------------------------------------------
+    {
+        "question_id": "CONC_01",
+        "topic": "Concurrency",
+        "difficulty": "Easy",
+        "question_text": "What is a race condition in concurrent software, and how does a critical section use mutual exclusion (mutex) locks to prevent data corruption?",
+        "skills": ["Concurrency", "Multithreading", "Operating Systems", "Java", "Go"],
+    },
+    {
+        "question_id": "CONC_02",
+        "topic": "Concurrency",
+        "difficulty": "Medium",
+        "question_text": "Contrast Optimistic Locking and Pessimistic Locking. In what high-concurrency traffic patterns would you choose versioned optimistic locks over database row-level pessimistic locks?",
+        "skills": ["Concurrency", "DBMS", "Transactions", "Backend", "SQL"],
+    },
+    {
+        "question_id": "CONC_03",
+        "topic": "Concurrency",
+        "difficulty": "Hard",
+        "question_text": "Explain lock-free concurrent programming using Compare-And-Swap (CAS) atomic CPU instructions. What is the ABA problem and how is it resolved?",
+        "skills": ["Concurrency", "Low-Level Systems", "Operating Systems", "Java", "C++"],
+    },
+
+    # -------------------------------------------------------------
     # Computer Networks
     # -------------------------------------------------------------
     {
@@ -192,14 +243,14 @@ QUESTION_BANK: List[Dict[str, Any]] = [
     },
 
     # -------------------------------------------------------------
-    # Backend & REST APIs
+    # Backend Architecture
     # -------------------------------------------------------------
     {
         "question_id": "BACK_01",
         "topic": "Backend",
         "difficulty": "Easy",
-        "question_text": "What defines a RESTful API? Explain the concept of idempotency and classify standard HTTP methods (GET, POST, PUT, DELETE, PATCH) as idempotent or non-idempotent.",
-        "skills": ["Backend", "REST APIs", "API Design", "HTTP", "REST"],
+        "question_text": "What is the difference between vertical scaling and horizontal scaling? What architectural challenges (e.g., statefulness, data consistency) arise when scaling horizontally?",
+        "skills": ["Backend", "Scalability", "System Design", "Cloud"],
     },
     {
         "question_id": "BACK_02",
@@ -211,34 +262,45 @@ QUESTION_BANK: List[Dict[str, Any]] = [
     {
         "question_id": "BACK_03",
         "topic": "Backend",
-        "difficulty": "Easy",
-        "question_text": "What is the difference between vertical scaling and horizontal scaling? What architectural challenges (e.g., statefulness, data consistency) arise when scaling horizontally?",
-        "skills": ["Backend", "Scalability", "System Design", "Cloud"],
-    },
-    {
-        "question_id": "BACK_04",
-        "topic": "Backend",
         "difficulty": "Medium",
         "question_text": "How does stateless JWT (JSON Web Token) authentication work? What are its advantages over session-based auth, and how can token revocation or blacklisting be handled?",
         "skills": ["Backend", "Authentication", "Security", "JWT"],
     },
     {
-        "question_id": "BACK_05",
-        "topic": "Backend",
-        "difficulty": "Medium",
-        "question_text": "Explain the most common caching strategies (Cache-Aside, Write-Through, Write-Back). What is cache invalidation and why is it notoriously difficult?",
-        "skills": ["Backend", "Caching", "Redis", "System Design"],
-    },
-    {
-        "question_id": "BACK_06",
+        "question_id": "BACK_04",
         "topic": "Backend",
         "difficulty": "Hard",
-        "question_text": "How would you design a distributed rate limiter that handles tens of thousands of requests per second across multiple API gateway nodes without single-point bottlenecks?",
-        "skills": ["Backend", "System Design", "Distributed Systems", "Redis", "Rate Limiting"],
+        "question_text": "How would you architect a distributed webhook delivery system that guarantees at-least-once delivery with exponential backoff retries and dead-letter queues?",
+        "skills": ["Backend", "Distributed Systems", "Webhooks", "Message Queue", "Architecture"],
     },
 
     # -------------------------------------------------------------
-    # Spring Boot & Microservices
+    # REST APIs
+    # -------------------------------------------------------------
+    {
+        "question_id": "API_01",
+        "topic": "REST APIs",
+        "difficulty": "Easy",
+        "question_text": "What defines a RESTful API? Explain the concept of idempotency and classify standard HTTP methods (GET, POST, PUT, DELETE, PATCH) as idempotent or non-idempotent.",
+        "skills": ["REST APIs", "Backend", "API Design", "HTTP", "REST"],
+    },
+    {
+        "question_id": "API_02",
+        "topic": "REST APIs",
+        "difficulty": "Medium",
+        "question_text": "Compare REST API versioning strategies (URI path versioning, Header versioning, and Query parameter versioning). What are the pros and cons of each in long-term API maintenance?",
+        "skills": ["REST APIs", "API Design", "Backend", "Software Architecture"],
+    },
+    {
+        "question_id": "API_03",
+        "topic": "REST APIs",
+        "difficulty": "Hard",
+        "question_text": "How do you design an idempotent POST endpoint using Idempotency Keys to prevent duplicate financial transactions during network timeouts or automated client retries?",
+        "skills": ["REST APIs", "Backend", "Distributed Systems", "Idempotency", "Payments"],
+    },
+
+    # -------------------------------------------------------------
+    # Spring Boot
     # -------------------------------------------------------------
     {
         "question_id": "SPRING_01",
@@ -267,6 +329,131 @@ QUESTION_BANK: List[Dict[str, Any]] = [
         "difficulty": "Hard",
         "question_text": "How do you handle distributed transactions across microservices in Spring Boot? Compare the 2-Phase Commit (2PC) pattern with the Saga pattern (Choreography vs Orchestration).",
         "skills": ["Spring Boot", "Microservices", "Distributed Systems", "Saga Pattern"],
+    },
+
+    # -------------------------------------------------------------
+    # Node.js
+    # -------------------------------------------------------------
+    {
+        "question_id": "NODE_01",
+        "topic": "Node.js",
+        "difficulty": "Easy",
+        "question_text": "Explain the Node.js Event Loop architecture and how the call stack, Node APIs, and task/microtask queues execute asynchronous callbacks in a single-threaded runtime.",
+        "skills": ["Node.js", "JavaScript", "Backend", "Event Loop"],
+    },
+    {
+        "question_id": "NODE_02",
+        "topic": "Node.js",
+        "difficulty": "Medium",
+        "question_text": "What are Streams and Buffers in Node.js? How does streaming large files prevent high memory consumption and what is the backpressure mechanism?",
+        "skills": ["Node.js", "Backend", "Streams", "Performance"],
+    },
+    {
+        "question_id": "NODE_03",
+        "topic": "Node.js",
+        "difficulty": "Hard",
+        "question_text": "When executing CPU-heavy tasks (e.g. image processing or cryptography) in Node.js, compare Worker Threads, child processes, and the Cluster module. How does libuv threadpool size impact performance?",
+        "skills": ["Node.js", "Concurrency", "Performance", "Backend"],
+    },
+
+    # -------------------------------------------------------------
+    # React
+    # -------------------------------------------------------------
+    {
+        "question_id": "REACT_01",
+        "topic": "React",
+        "difficulty": "Easy",
+        "question_text": "What is the Virtual DOM in React, and how does the reconciliation diffing algorithm determine which DOM nodes need updating?",
+        "skills": ["React", "Frontend", "JavaScript", "Web Development"],
+    },
+    {
+        "question_id": "REACT_02",
+        "topic": "React",
+        "difficulty": "Medium",
+        "question_text": "Explain the difference between useEffect and useLayoutEffect. When and why would you use useMemo and useCallback to prevent unnecessary child component re-renders?",
+        "skills": ["React", "Hooks", "Frontend", "Performance"],
+    },
+    {
+        "question_id": "REACT_03",
+        "topic": "React",
+        "difficulty": "Hard",
+        "question_text": "Explain React Server Components (RSC) vs Client Components. How does streaming SSR with Suspense reduce Time-to-Interactive (TTI) and eliminate client-side hydration bottlenecks?",
+        "skills": ["React", "Next.js", "Frontend", "Architecture"],
+    },
+
+    # -------------------------------------------------------------
+    # System Design
+    # -------------------------------------------------------------
+    {
+        "question_id": "SYS_01",
+        "topic": "System Design",
+        "difficulty": "Easy",
+        "question_text": "What is a Load Balancer? Compare Layer 4 (Transport) vs Layer 7 (Application) load balancing and explain Round Robin vs Least Connections algorithms.",
+        "skills": ["System Design", "Backend", "Networking", "Architecture"],
+    },
+    {
+        "question_id": "SYS_02",
+        "topic": "System Design",
+        "difficulty": "Medium",
+        "question_text": "Explain the CAP theorem and the PACELC theorem. In a network partition scenario, why must distributed databases trade off consistency for availability (or vice versa)?",
+        "skills": ["System Design", "Distributed Systems", "Databases"],
+    },
+    {
+        "question_id": "SYS_03",
+        "topic": "System Design",
+        "difficulty": "Hard",
+        "question_text": "Design a globally scalable URL shortening service (like TinyURL) handling 500 million new URLs per month. Detail the database schema, base62 encoding vs hashing, caching layer, and data partitioning strategy.",
+        "skills": ["System Design", "Scalability", "Distributed Systems", "Architecture"],
+    },
+
+    # -------------------------------------------------------------
+    # Caching
+    # -------------------------------------------------------------
+    {
+        "question_id": "CACHE_01",
+        "topic": "Caching",
+        "difficulty": "Easy",
+        "question_text": "What is caching, and what is the difference between a cache hit and a cache miss? Explain standard cache eviction policies: LRU, LFU, and FIFO.",
+        "skills": ["Caching", "Redis", "Backend", "Performance"],
+    },
+    {
+        "question_id": "CACHE_02",
+        "topic": "Caching",
+        "difficulty": "Medium",
+        "question_text": "Explain common caching patterns: Cache-Aside, Write-Through, and Write-Back. What is the cache stampede (thundering herd) problem and how can mutex locking mitigate it?",
+        "skills": ["Caching", "System Design", "Redis", "Backend"],
+    },
+    {
+        "question_id": "CACHE_03",
+        "topic": "Caching",
+        "difficulty": "Hard",
+        "question_text": "How do you manage cache invalidation and data consistency across multi-region Redis clusters and CDNs when backend database records are updated concurrently?",
+        "skills": ["Caching", "Distributed Systems", "Redis", "System Design"],
+    },
+
+    # -------------------------------------------------------------
+    # Microservices
+    # -------------------------------------------------------------
+    {
+        "question_id": "MICRO_01",
+        "topic": "Microservices",
+        "difficulty": "Easy",
+        "question_text": "Compare monolithic architecture with microservices architecture. What architectural benefits does microservices provide, and what operational complexities does it introduce?",
+        "skills": ["Microservices", "Backend", "Software Architecture"],
+    },
+    {
+        "question_id": "MICRO_02",
+        "topic": "Microservices",
+        "difficulty": "Medium",
+        "question_text": "Explain the Circuit Breaker pattern (e.g., Resilience4j) and Service Discovery in a microservices ecosystem. How does an API gateway manage routing, SSL termination, and rate limiting?",
+        "skills": ["Microservices", "System Design", "Backend", "Resilience"],
+    },
+    {
+        "question_id": "MICRO_03",
+        "topic": "Microservices",
+        "difficulty": "Hard",
+        "question_text": "Explain Event Sourcing and CQRS (Command Query Responsibility Segregation) in microservice architectures. How do they handle eventual consistency and auditability?",
+        "skills": ["Microservices", "Event Sourcing", "CQRS", "Distributed Systems"],
     },
 
     # -------------------------------------------------------------

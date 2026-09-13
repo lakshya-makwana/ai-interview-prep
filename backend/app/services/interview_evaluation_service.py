@@ -250,6 +250,19 @@ def evaluate_and_get_interview_report(
             )
         )
 
+    focus = (
+        interview.job.title
+        if interview.job and interview.job.title
+        else "Technical Interview"
+    )
+    topics = list(
+        dict.fromkeys(
+            q.topic
+            for q in sorted(interview.questions, key=lambda x: x.display_order)
+            if q.topic
+        )
+    )
+
     return InterviewEvaluationReportResponse(
         interview_id=interview.id,
         status=interview.status,
@@ -257,4 +270,6 @@ def evaluate_and_get_interview_report(
         started_at=interview.started_at,
         completed_at=interview.completed_at,
         questions=question_items,
+        interview_focus=focus,
+        topics=topics,
     )

@@ -43,3 +43,5 @@ class InterviewEvaluationReportResponse(BaseModel):
     started_at: datetime
     completed_at: Optional[datetime] = None
     questions: List[QuestionWithEvaluationResponse]
+    interview_focus: Optional[str] = None
+    topics: Optional[List[str]] = None

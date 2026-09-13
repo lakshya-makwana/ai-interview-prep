@@ -124,12 +124,23 @@ def collect_candidate_context(db: Session, current_user: User) -> Dict[str, Any]
     # Sort weak topics ascending by score (lowest score = highest priority)
     weak_topics.sort(key=lambda x: x[1])
 
+    # 4. Career Readiness Report Integration
+    career_priority_skills: List[str] = []
+    try:
+        from app.services.career_readiness_service import generate_career_readiness_report
+        cr_report = generate_career_readiness_report(db, current_user)
+        if cr_report and cr_report.priority_skills:
+            career_priority_skills = cr_report.priority_skills
+    except Exception:
+        pass
+
     return {
         "candidate_skills": candidate_skills,
         "job_title": job_title,
         "match_report": match_report,
         "answered_question_ids": answered_question_ids,
         "weak_topics": [t[0] for t in weak_topics],
+        "career_priority_skills": career_priority_skills,
         "strong_topics": strong_topics,
         "total_past_interviews": len(past_interviews),
     }
@@ -162,9 +173,11 @@ def determine_priority_topics(context: Dict[str, Any]) -> List[str]:
         for skill in match_report.missing_required_skills:
             _add(skill)
 
-    # Tier 2: Weak interview topics from previous performance
+    # Tier 2: Weak interview topics from previous performance & career readiness
     for topic in context.get("weak_topics", []):
         _add(topic)
+    for skill in context.get("career_priority_skills", []):
+        _add(skill)
 
     # Tier 3: Required skills with partial evidence
     if match_report:
@@ -336,12 +349,12 @@ def adapt_next_question(
     current_difficulty = next_q.difficulty
     target_difficulty = current_difficulty
 
-    if answer_score >= 7.5:
+    if answer_score >= 8.5:
         if current_difficulty == "Easy":
             target_difficulty = "Medium"
         elif current_difficulty == "Medium":
             target_difficulty = "Hard"
-    elif answer_score < 5.5:
+    elif answer_score <= 6.0:
         if current_difficulty == "Hard":
             target_difficulty = "Medium"
         elif current_difficulty == "Medium":
@@ -381,3 +394,8 @@ def adapt_next_question(
         db.flush()
 
     return next_q
+
+
+# Alias for explicit naming consistency
+select_adaptive_questions = select_questions
+
