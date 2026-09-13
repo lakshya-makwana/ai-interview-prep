@@ -1,8 +1,8 @@
 from typing import List, Set
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
-from app.models.interview import Interview
+from app.models.interview import Interview, InterviewQuestion
 from app.models.interview_evaluation import InterviewEvaluation
 from app.models.user import User
 from app.schemas.career_readiness import (
@@ -27,6 +27,9 @@ def generate_career_readiness_report(
     # 2. Fetch Latest Completed Interview
     latest_interview = (
         db.query(Interview)
+        .options(
+            selectinload(Interview.questions).selectinload(InterviewQuestion.evaluation)
+        )
         .filter(
             Interview.user_id == current_user.id,
             Interview.status == "Completed",

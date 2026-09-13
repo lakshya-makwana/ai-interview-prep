@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -40,6 +40,8 @@ import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 
 import AppCard from "../components/AppCard";
 import EmptyState from "../components/EmptyState";
+import MetricCard from "../components/MetricCard";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { getProgress } from "../services/progressService";
@@ -91,7 +93,7 @@ export default function Progress() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchProgress = async () => {
+  const handleRefresh = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -106,10 +108,33 @@ export default function Progress() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchProgress();
+    let isMounted = true;
+
+    async function loadData() {
+      try {
+        const data = await getProgress();
+        if (isMounted) setReport(data);
+      } catch (err) {
+        if (isMounted) {
+          setError(
+            err.response?.data?.detail ||
+              "Unable to load candidate progress intelligence. Please try again."
+          );
+          setReport(null);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const summary = report?.summary;
@@ -120,17 +145,17 @@ export default function Progress() {
   return (
     <DashboardLayout>
       <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
-        {/* Page Header */}
-        <SectionHeader
+        {/* Standard Page Header */}
+        <PageHeader
           title="Progress Intelligence"
-          subtitle="Track your interview performance trajectory, skill topic mastery, and score consistency over time."
+          description="Track your interview performance trajectory, skill topic mastery, and score consistency over time."
           action={
             <Stack direction="row" spacing={1}>
               <Button
                 variant="outlined"
                 size="small"
                 startIcon={<RefreshRoundedIcon sx={{ fontSize: 16 }} />}
-                onClick={fetchProgress}
+                onClick={handleRefresh}
                 disabled={loading}
                 sx={{ textTransform: "none", fontSize: "0.8125rem" }}
               >
@@ -147,7 +172,6 @@ export default function Progress() {
               </Button>
             </Stack>
           }
-          sx={{ mb: 2.5 }}
         />
 
         {/* Loading State */}
@@ -162,7 +186,7 @@ export default function Progress() {
           <Alert
             severity="error"
             action={
-              <Button color="inherit" size="small" onClick={fetchProgress}>
+              <Button color="inherit" size="small" onClick={handleRefresh}>
                 Retry
               </Button>
             }
@@ -224,117 +248,67 @@ export default function Progress() {
               <>
                 {/* Metric Summary Cards */}
                 <Grid container spacing={2}>
-                  {/* Card 1: Completed Sessions */}
                   <Grid item xs={12} sm={6} md={3}>
-                    <AppCard>
-                      <Stack spacing={0.5}>
-                        <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                          Completed Sessions
-                        </Typography>
-                        <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.02em" }}>
-                          {summary?.total_interviews}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {summary?.total_questions_answered} total questions answered
-                        </Typography>
-                      </Stack>
-                    </AppCard>
+                    <MetricCard
+                      label="Completed Sessions"
+                      value={summary?.total_interviews ?? 0}
+                      helperText={`${summary?.total_questions_answered ?? 0} total questions answered`}
+                    />
                   </Grid>
 
-                  {/* Card 2: Overall Average Score */}
                   <Grid item xs={12} sm={6} md={3}>
-                    <AppCard>
-                      <Stack spacing={0.5}>
-                        <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                          Average Performance
-                        </Typography>
-                        <Stack direction="row" alignItems="baseline" spacing={1}>
-                          <Typography
-                            variant="h5"
-                            fontWeight={700}
-                            sx={{
-                              color: getScoreColor(summary?.average_score || 0),
-                              letterSpacing: "-0.02em",
-                            }}
-                          >
-                            {summary?.average_score?.toFixed(1)}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            / 10
-                          </Typography>
-                        </Stack>
-                        <Typography variant="caption" color="text.secondary">
-                          Range: {summary?.lowest_score?.toFixed(1)} min — {summary?.highest_score?.toFixed(1)} max
-                        </Typography>
-                      </Stack>
-                    </AppCard>
+                    <MetricCard
+                      label="Average Performance"
+                      value={`${summary?.average_score?.toFixed(1) ?? "0.0"} / 10`}
+                      valueColor={getScoreColor(summary?.average_score || 0)}
+                      helperText={`Range: ${summary?.lowest_score?.toFixed(1)} min — ${summary?.highest_score?.toFixed(1)} max`}
+                    />
                   </Grid>
 
-                  {/* Card 3: Net Trajectory */}
                   <Grid item xs={12} sm={6} md={3}>
-                    <AppCard>
-                      <Stack spacing={0.5}>
-                        <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                          Net Trajectory
-                        </Typography>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                          <Typography
-                            variant="h5"
-                            fontWeight={700}
-                            sx={{
-                              color:
-                                (summary?.net_improvement || 0) > 0
-                                  ? "success.main"
-                                  : (summary?.net_improvement || 0) < 0
-                                  ? "warning.main"
-                                  : "text.primary",
-                              letterSpacing: "-0.02em",
-                            }}
-                          >
-                            {(summary?.net_improvement || 0) > 0 ? "+" : ""}
-                            {summary?.net_improvement?.toFixed(1)} pts
-                          </Typography>
-                          <Chip
-                            size="small"
-                            label={`${(summary?.improvement_percentage || 0) > 0 ? "+" : ""}${summary?.improvement_percentage?.toFixed(1)}%`}
-                            color={
-                              (summary?.improvement_percentage || 0) > 0
-                                ? "success"
-                                : (summary?.improvement_percentage || 0) < 0
-                                ? "warning"
-                                : "default"
-                            }
-                            sx={{ height: 20, fontSize: "0.7rem", fontWeight: 600 }}
-                          />
-                        </Stack>
-                        <Typography variant="caption" color="text.secondary">
-                          Baseline: {initialScore?.toFixed(1)} → Latest: {summary?.latest_score?.toFixed(1)}
-                        </Typography>
-                      </Stack>
-                    </AppCard>
+                    <MetricCard
+                      label="Net Trajectory"
+                      value={`${(summary?.net_improvement || 0) > 0 ? "+" : ""}${summary?.net_improvement?.toFixed(1)} pts`}
+                      valueColor={
+                        (summary?.net_improvement || 0) > 0
+                          ? "success.main"
+                          : (summary?.net_improvement || 0) < 0
+                          ? "warning.main"
+                          : "text.primary"
+                      }
+                      badge={
+                        <Chip
+                          size="small"
+                          label={`${(summary?.improvement_percentage || 0) > 0 ? "+" : ""}${summary?.improvement_percentage?.toFixed(1)}%`}
+                          color={
+                            (summary?.improvement_percentage || 0) > 0
+                              ? "success"
+                              : (summary?.improvement_percentage || 0) < 0
+                              ? "warning"
+                              : "default"
+                          }
+                          sx={{ height: 20, fontSize: "0.7rem", fontWeight: 600 }}
+                        />
+                      }
+                      helperText={`Baseline: ${initialScore?.toFixed(1)} → Latest: ${summary?.latest_score?.toFixed(1)}`}
+                    />
                   </Grid>
 
-                  {/* Card 4: Consistency Rating */}
                   <Grid item xs={12} sm={6} md={3}>
-                    <AppCard>
-                      <Stack spacing={0.5}>
-                        <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                          Session Consistency
-                        </Typography>
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.25 }}>
-                          <Chip
-                            size="small"
-                            label={summary?.consistency_rating || "Evaluated"}
-                            color={getConsistencyChip(summary?.consistency_rating).color}
-                            variant={getConsistencyChip(summary?.consistency_rating).variant}
-                            sx={{ fontWeight: 600, fontSize: "0.75rem" }}
-                          />
-                        </Stack>
-                        <Typography variant="caption" color="text.secondary" sx={{ pt: 0.5 }}>
-                          Evaluated across all completed interviews
-                        </Typography>
-                      </Stack>
-                    </AppCard>
+                    <MetricCard
+                      label="Session Consistency"
+                      value={summary?.consistency_rating || "Evaluated"}
+                      badge={
+                        <Chip
+                          size="small"
+                          label={summary?.consistency_rating || "Evaluated"}
+                          color={getConsistencyChip(summary?.consistency_rating).color}
+                          variant={getConsistencyChip(summary?.consistency_rating).variant}
+                          sx={{ fontWeight: 600, fontSize: "0.75rem", height: 22 }}
+                        />
+                      }
+                      helperText="Calculated across all completed interviews"
+                    />
                   </Grid>
                 </Grid>
 
@@ -355,7 +329,7 @@ export default function Progress() {
                     }
                   />
 
-                  <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 1 }}>
+                  <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 1, overflowX: "auto" }}>
                     <Table size="small">
                       <TableHead sx={{ bgcolor: "background.default" }}>
                         <TableRow>
@@ -389,7 +363,7 @@ export default function Progress() {
                               <TableCell sx={{ fontWeight: 600, fontSize: "0.8125rem" }}>
                                 #{item.interview_number}
                               </TableCell>
-                              <TableCell sx={{ color: "text.secondary", fontSize: "0.75rem" }}>
+                              <TableCell sx={{ color: "text.secondary", fontSize: "0.75rem", whiteSpace: "nowrap" }}>
                                 {item.date
                                   ? new Date(item.date).toLocaleDateString(undefined, {
                                       month: "short",
@@ -471,7 +445,7 @@ export default function Progress() {
                       subtitle="Longitudinal performance across early vs. later session halves per technical topic"
                     />
 
-                    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 1 }}>
+                    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 1, overflowX: "auto" }}>
                       <Table size="small">
                         <TableHead sx={{ bgcolor: "background.default" }}>
                           <TableRow>

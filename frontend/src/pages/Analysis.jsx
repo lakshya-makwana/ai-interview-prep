@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 import AppCard from "../components/AppCard";
 import EmptyState from "../components/EmptyState";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -55,26 +56,21 @@ export default function Analysis() {
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        {/* Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
-          <Box>
-            <Typography variant="h4" fontWeight={800}>
-              AI Analysis
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              Review ATS score and prioritized recommendations extracted from your resume.
-            </Typography>
-          </Box>
-
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => navigate("/resume")}
-          >
-            Replace Resume
-          </Button>
-        </Box>
+      <Stack spacing={2.5}>
+        {/* Standard Page Header */}
+        <PageHeader
+          title="AI Analysis"
+          description="Review ATS score and prioritized recommendations extracted from your resume."
+          action={
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => navigate("/resume")}
+            >
+              Replace Resume
+            </Button>
+          }
+        />
 
         {!analysis ? (
           <EmptyState

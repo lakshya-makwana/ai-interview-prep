@@ -15,6 +15,9 @@ class Settings(BaseSettings):
 
     UPLOAD_DIR: str = "uploads/resumes"
 
+    DEBUG: bool = False
+    DB_ECHO: bool = False
+
 
     model_config = SettingsConfigDict(
         env_file=".env",

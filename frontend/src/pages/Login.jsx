@@ -47,8 +47,7 @@ export default function Login() {
       login(response.data.access_token);
       navigate("/");
     } catch (err) {
-      console.error(err);
-      setError("Login failed. Please check your email and password.");
+      setError(err.response?.data?.detail || "Invalid email or password. Please check your credentials and try again.");
     } finally {
       setLoading(false);
     }
@@ -58,23 +57,24 @@ export default function Login() {
     <Box
       sx={{
         minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 2,
         bgcolor: "background.default",
-        display: "grid",
-        placeItems: "center",
-        px: 2,
-        py: 4,
       }}
     >
       <Container maxWidth="xs">
-        <Stack spacing={2} alignItems="center" sx={{ mb: 3 }}>
+        <Stack spacing={2.5} alignItems="center" sx={{ mb: 3 }}>
           <Box
             sx={{
               width: 40,
               height: 40,
               borderRadius: 1.5,
-              display: "grid",
-              placeItems: "center",
               bgcolor: "primary.main",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               color: "primary.contrastText",
             }}
           >
@@ -97,6 +97,7 @@ export default function Login() {
                 label="Email address"
                 type="email"
                 size="small"
+                autoComplete="email"
                 value={form.email}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, email: event.target.value }))
@@ -109,6 +110,7 @@ export default function Login() {
                 label="Password"
                 type="password"
                 size="small"
+                autoComplete="current-password"
                 value={form.password}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, password: event.target.value }))

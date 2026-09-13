@@ -20,6 +20,7 @@ import RadioButtonUncheckedRoundedIcon from "@mui/icons-material/RadioButtonUnch
 
 import AppCard from "../components/AppCard";
 import DashboardLayout from "../layouts/DashboardLayout";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import { getUserProfile } from "../services/userService";
@@ -41,19 +42,24 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function loadData() {
       try {
-        setLoading(true);
         const profileRes = await getUserProfile();
-        setProfileData(profileRes);
-      } catch (err) {
-        console.error("Failed to load user profile:", err);
+        if (isMounted) setProfileData(profileRes);
+      } catch {
+        // Fallback profile is handled gracefully
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     }
 
     loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (loading) {
@@ -80,25 +86,21 @@ export default function Profile() {
     <DashboardLayout>
       <Stack spacing={2}>
         {/* Standard Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 1.5 }}>
-          <Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, fontSize: "1.125rem", letterSpacing: "-0.01em" }}>
-              User Profile
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, fontSize: "0.8125rem" }}>
-              Account credentials, verified resume status, and platform identity.
-            </Typography>
-          </Box>
-
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<DescriptionRoundedIcon sx={{ fontSize: 16 }} />}
-            onClick={() => navigate(resume.uploaded ? "/analysis" : "/resume")}
-          >
-            {resume.uploaded ? "View Analysis" : "Upload Resume"}
-          </Button>
-        </Box>
+        <PageHeader
+          title="User Profile"
+          description="Account credentials, verified resume status, and platform identity."
+          action={
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<DescriptionRoundedIcon sx={{ fontSize: 16 }} />}
+              onClick={() => navigate(resume.uploaded ? "/analysis" : "/resume")}
+            >
+              {resume.uploaded ? "View Analysis" : "Upload Resume"}
+            </Button>
+          }
+          sx={{ mb: 0 }}
+        />
 
         {/* Profile Information Card */}
         <AppCard>

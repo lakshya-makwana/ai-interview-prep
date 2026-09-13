@@ -35,6 +35,7 @@ import TableChartRoundedIcon from "@mui/icons-material/TableChartRounded";
 
 import AppCard from "../components/AppCard";
 import EmptyState from "../components/EmptyState";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -326,34 +327,29 @@ export default function InterviewHistory() {
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        {/* Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
-          <Box>
-            <Typography variant="h4" fontWeight={800}>
-              Interview History
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              Structured interview dataset collected for evaluation analytics and machine learning.
-            </Typography>
-          </Box>
-
-          <Stack direction="row" spacing={1.5}>
-            <Tooltip title="Refresh Dataset">
-              <IconButton onClick={fetchData} size="small" sx={{ border: 1, borderColor: "divider" }}>
-                <RefreshRoundedIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Button
-              variant="contained"
-              size="small"
-              startIcon={<MicRoundedIcon fontSize="small" />}
-              onClick={() => navigate("/interview")}
-            >
-              New Interview
-            </Button>
-          </Stack>
-        </Box>
+      <Stack spacing={2.5}>
+        {/* Standard Page Header */}
+        <PageHeader
+          title="Interview History"
+          description="Structured interview dataset collected for evaluation analytics and progress tracking."
+          action={
+            <Stack direction="row" spacing={1.5}>
+              <Tooltip title="Refresh Dataset">
+                <IconButton onClick={fetchData} size="small" sx={{ border: 1, borderColor: "divider" }}>
+                  <RefreshRoundedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<MicRoundedIcon fontSize="small" />}
+                onClick={() => navigate("/interview")}
+              >
+                New Interview
+              </Button>
+            </Stack>
+          }
+        />
 
         {error && (
           <Alert severity="error" onClose={() => setError("")}>

@@ -28,6 +28,7 @@ import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 
 import AppCard from "../components/AppCard";
 import EmptyState from "../components/EmptyState";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { getMatchingReport } from "../services/matchingService";
@@ -145,28 +146,23 @@ export default function JobMatch() {
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        {/* Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
-          <Box>
-            <Typography variant="h4" fontWeight={800}>
-              Job Match
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              Deterministic weighted matching between verified candidate skills and AI-extracted job requirements.
-            </Typography>
-          </Box>
-
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<RefreshRoundedIcon fontSize="small" />}
-            onClick={handleRefresh}
-            disabled={loading}
-          >
-            Refresh Match
-          </Button>
-        </Box>
+      <Stack spacing={2.5}>
+        {/* Standard Page Header */}
+        <PageHeader
+          title="Job Match"
+          description="Deterministic weighted matching between verified candidate skills and AI-extracted job requirements."
+          action={
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<RefreshRoundedIcon fontSize="small" />}
+              onClick={handleRefresh}
+              disabled={loading}
+            >
+              Refresh Match
+            </Button>
+          }
+        />
 
         {/* Loading */}
         {loading && (

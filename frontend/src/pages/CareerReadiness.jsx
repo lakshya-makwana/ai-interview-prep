@@ -31,6 +31,7 @@ import ThumbUpAltRoundedIcon from "@mui/icons-material/ThumbUpAltRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 
 import AppCard from "../components/AppCard";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { getCareerReadinessReport } from "../services/careerReadinessService";
@@ -93,26 +94,25 @@ export default function CareerReadiness() {
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        {/* Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
-          <SectionHeader
-            title="Career Readiness"
-            subtitle="Objective assessment combining deterministic Resume Match, Technical Interview evaluations, and prioritized skill gaps."
-          />
-
-          {report && (
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<RefreshRoundedIcon fontSize="small" />}
-              onClick={handleRefresh}
-              disabled={loading}
-            >
-              Refresh Report
-            </Button>
-          )}
-        </Box>
+      <Stack spacing={2.5}>
+        {/* Standard Page Header */}
+        <PageHeader
+          title="Career Readiness"
+          description="Objective assessment combining deterministic Resume Match, Technical Interview evaluations, and prioritized skill gaps."
+          action={
+            report ? (
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<RefreshRoundedIcon fontSize="small" />}
+                onClick={handleRefresh}
+                disabled={loading}
+              >
+                Refresh Report
+              </Button>
+            ) : null
+          }
+        />
 
         {/* Global Loading */}
         {loading && (

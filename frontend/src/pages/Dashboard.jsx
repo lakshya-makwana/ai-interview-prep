@@ -17,6 +17,7 @@ import DashboardCard from "../components/DashboardCard";
 import QuickActions from "../components/QuickActions";
 import RecentActivity from "../components/RecentActivity";
 import AppCard from "../components/AppCard";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -72,28 +73,24 @@ export default function Dashboard() {
     <DashboardLayout>
       <Stack spacing={2}>
         {/* Standard Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 1.5 }}>
-          <Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, fontSize: "1.125rem", letterSpacing: "-0.01em" }}>
-              Dashboard
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, fontSize: "0.8125rem" }}>
-              Preparation progress, resume ATS evaluation, and core interview milestones.
-            </Typography>
-          </Box>
-
-          <Box sx={{ width: { xs: "100%", sm: 180 } }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 0.5 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500, fontSize: "0.7rem" }}>
-                Readiness Progress
-              </Typography>
-              <Typography variant="caption" sx={{ fontWeight: 600, fontSize: "0.75rem" }}>
-                {progress}%
-              </Typography>
-            </Stack>
-            <LinearProgress variant="determinate" value={progress} sx={{ height: 4, borderRadius: 2 }} />
-          </Box>
-        </Box>
+        <PageHeader
+          title="Dashboard"
+          description="Preparation progress, resume ATS evaluation, and core interview milestones."
+          action={
+            <Box sx={{ width: { xs: "100%", sm: 180 } }}>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 0.5 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500, fontSize: "0.7rem" }}>
+                  Readiness Progress
+                </Typography>
+                <Typography variant="caption" sx={{ fontWeight: 600, fontSize: "0.75rem" }}>
+                  {progress}%
+                </Typography>
+              </Stack>
+              <LinearProgress variant="determinate" value={progress} sx={{ height: 4, borderRadius: 2 }} />
+            </Box>
+          }
+          sx={{ mb: 0 }}
+        />
 
         {/* Metric Cards Grid */}
         <Box

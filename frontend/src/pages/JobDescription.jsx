@@ -21,6 +21,8 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 
 import AppCard from "../components/AppCard";
+import ConfirmationDialog from "../components/ConfirmationDialog";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -108,6 +110,7 @@ export default function JobDescription() {
   const [pageLoading, setPageLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [clearing, setClearing] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -118,10 +121,8 @@ export default function JobDescription() {
           setAnalyzedJob(saved);
           setJobText(saved.job_description || "");
         }
-      } catch (err) {
-        if (err?.response?.status !== 404) {
-          console.error("Failed to fetch saved job:", err);
-        }
+      } catch {
+        // Handled gracefully when no job exists yet
       } finally {
         setPageLoading(false);
       }
@@ -144,7 +145,6 @@ export default function JobDescription() {
       setAnalyzedJob(result);
       showSuccess("Job description analyzed and saved successfully.");
     } catch (err) {
-      console.error(err);
       const msg =
         err?.response?.data?.detail ||
         "Analysis failed. Please ensure the description is valid and try again.";
@@ -163,9 +163,9 @@ export default function JobDescription() {
       await deleteJob();
       setAnalyzedJob(null);
       setJobText("");
+      setConfirmDeleteOpen(false);
       showSuccess("Job description cleared.");
     } catch (err) {
-      console.error(err);
       const msg = err?.response?.data?.detail || "Failed to clear job description.";
       setError(msg);
       showError(msg);
@@ -178,29 +178,24 @@ export default function JobDescription() {
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        {/* Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
-          <Box>
-            <Typography variant="h4" fontWeight={800}>
-              Job Description
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              Paste a target job description to extract structured skills, responsibilities, and qualifications.
-            </Typography>
-          </Box>
-
-          {analyzedJob && (
-            <Button
-              variant="outlined"
-              size="small"
-              endIcon={<ArrowForwardRoundedIcon fontSize="small" />}
-              onClick={() => navigate("/job-match")}
-            >
-              Go to Job Match
-            </Button>
-          )}
-        </Box>
+      <Stack spacing={2.5}>
+        {/* Standard Page Header */}
+        <PageHeader
+          title="Job Description"
+          description="Paste a target job description to extract structured skills, responsibilities, and qualifications."
+          action={
+            analyzedJob ? (
+              <Button
+                variant="outlined"
+                size="small"
+                endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: 14 }} />}
+                onClick={() => navigate("/job-match")}
+              >
+                Go to Job Match
+              </Button>
+            ) : null
+          }
+        />
 
         {pageLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
@@ -271,7 +266,7 @@ export default function JobDescription() {
                   <Button
                     variant="outlined"
                     color="error"
-                    onClick={handleClear}
+                    onClick={() => setConfirmDeleteOpen(true)}
                     disabled={analyzing || clearing}
                     startIcon={
                       clearing ? (
@@ -398,6 +393,18 @@ export default function JobDescription() {
             )}
           </Box>
         )}
+
+        <ConfirmationDialog
+          open={confirmDeleteOpen}
+          onClose={() => setConfirmDeleteOpen(false)}
+          onConfirm={handleClear}
+          title="Clear Job Description"
+          message="Are you sure you want to clear this job description and its extracted requirements? This action cannot be undone."
+          confirmLabel="Clear Job"
+          cancelLabel="Cancel"
+          destructive
+          loading={clearing}
+        />
       </Stack>
     </DashboardLayout>
   );

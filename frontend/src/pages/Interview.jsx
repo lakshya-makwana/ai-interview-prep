@@ -35,6 +35,7 @@ import TimerRoundedIcon from "@mui/icons-material/TimerRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 
 import AppCard from "../components/AppCard";
+import PageHeader from "../components/PageHeader";
 import DashboardLayout from "../layouts/DashboardLayout";
 import {
   getCurrentInterview,
@@ -263,44 +264,39 @@ export default function Interview() {
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        {/* Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
-          <Box>
-            <Typography variant="h4" fontWeight={800}>
-              Technical Interview
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              Interactive technical interview session with multi-dimensional AI answer evaluation.
-            </Typography>
-          </Box>
-
-          {view === "review" && (
-            <Stack direction="row" spacing={1.5}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<ReplayRoundedIcon fontSize="small" />}
-                onClick={() => {
-                  setInterviewId(null);
-                  setCompletedInterview(null);
-                  navigate("/interview", { replace: true });
-                  setView("start");
-                }}
-              >
-                Start New
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                endIcon={<ArrowForwardRoundedIcon fontSize="small" />}
-                onClick={() => navigate("/career-readiness")}
-              >
-                Career Readiness
-              </Button>
-            </Stack>
-          )}
-        </Box>
+      <Stack spacing={2.5}>
+        {/* Standard Page Header */}
+        <PageHeader
+          title="Technical Interview"
+          description="Interactive technical interview session with multi-dimensional AI answer evaluation."
+          action={
+            view === "review" ? (
+              <Stack direction="row" spacing={1.5}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<ReplayRoundedIcon fontSize="small" />}
+                  onClick={() => {
+                    setInterviewId(null);
+                    setCompletedInterview(null);
+                    navigate("/interview", { replace: true });
+                    setView("start");
+                  }}
+                >
+                  Start New
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  endIcon={<ArrowForwardRoundedIcon fontSize="small" />}
+                  onClick={() => navigate("/career-readiness")}
+                >
+                  Career Readiness
+                </Button>
+              </Stack>
+            ) : null
+          }
+        />
 
         {/* Global Error Banner */}
         {error && (

@@ -48,6 +48,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from app.core.logger import logger
+
 # Register Routers
 app.include_router(auth_router)
 app.include_router(users_router)
@@ -62,8 +66,19 @@ app.include_router(dataset_router)
 app.include_router(progress_router)
 
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error("Unhandled exception processing %s %s: %s", request.method, request.url.path, exc, exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "An internal server error occurred. Please try again later."},
+    )
+
+
 @app.get("/")
 def root():
     return {
-        "message": "Backend is running 🚀",
+        "status": "online",
+        "message": "AI Career Intelligence Platform API is running",
+        "version": "1.0.0",
     }

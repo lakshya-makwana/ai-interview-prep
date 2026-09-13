@@ -24,6 +24,7 @@ import VerifiedUserRoundedIcon from "@mui/icons-material/VerifiedUserRounded";
 
 import AppCard from "../components/AppCard";
 import EmptyState from "../components/EmptyState";
+import PageHeader from "../components/PageHeader";
 import SectionHeader from "../components/SectionHeader";
 import StatusChip from "../components/StatusChip";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -66,10 +67,7 @@ export default function Resume() {
       } else {
         setSkillsList(data.extracted_skills || []);
       }
-    } catch (err) {
-      if (err?.response?.status !== 404) {
-        console.error("Failed to load candidate profile:", err);
-      }
+    } catch {
       setProfile(null);
       setSkillsList([]);
     } finally {
@@ -90,11 +88,8 @@ export default function Resume() {
             setSkillsList(data.extracted_skills || []);
           }
         })
-        .catch((err) => {
+        .catch(() => {
           if (!isMounted) return;
-          if (err?.response?.status !== 404) {
-            console.error("Failed to load candidate profile:", err);
-          }
           setProfile(null);
           setSkillsList([]);
         });
@@ -132,8 +127,7 @@ export default function Resume() {
       const successMsg = "Resume uploaded and analyzed successfully.";
       setSuccess(successMsg);
       showSuccess(successMsg);
-    } catch (err) {
-      console.error(err);
+    } catch {
       const errorMsg = "Upload or analysis failed. Please ensure the file is a valid PDF and try again.";
       setError(errorMsg);
       showError(errorMsg);
@@ -165,7 +159,6 @@ export default function Resume() {
       setSkillsList(updated.verified_skills || []);
       showSuccess("Skills updated successfully.");
     } catch (err) {
-      console.error(err);
       showError(err?.response?.data?.detail || "Failed to update skills.");
     } finally {
       setSavingSkills(false);
@@ -184,7 +177,6 @@ export default function Resume() {
       setSkillsList(updated.verified_skills || []);
       showSuccess("Skills verified successfully.");
     } catch (err) {
-      console.error(err);
       showError(err?.response?.data?.detail || "Failed to confirm skills.");
     } finally {
       setConfirmingSkills(false);
@@ -193,27 +185,22 @@ export default function Resume() {
 
   return (
     <DashboardLayout>
-      <Stack spacing={3}>
-        {/* Page Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: 2 }}>
-          <Box>
-            <Typography variant="h4" fontWeight={800}>
-              Resume & Skills
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              Upload your resume, review ATS analysis, and verify candidate skills for job matching.
-            </Typography>
-          </Box>
-
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<PsychologyRoundedIcon fontSize="small" />}
-            onClick={() => navigate("/analysis")}
-          >
-            View Analysis
-          </Button>
-        </Box>
+      <Stack spacing={2.5}>
+        {/* Standard Page Header */}
+        <PageHeader
+          title="Resume & Skills"
+          description="Upload your resume, review ATS analysis, and verify candidate skills for job matching."
+          action={
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<PsychologyRoundedIcon fontSize="small" />}
+              onClick={() => navigate("/analysis")}
+            >
+              View Analysis
+            </Button>
+          }
+        />
 
         <Box
           sx={{
